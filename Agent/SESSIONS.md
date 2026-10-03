@@ -11,7 +11,9 @@ Formato estricto por sesión: máximo 4-6 líneas (Fecha, Objetivo, Hitos/Archiv
   - Ejecución exitosa de la migración `001_core_schema.sql` en Supabase por Mariano (tablas, RLS, triggers e índices).
   - Inicialización limpia de Next.js 16.3.8 + Tailwind CSS 4 + Lucide Icons + Supabase SSR y Admin.
   - Integración del logo oficial DeusX (`DeusX.png` y favicons) en cabecera y avatar de usuario.
-  - Implementación de la paleta Clean Canvas: lateral Slate claro (`#f8fafc`), acentos en Teal (`#26A69A`) y fondo celeste/ice mint pastel (`#edf6f7`).
+  - Implementación de la paleta solicitada: lateral #B2DFDB, logo transparente y tarjetas principales con degradados de izquierda a derecha.
+  - Creación del Asistente interactivo de "Nueva Propiedad" (`/propiedades/nueva`) con split porcentual de co-propietarios y tarjeta de Live Preview.
+  - Creación del catálogo de inmuebles administrados (`/propiedades`).
   - Verificación end-to-end con browser subagent en `http://localhost:3000` con 0 errores de consola y TypeScript estricto.
-- **Archivos creados/modificados:** `/Agent/*`, `/supabase/migrations/*`, `src/app/*`, `src/components/*`, `src/lib/*`, `src/types/*`, `public/Recursos/*`.
-- **Próximo paso:** Construir el asistente de creación de Nueva Propiedad o Nuevo Contrato / Carpeta.
+- **Archivos creados/modificados:** `src/components/layout/Sidebar.tsx`, `src/app/page.tsx`, `src/components/propiedades/NuevaPropiedadForm.tsx`, `src/app/propiedades/*`, `/Agent/*`.
+- **Próximo paso:** Construir el Asistente de "Nuevo Contrato / Carpeta" con motor de indexación dinámico (ICL/IPC/UVA).

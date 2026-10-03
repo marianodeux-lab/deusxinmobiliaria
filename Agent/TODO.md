@@ -18,8 +18,9 @@
 ---
 
 ## 👥 Fase 1: CRM Unificado y Gestión de Inmuebles
+- [x] Módulo Propiedades: Asistente interactivo de Nueva Propiedad con live preview y multi-titularidad con split %. ✅ (2026-10-03)
+- [x] Catálogo de Propiedades con unidades funcionales y propietarios asignados con %. ✅ (2026-10-03)
 - [ ] Módulo Personas: CRUD rápido con autocompletado y validación de CUIT/DNI. ⏳
-- [ ] Módulo Propiedades: Catálogo de inmuebles, unidades funcionales (UF), destinos y propietarios asignados con %. ⏳
 - [ ] Búsqueda global tipo Spotlight / Command Palette (`Cmd+K`). ⏳
 
 ---
