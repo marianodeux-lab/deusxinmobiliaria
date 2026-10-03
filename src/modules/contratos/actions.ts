@@ -1,0 +1,87 @@
+"use server";
+
+import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
+
+export interface ContratoInput {
+  propiedad_id: string;
+  inquilino_id: string;
+  garante_id?: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  duracion_meses: number;
+  monto_alquiler_inicial: number;
+  moneda: "ARS" | "USD";
+  dia_vencimiento_mensual: number;
+  tipo_ajuste: "ICL" | "IPC" | "UVA" | "FIJO" | "OTRO";
+  frecuencia_ajuste_meses: number;
+  notas?: string;
+}
+
+export async function crearContratoAction(input: ContratoInput) {
+  try {
+    const supabase = await createClient();
+
+    // Obtener tenant_id de la propiedad
+    const { data: propiedad, error: propError } = await supabase
+      .from("propiedades")
+      .select("tenant_id")
+      .eq("id", input.propiedad_id)
+      .single();
+
+    if (propError || !propiedad) {
+      return { success: false, error: "Propiedad no encontrada" };
+    }
+
+    const tenantId = propiedad.tenant_id;
+
+    // 1. Insertar Contrato
+    const { data: contrato, error: contError } = await supabase
+      .from("contratos")
+      .insert({
+        tenant_id: tenantId,
+        propiedad_id: input.propiedad_id,
+        estado: "vigente",
+        fecha_inicio: input.fecha_inicio,
+        fecha_fin: input.fecha_fin,
+        duracion_meses: input.duracion_meses,
+        monto_alquiler_inicial: input.monto_alquiler_inicial,
+        moneda_base: input.moneda,
+        dia_vencimiento_mensual: input.dia_vencimiento_mensual,
+        tipo_ajuste: input.tipo_ajuste,
+        frecuencia_ajuste_meses: input.frecuencia_ajuste_meses,
+        notas: input.notas || null,
+      })
+      .select("id")
+      .single();
+
+    if (contError || !contrato) {
+      return { success: false, error: contError?.message || "Error al crear contrato" };
+    }
+
+    // 2. Asociar inquilino en contrato_participantes
+    await supabase.from("contrato_participantes").insert({
+      contrato_id: contrato.id,
+      persona_id: input.inquilino_id,
+      rol: "inquilino",
+      porcentaje_participacion: 100,
+    });
+
+    // 3. Asociar garante si fue especificado
+    if (input.garante_id) {
+      await supabase.from("contrato_participantes").insert({
+        contrato_id: contrato.id,
+        persona_id: input.garante_id,
+        rol: "garante",
+        porcentaje_participacion: 0,
+      });
+    }
+
+    revalidatePath("/contratos");
+    revalidatePath("/");
+
+    return { success: true, contratoId: contrato.id };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}

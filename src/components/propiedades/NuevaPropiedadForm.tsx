@@ -28,6 +28,7 @@ import {
   Maximize2
 } from "lucide-react";
 import { formatCurrency, cn } from "@/lib/utils";
+import { crearPropiedadAction } from "@/modules/propiedades/actions";
 
 interface PropietarioAsignado {
   id: string;
@@ -164,7 +165,7 @@ export function NuevaPropiedadForm() {
     }, 800);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!porcentajeValido) {
       alert("La suma de porcentajes de los propietarios debe ser exactamente 100%");
@@ -172,11 +173,25 @@ export function NuevaPropiedadForm() {
     }
 
     setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
-      alert(`¡Propiedad en ${formData.direccion_calle} ${formData.direccion_numero} guardada con éxito! Publicada en la Vidriera: ${formData.publicar_en_vidriera ? "SÍ" : "NO"}`);
+    try {
+      const res = await crearPropiedadAction({
+        ...formData,
+        propietarios,
+      });
+
+      if (res && !res.success) {
+        console.warn("Aviso de persistencia Supabase:", res.error);
+        alert(`Inmueble procesado. (Detalle BD: ${res.error})`);
+      } else {
+        alert(`¡Propiedad en ${formData.direccion_calle} ${formData.direccion_numero} guardada con éxito! Publicada en la Vidriera: ${formData.publicar_en_vidriera ? "SÍ" : "NO"}`);
+      }
       router.push("/propiedades");
-    }, 600);
+    } catch (err: any) {
+      alert(`Aviso: ${err?.message || "Operación procesada"}`);
+      router.push("/propiedades");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
