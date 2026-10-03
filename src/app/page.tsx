@@ -1,69 +1,104 @@
-import Image from "next/image";
+import React from "react";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { TopBar } from "@/components/layout/TopBar";
+import { ContratosHub } from "@/components/contratos/ContratosHub";
+import { 
+  FolderKanban, 
+  CircleDollarSign, 
+  Wallet, 
+  AlertCircle,
+  FileCheck2,
+  CalendarCheck
+} from "lucide-react";
 
-export default function Home() {
+export default function DashboardPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
+      {/* Sidebar fijo de navegación */}
+      <Sidebar />
+
+      {/* Área Principal de Trabajo */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        {/* Barra superior con cotizaciones e indicadores */}
+        <TopBar />
+
+        {/* Contenido Principal */}
+        <main className="flex-1 p-5 space-y-5 max-w-[1600px] w-full mx-auto">
+          {/* Métricas Operativas Clave (KPIs Anti-Fatiga) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            {/* KPI 1: Cobranzas Inquilinos */}
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-600">Cobranzas Octubre</span>
+                <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <CircleDollarSign className="w-4 h-4" />
+                </span>
+              </div>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="text-xl font-bold font-mono tabular-nums text-slate-900">$ 4.820.000</span>
+                <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">78%</span>
+              </div>
+              <div className="mt-1 text-[11px] text-slate-600">
+                10 de 12 cuotas percibidas
+              </div>
+            </div>
+
+            {/* KPI 2: Liquidaciones Pendientes */}
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-600">Fondos x Rendir a Dueños</span>
+                <span className="p-1.5 rounded-lg bg-amber-50 text-amber-700 border border-amber-200">
+                  <Wallet className="w-4 h-4" />
+                </span>
+              </div>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="text-xl font-bold font-mono tabular-nums text-slate-900">$ 1.950.000</span>
+                <span className="text-[11px] font-semibold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded">3 pendientes</span>
+              </div>
+              <div className="mt-1 text-[11px] text-slate-600">
+                Comisión estimada: <strong className="font-mono tabular-nums text-slate-800">$ 80.535</strong>
+              </div>
+            </div>
+
+            {/* KPI 3: Próximos Vencimientos */}
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-600">Vencen en 90 Días</span>
+                <span className="p-1.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200">
+                  <CalendarCheck className="w-4 h-4" />
+                </span>
+              </div>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="text-xl font-bold font-mono tabular-nums text-slate-900">2</span>
+                <span className="text-[11px] text-slate-600">Carpetas (#4, #6)</span>
+              </div>
+              <div className="mt-1 text-[11px] text-slate-600">
+                Iniciar propuesta de renovación
+              </div>
+            </div>
+
+            {/* KPI 4: Contratos en Mora */}
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-600">Mora Activa</span>
+                <span className="p-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200">
+                  <AlertCircle className="w-4 h-4" />
+                </span>
+              </div>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="text-xl font-bold font-mono tabular-nums text-rose-700">1</span>
+                <span className="text-[11px] font-semibold text-rose-800 bg-rose-50 px-1.5 py-0.5 rounded">8 días de atraso</span>
+              </div>
+              <div className="mt-1 text-[11px] text-slate-600">
+                Carpeta #6 (Punitorio: 0.1% diario)
+              </div>
+            </div>
+          </div>
+
+          {/* Hub Operativo Central de Contratos */}
+          <ContratosHub />
+        </main>
+      </div>
     </div>
   );
 }

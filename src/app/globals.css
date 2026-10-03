@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Paleta Anti-Fatiga Visual (Slate / Zinc Cálido) */
+    --background: #f8fafc; /* Slate 50 mate relajado */
+    --foreground: #0f172a; /* Slate 900 de alto contraste legible */
+    
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    
+    --primary: #1e293b; /* Slate 800 institucional */
+    --primary-foreground: #f8fafc;
+    
+    --secondary: #f1f5f9; /* Slate 100 */
+    --secondary-foreground: #1e293b;
+    
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b; /* Slate 500 */
+    
+    --accent: #e2e8f0;
+    --accent-foreground: #0f172a;
+    
+    /* Acentos Semánticos Pasteles Muted (WCAG AA) */
+    --status-active-bg: #ecfdf5;      /* Verde Salvia suave */
+    --status-active-text: #065f46;
+    --status-active-border: #a7f3d0;
+    
+    --status-warning-bg: #fffbeb;     /* Ámbar Arena suave */
+    --status-warning-text: #92400e;
+    --status-warning-border: #fde68a;
+    
+    --status-danger-bg: #fff1f2;      /* Rosa Terracota suave */
+    --status-danger-text: #9f1239;
+    --status-danger-border: #fecdd3;
+    
+    --status-info-bg: #f0f9ff;        /* Celeste Pizarra suave */
+    --status-info-text: #075985;
+    --status-info-border: #bae6fd;
+
+    --border: #e2e8f0; /* Slate 200 */
+    --input: #e2e8f0;
+    --ring: #94a3b8;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: #09090b; /* Zinc 950 profundo */
+    --foreground: #f4f4f5;
+    
+    --card: #18181b;       /* Zinc 900 */
+    --card-foreground: #f4f4f5;
+    
+    --popover: #18181b;
+    --popover-foreground: #f4f4f5;
+    
+    --primary: #f4f4f5;
+    --primary-foreground: #18181b;
+    
+    --secondary: #27272a;
+    --secondary-foreground: #f4f4f5;
+    
+    --muted: #27272a;
+    --muted-foreground: #a1a1aa;
+    
+    --accent: #27272a;
+    --accent-foreground: #f4f4f5;
+    
+    --status-active-bg: #064e3b33;
+    --status-active-text: #6ee7b7;
+    --status-active-border: #065f46;
+    
+    --status-warning-bg: #78350f33;
+    --status-warning-text: #fcd34d;
+    --status-warning-border: #92400e;
+    
+    --status-danger-bg: #88133733;
+    --status-danger-text: #fda4af;
+    --status-danger-border: #9f1239;
+    
+    --status-info-bg: #0c4a6e33;
+    --status-info-text: #7dd3fc;
+    --status-info-border: #075985;
+
+    --border: #27272a;
+    --input: #27272a;
+    --ring: #52525b;
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Alineación de cifras contables sin baile numérico */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scrollbars limpias para tablas densas */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #3f3f46;
 }
