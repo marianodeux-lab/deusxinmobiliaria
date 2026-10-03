@@ -2,9 +2,9 @@
 
 @layer base {
   :root {
-    /* Paleta Anti-Fatiga: Celeste Pastel Soberbio (Ice Slate / Soft Powder Blue) */
-    --background: #edf3f8; /* Celeste pastel relajante mate */
-    --foreground: #0f172a; /* Slate 900 de máxima legibilidad */
+    /* Paleta Clean Canvas Anti-Fatiga (Slate Cálido + Celeste/Teal Pastel) */
+    --background: #edf6f7; /* Celeste Pastel Muted muy suave y relajante (inspirado en #E0F2F1 / #E0F7FA) */
+    --foreground: #0f172a; /* Slate 900 de lectura nítida */
     
     --card: #ffffff;
     --card-foreground: #0f172a;
@@ -12,67 +12,71 @@
     --popover: #ffffff;
     --popover-foreground: #0f172a;
     
-    /* Azul Institucional Predominante */
-    --primary: #0f2744; /* Azul marino profundo */
-    --primary-foreground: #f0f9ff;
+    /* Acento Primario: Teal / Verde Petróleo de la Paleta Oficial (#26A69A) */
+    --primary: #26a69a;
+    --primary-foreground: #ffffff;
     
-    --secondary: #e2eaf2;
-    --secondary-foreground: #0f2744;
+    /* Acento de Marca DeusX: Rojo Escarlata (#e51a2d) */
+    --brand-red: #e51a2d;
+    --brand-red-foreground: #ffffff;
     
-    --muted: #e2eaf2;
+    --secondary: #e0f2f1; /* Teal pastel muy suave */
+    --secondary-foreground: #00695c;
+    
+    --muted: #f1f5f9;
     --muted-foreground: #5a6e85;
     
-    --accent: #d8e5f3;
-    --accent-foreground: #0b1a30;
+    --accent: #dcf1f0;
+    --accent-foreground: #004d40;
     
     /* Acentos Semánticos Pasteles (WCAG AA) */
-    --status-active-bg: #ecfdf5;      /* Verde Salvia suave */
-    --status-active-text: #065f46;
-    --status-active-border: #a7f3d0;
+    --status-active-bg: #e8f5e9;      /* Verde Menta suave (#E8F5E9) */
+    --status-active-text: #1b5e20;
+    --status-active-border: #a5d6a7;
     
-    --status-warning-bg: #fffbeb;     /* Ámbar Arena suave */
-    --status-warning-text: #92400e;
-    --status-warning-border: #fde68a;
+    --status-warning-bg: #fffde7;     /* Ámbar Arena suave */
+    --status-warning-text: #f57f17;
+    --status-warning-border: #fff59d;
     
-    --status-danger-bg: #fff1f2;      /* Rosa Terracota suave */
-    --status-danger-text: #9f1239;
-    --status-danger-border: #fecdd3;
+    --status-danger-bg: #fce4ec;      /* Rosa Terracota de la paleta (#FCE4EC) */
+    --status-danger-text: #c2185b;
+    --status-danger-border: #f8bbd0;
     
-    --status-info-bg: #e0f2fe;        /* Celeste hielo suave */
-    --status-info-text: #0369a1;
-    --status-info-border: #bae6fd;
+    --status-info-bg: #e0f7fa;        /* Celeste Hielo (#E0F7FA) */
+    --status-info-text: #00838f;
+    --status-info-border: #80deea;
 
-    --border: #d4e2ee; /* Borde celeste tenue */
-    --input: #d4e2ee;
-    --ring: #38bdf8;
+    --border: #d2e4e8; /* Borde celeste grisáceo tenue */
+    --input: #d2e4e8;
+    --ring: #26a69a;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: #070d17; /* Marino noche ultra profundo */
-    --foreground: #f0f6fc;
+    --background: #0b1418;
+    --foreground: #f1f5f9;
     
-    --card: #0d1829;
-    --card-foreground: #f0f6fc;
+    --card: #121f24;
+    --card-foreground: #f1f5f9;
     
-    --popover: #0d1829;
-    --popover-foreground: #f0f6fc;
+    --popover: #121f24;
+    --popover-foreground: #f1f5f9;
     
-    --primary: #38bdf8;
-    --primary-foreground: #070d17;
+    --primary: #4db6ac;
+    --primary-foreground: #0b1418;
     
-    --secondary: #13233a;
-    --secondary-foreground: #f0f6fc;
+    --secondary: #1a2f36;
+    --secondary-foreground: #80cbc4;
     
-    --muted: #13233a;
-    --muted-foreground: #8fa6c1;
+    --muted: #1a2f36;
+    --muted-foreground: #7d9ba6;
     
-    --accent: #172c47;
-    --accent-foreground: #f0f6fc;
+    --accent: #233f48;
+    --accent-foreground: #f1f5f9;
     
-    --border: #1a3252;
-    --input: #1a3252;
-    --ring: #38bdf8;
+    --border: #1e353e;
+    --input: #1e353e;
+    --ring: #26a69a;
   }
 }
 

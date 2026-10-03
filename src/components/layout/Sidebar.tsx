@@ -17,8 +17,7 @@ import {
   CalendarDays,
   Building2,
   FileText,
-  Search,
-  Sparkles
+  Search
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +26,7 @@ interface NavItem {
   href: string;
   icon: React.ElementType;
   badge?: string | number;
-  badgeVariant?: "default" | "warning" | "danger" | "info";
+  badgeVariant?: "default" | "warning" | "danger" | "teal";
 }
 
 interface NavSection {
@@ -39,7 +38,7 @@ const NAVIGATION: NavSection[] = [
   {
     title: "ALQUILERES & OPERACIONES",
     items: [
-      { label: "Contratos (Carpetas)", href: "/contratos", icon: FolderKanban, badge: 12 },
+      { label: "Contratos (Carpetas)", href: "/contratos", icon: FolderKanban, badge: 12, badgeVariant: "teal" },
       { label: "Cobranzas (Inquilinos)", href: "/cobranzas", icon: Receipt },
       { label: "Liquidaciones (Dueños)", href: "/liquidaciones", icon: Wallet, badge: 3, badgeVariant: "warning" },
       { label: "Alquileres Temporarios", href: "/temporarios", icon: CalendarDays },
@@ -69,38 +68,45 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-[#0d1e38] text-slate-100 flex flex-col shrink-0 h-screen sticky top-0 select-none border-r border-[#1a3258]">
-      {/* Brand Header: DeusX Inmobiliarias */}
-      <div className="h-14 border-b border-[#1b345b] flex items-center px-4 gap-2.5 bg-[#091527]">
-        <div className="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-400/50 flex items-center justify-center font-black text-sky-400 text-sm shadow-xs">
-          DX
-        </div>
-        <div>
-          <span className="font-bold tracking-tight text-sm text-white">DeusX</span>
-          <span className="text-xs text-sky-300 font-semibold ml-1.5">Inmobiliarias</span>
-        </div>
+    <aside className="w-64 bg-slate-50/90 backdrop-blur-xs text-slate-700 flex flex-col shrink-0 h-screen sticky top-0 select-none border-r border-slate-200">
+      {/* Brand Header con Logo Oficial DeusX */}
+      <div className="h-16 border-b border-slate-200/90 flex items-center px-3.5 bg-white">
+        <Link href="/" className="flex items-center gap-2.5 w-full">
+          <div className="bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-2 shadow-2xs">
+            {/* Logo oficial DeusX */}
+            <img
+              src="/Recursos/DeusX.png"
+              alt="DeusX Logo"
+              className="h-6 w-auto object-contain"
+            />
+          </div>
+          <div className="leading-none">
+            <span className="text-[11px] font-bold text-slate-800 tracking-tight block">Inmobiliarias</span>
+            <span className="text-[9px] font-medium text-[#26a69a] block mt-0.5 font-mono">ERP PropTech</span>
+          </div>
+        </Link>
       </div>
 
       {/* Acceso Rápido / Búsqueda Global */}
-      <div className="p-3 border-b border-[#172c4c]">
-        <button className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-slate-300 bg-[#132644] hover:bg-[#1a3359] rounded-lg border border-[#1e3b68] transition-colors">
+      <div className="p-3 border-b border-slate-100 bg-white/40">
+        <button className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-slate-500 bg-white hover:bg-slate-100 rounded-lg border border-slate-200/90 shadow-2xs transition-colors">
           <span className="flex items-center gap-2">
-            <Search className="w-3.5 h-3.5 text-sky-400" />
+            <Search className="w-3.5 h-3.5 text-[#26a69a]" />
             <span className="truncate">Buscar carpeta o DNI...</span>
           </span>
-          <kbd className="px-1.5 py-0.5 text-[10px] bg-[#0b172a] text-slate-400 border border-[#274677] rounded font-mono">
+          <kbd className="px-1.5 py-0.5 text-[10px] bg-slate-100 text-slate-600 border border-slate-200 rounded font-mono">
             Ctrl+K
           </kbd>
         </button>
       </div>
 
-      {/* Botón de Alta Rápida */}
+      {/* Botón de Alta Rápida en Teal #26A69A */}
       <div className="px-3 pt-3">
         <Link
           href="/contratos/nuevo"
-          className="flex items-center justify-center gap-2 w-full py-2 px-3 text-xs font-bold text-slate-950 bg-sky-400 hover:bg-sky-300 rounded-lg shadow-sm transition-all active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 w-full py-2 px-3 text-xs font-semibold text-white bg-[#26a69a] hover:bg-[#1e8e84] rounded-lg shadow-2xs transition-all active:scale-[0.98]"
         >
-          <PlusCircle className="w-4 h-4 text-slate-950" />
+          <PlusCircle className="w-4 h-4 text-white" />
           <span>Nuevo Contrato / Carpeta</span>
         </Link>
       </div>
@@ -109,7 +115,7 @@ export function Sidebar() {
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
         {NAVIGATION.map((section) => (
           <div key={section.title} className="space-y-1">
-            <h4 className="px-2 text-[10px] font-bold text-sky-300/60 tracking-wider">
+            <h4 className="px-2 text-[10px] font-bold text-slate-400 tracking-wider">
               {section.title}
             </h4>
             <div className="space-y-0.5">
@@ -124,8 +130,8 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all group",
                       isActive
-                        ? "bg-sky-500/20 text-sky-200 font-semibold border-l-2 border-sky-400 shadow-2xs"
-                        : "text-slate-300 hover:text-white hover:bg-white/5"
+                        ? "bg-[#e0f2f1] text-[#00695c] font-semibold border-l-3 border-[#26a69a] shadow-2xs"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
                     )}
                   >
                     <span className="flex items-center gap-2.5">
@@ -133,8 +139,8 @@ export function Sidebar() {
                         className={cn(
                           "w-4 h-4 transition-colors",
                           isActive
-                            ? "text-sky-300"
-                            : "text-slate-400 group-hover:text-slate-200"
+                            ? "text-[#00695c]"
+                            : "text-slate-400 group-hover:text-slate-700"
                         )}
                       />
                       <span>{item.label}</span>
@@ -145,10 +151,10 @@ export function Sidebar() {
                         className={cn(
                           "px-1.5 py-0.2 rounded-full text-[10px] font-mono tabular-nums font-bold",
                           item.badgeVariant === "warning"
-                            ? "bg-amber-400/20 text-amber-300 border border-amber-400/30"
+                            ? "bg-amber-100 text-amber-800 border border-amber-200"
                             : item.badgeVariant === "danger"
-                            ? "bg-rose-400/20 text-rose-300 border border-rose-400/30"
-                            : "bg-sky-400/20 text-sky-300 border border-sky-400/30"
+                            ? "bg-rose-100 text-rose-800 border border-rose-200"
+                            : "bg-[#e0f2f1] text-[#00695c] border border-[#80cbc4]"
                         )}
                       >
                         {item.badge}
@@ -163,13 +169,13 @@ export function Sidebar() {
       </nav>
 
       {/* Footer Info / Estado del Sistema */}
-      <div className="p-3 border-t border-[#172c4c] bg-[#091527]">
-        <div className="flex items-center justify-between text-[11px] text-slate-400">
+      <div className="p-3 border-t border-slate-200/80 bg-white/50">
+        <div className="flex items-center justify-between text-[11px] text-slate-500">
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-slate-300 font-medium">RLS Supabase Activo</span>
+            <span className="w-2 h-2 rounded-full bg-[#26a69a] animate-pulse"></span>
+            <span className="text-slate-700 font-medium">Supabase RLS Activo</span>
           </span>
-          <span className="font-mono text-[10px] text-slate-500">v0.1.0</span>
+          <span className="font-mono text-[10px] text-slate-400">v0.1.0</span>
         </div>
       </div>
     </aside>
