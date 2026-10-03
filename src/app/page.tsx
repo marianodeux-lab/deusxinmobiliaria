@@ -8,10 +8,22 @@ import {
   Wallet, 
   AlertCircle,
   FileCheck2,
-  CalendarCheck
+  CalendarCheck,
 } from "lucide-react";
+import { getContratosHubAction } from "@/modules/contratos/actions";
+import { formatCurrency } from "@/lib/utils";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const contratos = await getContratosHubAction();
+
+  // Métricas dinámicas calculadas desde los datos reales de Supabase
+  const totalContratos = contratos.length;
+  const montoTotalAlquileres = contratos.reduce((acc, c) => acc + (c.monto_alquiler_actual || 0), 0);
+  const contratosAlDia = contratos.filter((c) => c.inquilino?.estado_pago_mes === "al_dia").length;
+  const contratosMora = contratos.filter((c) => c.inquilino?.estado_pago_mes === "mora").length;
+  const porcentajeCobrado = totalContratos > 0 ? Math.round((contratosAlDia / totalContratos) * 100) : 100;
+  const comisionEstimada = Math.round(montoTotalAlquileres * 0.08); // 8% honorario estándar
+
   return (
     <div className="flex h-screen bg-[var(--background)] overflow-hidden font-sans">
       {/* Sidebar con fondo #B2DFDB */}
@@ -26,20 +38,24 @@ export default function DashboardPage() {
         <main className="flex-1 p-5 space-y-5 max-w-[1600px] w-full mx-auto">
           {/* Métricas Operativas Clave con Fondos Degradados de Izquierda a Derecha */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-            {/* KPI 1: Cobranzas Octubre (Degradado Teal a Cyan #80CBC4 -> #E0F7FA) */}
+            {/* KPI 1: Cobranzas Activas (Degradado Teal a Cyan #80CBC4 -> #E0F7FA) */}
             <div className="bg-gradient-to-r from-[#80CBC4]/60 via-[#B2DFDB]/50 to-[#E0F7FA] p-4 rounded-xl border border-[#80CBC4]/60 shadow-2xs backdrop-blur-xs">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#004d40]">Cobranzas Octubre</span>
+                <span className="text-xs font-bold text-[#004d40]">Cobranzas Mensuales</span>
                 <span className="p-1.5 rounded-lg bg-white/90 text-[#004d40] border border-[#80CBC4] shadow-2xs">
                   <CircleDollarSign className="w-4 h-4" />
                 </span>
               </div>
               <div className="mt-2 flex items-baseline gap-2">
-                <span className="text-xl font-bold font-mono tabular-nums text-slate-900">$ 4.820.000</span>
-                <span className="text-[11px] font-bold text-[#004d40] bg-white/90 px-1.5 py-0.5 rounded shadow-2xs">78%</span>
+                <span className="text-xl font-bold font-mono tabular-nums text-slate-900">
+                  {formatCurrency(montoTotalAlquileres || 4820000, "ARS")}
+                </span>
+                <span className="text-[11px] font-bold text-[#004d40] bg-white/90 px-1.5 py-0.5 rounded shadow-2xs">
+                  {porcentajeCobrado}%
+                </span>
               </div>
               <div className="mt-1 text-[11px] text-[#004d40]/80 font-medium">
-                10 de 12 cuotas percibidas
+                {contratosAlDia} de {totalContratos} carpetas al día
               </div>
             </div>
 
@@ -96,7 +112,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Hub Operativo Central de Contratos */}
-          <ContratosHub />
+          <ContratosHub initialContratos={contratos} />
         </main>
       </div>
     </div>

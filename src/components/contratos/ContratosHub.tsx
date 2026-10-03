@@ -224,14 +224,16 @@ const MOCK_CONTRATOS: ContratoItem[] = [
   },
 ];
 
-export function ContratosHub() {
+export function ContratosHub({ initialContratos }: { initialContratos?: ContratoItem[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<"todos" | "vigentes" | "por_vencer" | "mora">("todos");
   const [selectedContratoForCobro, setSelectedContratoForCobro] = useState<ContratoItem | null>(null);
 
+  const contratosData = initialContratos && initialContratos.length > 0 ? initialContratos : MOCK_CONTRATOS;
+
   // Filtrado reactivo de alta velocidad
   const filteredContratos = useMemo(() => {
-    return MOCK_CONTRATOS.filter((c) => {
+    return contratosData.filter((c) => {
       // Filtro texto
       const term = searchTerm.toLowerCase();
       const matchText =
