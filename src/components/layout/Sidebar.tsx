@@ -18,7 +18,9 @@ import {
   Building2,
   FileText,
   Search,
-  Globe
+  Globe,
+  Handshake,
+  ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +51,7 @@ const NAVIGATION: NavSection[] = [
     title: "GESTIÓN DE ACTIVOS & CRM",
     items: [
       { label: "Propiedades e Inmuebles", href: "/propiedades", icon: Building },
+      { label: "Red MLS DeusX", href: "/mls", icon: Handshake, badge: "B2B", badgeVariant: "teal" },
       { label: "CRM Personas", href: "/personas", icon: Users },
       { label: "Mantenimiento & Tickets", href: "/mantenimiento", icon: Wrench, badge: 1, badgeVariant: "danger" },
       { label: "Consorcios & Expensas", href: "/consorcios", icon: Building2 },
@@ -62,6 +65,7 @@ const NAVIGATION: NavSection[] = [
       { label: "Facturación & Caja AFIP", href: "/caja", icon: FileText },
       { label: "Reportes & Rendiciones", href: "/reportes", icon: FileSpreadsheet },
       { label: "Configuración Tenant", href: "/configuracion", icon: Settings },
+      { label: "SuperAdmin Cockpit", href: "/superadmin", icon: ShieldCheck, badge: "Master", badgeVariant: "warning" },
     ],
   },
 ];
