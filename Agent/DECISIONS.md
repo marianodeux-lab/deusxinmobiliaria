@@ -87,3 +87,19 @@ Este archivo documenta las decisiones técnicas y de arquitectura tomadas, sus f
     - Tabular figures obligatorias para números y monedas (`font-mono tabular-nums`) para evitar bailes de caracteres en columnas contables.
 - **Consecuencias:**
   - Interfaz sumamente relajada a la vista pero de alto contraste WCAG AA, que permite jornadas laborales prolongadas sin fatiga ocular.
+
+---
+
+### ADR-007: Vidriera Online Pública Multi-tenant y Soporte de Dominios NIC.ar (Custom Domains)
+- **Fecha:** 2026-10-03
+- **Estado:** Aceptado
+- **Contexto:** Cada inmobiliaria necesita publicar sus propiedades disponibles (venta, alquiler permanente, temporario) en su propia página web. Requieren: 
+  1) Un enlace automático por defecto dentro de la plataforma (ej: `app.deusxinmobiliarias.com/p/inmobiliaria-deus` o `inmobiliaria-deus.deusx.com.ar`).
+  2) La posibilidad de conectar su propio dominio de NIC.ar (ej: `www.deusinmobiliaria.com.ar`) mediante CNAME.
+- **Decisión:**
+  - **Enrutamiento por Middleware de Next.js:** Inspección del header `Host` en `middleware.ts`. Si la petición proviene de un dominio personalizado o subdominio, se reescribe internamente hacia la ruta pública `/portal/[tenant_slug]`.
+  - **Infraestructura Vercel Domains API:** Automatización del registro del CNAME y aprovisionamiento de certificados SSL automáticos de Let's Encrypt para los dominios de NIC.ar.
+  - **Aislamiento de Datos Públicos:** Las propiedades poseen una columna `publicar_en_vidriera: boolean` y `precio_publicacion_visible: boolean`. La consulta de la vidriera pública no expone datos sensibles de propietarios (DNI, CBU, honorarios de administración) y corre con caché ISR (Incremental Static Regeneration) para velocidad instantánea y SEO para Google / WhatsApp Cards (Open Graph).
+- **Consecuencias:**
+  - Escalabilidad infinita: 1 sola instancia de Next.js sirve los sitios web de cientos de inmobiliarias sin desplegar sitios separados.
+  - Gran valor comercial: permite ofrecer un tier "Pro" con dominio propio (`.com.ar`).

@@ -80,8 +80,11 @@
 
 ## 🔗 3. Rutas y Vistas del Sistema
 
-- `/` → Redirección inteligente al Dashboard o Login según estado de sesión.
-- `/contratos` → Grilla operativa principal (estilo SPOT/Deimos): Carpetas, Vencimiento, Dirección, Estado Cobranza, Estado Liquidación.
+- `/` → Hub Operativo Principal (KPIs en degradé suave, Cotizaciones en vivo, Tabla de Carpetas).
+- `/portal/[tenant_slug]` → Vidriera Online Pública de la inmobiliaria (catálogo, filtros, WhatsApp directo).
+- `/configuracion/vidriera` → Asistente de Vidriera Online y Vinculación de Dominio Propio NIC.ar (CNAME).
+- `/propiedades` y `/propiedades/nueva` → CRM Inmuebles, Co-titularidad con Honorarios (%) y Publicación Web con IA.
+- `/contratos/nuevo` → Asistente de Nueva Carpeta/Contrato con detección de dueños y proyección de índices.
 - `/cobranzas/nueva` → Flujo rápido (1-2 clics) para imputar pago de inquilino y disparar Recibo PDF / WhatsApp.
 - `/liquidaciones/pendientes` → Bandeja de fondos recaudados listos para rendir a propietarios con cálculo de honorarios automático.
 - `/mantenimiento` → Tablero Kanban o listado de averías con asignación a proveedores e imputación de gastos.

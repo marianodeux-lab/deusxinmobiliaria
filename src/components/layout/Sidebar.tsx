@@ -17,7 +17,8 @@ import {
   CalendarDays,
   Building2,
   FileText,
-  Search
+  Search,
+  Globe
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -56,6 +57,7 @@ const NAVIGATION: NavSection[] = [
   {
     title: "HERRAMIENTAS & CONTROL",
     items: [
+      { label: "Vidriera Online & Web", href: "/configuracion/vidriera", icon: Globe, badge: "NIC.ar", badgeVariant: "teal" },
       { label: "Índices (ICL / IPC / UVA)", href: "/indices", icon: LineChart },
       { label: "Facturación & Caja AFIP", href: "/caja", icon: FileText },
       { label: "Reportes & Rendiciones", href: "/reportes", icon: FileSpreadsheet },

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { 
   TrendingUp, 
   AlertCircle, 
@@ -8,7 +9,8 @@ import {
   UserCheck, 
   Bell, 
   Building2,
-  ChevronDown
+  ChevronDown,
+  Globe
 } from "lucide-react";
 
 interface MacroIndicatorProps {
@@ -46,8 +48,17 @@ export function TopBar() {
 
       {/* Alertas Operativas y Perfil del Tenant */}
       <div className="flex items-center gap-3 pl-4">
-        {/* Badges de Alerta Operativa */}
+        {/* Badges de Alerta Operativa & Vidriera Online */}
         <div className="hidden lg:flex items-center gap-2">
+          <Link
+            href="/portal/deus-propiedades"
+            target="_blank"
+            className="flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full bg-[#E0F2F1] text-[#004d40] hover:bg-[#B2DFDB] border border-[#80CBC4] transition-colors shadow-2xs"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#004d40]"></span>
+            <span>Mi Vidriera Online</span>
+          </Link>
+
           <button className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200/80 hover:bg-amber-100 transition-colors">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
             Liquidaciones Pendientes: <strong className="tabular-nums font-mono">3</strong>

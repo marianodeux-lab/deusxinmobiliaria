@@ -17,7 +17,15 @@ import {
   Check,
   Percent,
   Sparkles,
-  Info
+  Info,
+  Globe,
+  Wand2,
+  Eye,
+  ExternalLink,
+  MessageCircle,
+  Bed,
+  Bath,
+  Maximize2
 } from "lucide-react";
 import { formatCurrency, cn } from "@/lib/utils";
 
@@ -27,6 +35,7 @@ interface PropietarioAsignado {
   cuit: string;
   cbu_alias: string;
   porcentaje: number;
+  honorario_porcentual: number;
 }
 
 const PROPIETARIOS_MOCK = [
@@ -61,9 +70,20 @@ export function NuevaPropiedadForm() {
     superficie_cubierta: "",
     expensas_estimadas: "",
     notas: "",
+
+    // Publicación en Vidriera Web & Portales
+    publicar_en_vidriera: true,
+    operacion_web: "alquiler" as "alquiler" | "venta" | "temporal",
+    moneda_web: "ARS" as "ARS" | "USD",
+    precio_web: "420000",
+    mostrar_precio_web: true,
+    destacada_web: false,
+    titulo_web: "Moderno Departamento Luminoso",
+    descripcion_web: "Excelente unidad al contrafrente abierto, muy luminoso. Living comedor espacioso con cocina integrada, dormitorio con placard y baño completo.",
+    imagen_web: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
   });
 
-  // Lista de co-propietarios con split porcentual
+  // Lista de co-propietarios con split porcentual y honorario de administración (estilo SPOT)
   const [propietarios, setPropietarios] = useState<PropietarioAsignado[]>([
     {
       id: "p-1",
@@ -71,11 +91,14 @@ export function NuevaPropiedadForm() {
       cuit: "27-28495123-4",
       cbu_alias: "PAULA.PROPIEDADES",
       porcentaje: 100,
+      honorario_porcentual: 8,
     },
   ]);
 
   const [selectedPersonaId, setSelectedPersonaId] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [previewTab, setPreviewTab] = useState<"ficha" | "vidriera">("vidriera");
 
   // Cálculo de suma de porcentajes
   const totalPorcentaje = propietarios.reduce((acc, p) => acc + (Number(p.porcentaje) || 0), 0);
@@ -98,6 +121,7 @@ export function NuevaPropiedadForm() {
       {
         ...persona,
         porcentaje: nuevoPorcentaje,
+        honorario_porcentual: 8,
       },
     ]);
     setSelectedPersonaId("");
@@ -113,6 +137,33 @@ export function NuevaPropiedadForm() {
     );
   };
 
+  const handleHonorarioChange = (id: string, nuevoValor: number) => {
+    setPropietarios((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, honorario_porcentual: nuevoValor } : p))
+    );
+  };
+
+  // Generador de descripción comercial asistida por IA
+  const handleGenerateAIDescription = () => {
+    setIsGeneratingAI(true);
+    setTimeout(() => {
+      const tipo = formData.tipo_inmueble.charAt(0).toUpperCase() + formData.tipo_inmueble.slice(1);
+      const amb = `${formData.ambientes} ambientes`;
+      const op = formData.operacion_web === "alquiler" ? "alquiler permanente" : formData.operacion_web === "venta" ? "venta directa" : "alquiler temporario";
+      const ubi = `${formData.direccion_calle || "Ubicación destacada"} ${formData.direccion_numero || ""}, ${formData.localidad}`;
+
+      const nuevoTitulo = `${tipo} ${amb} en ${op === "venta directa" ? "Venta" : "Alquiler"} - ${formData.localidad}`;
+      const nuevaDesc = `Excelente oportunidad en ${op}. ${tipo} de ${amb} (${formData.dormitorios} dorm., ${formData.banios} baño) con vista abierta y gran luminosidad natural en ${ubi}. Living-comedor amplio, cocina funcional con amoblamientos de calidad.${formData.expensas_estimadas ? ` Bajas expensas estimadas en $ ${formData.expensas_estimadas}.` : ""} ¡Coordiná tu visita por WhatsApp!`;
+
+      setFormData((prev) => ({
+        ...prev,
+        titulo_web: nuevoTitulo,
+        descripcion_web: nuevaDesc,
+      }));
+      setIsGeneratingAI(false);
+    }, 800);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!porcentajeValido) {
@@ -123,18 +174,18 @@ export function NuevaPropiedadForm() {
     setIsSaving(true);
     setTimeout(() => {
       setIsSaving(false);
-      alert(`¡Propiedad en ${formData.direccion_calle} ${formData.direccion_numero} creada con éxito con ${propietarios.length} propietario(s)!`);
-      router.push("/");
+      alert(`¡Propiedad en ${formData.direccion_calle} ${formData.direccion_numero} guardada con éxito! Publicada en la Vidriera: ${formData.publicar_en_vidriera ? "SÍ" : "NO"}`);
+      router.push("/propiedades");
     }, 600);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-5xl mx-auto pb-12">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-6xl mx-auto pb-12">
       {/* Header con migas de pan y acciones */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
         <div className="flex items-center gap-3">
           <Link
-            href="/"
+            href="/propiedades"
             className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -142,17 +193,17 @@ export function NuevaPropiedadForm() {
           <div>
             <h1 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
               <Building className="w-5 h-5 text-[#26a69a]" />
-              Alta de Nueva Propiedad
+              Alta de Inmueble & Publicación Web
             </h1>
             <p className="text-xs text-slate-500">
-              Registrá el inmueble para su administración y asigná sus titulares
+              Registrá la propiedad, configurá los titulares y publicala en tu Vidriera Online
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           <Link
-            href="/"
+            href="/propiedades"
             className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
           >
             Cancelar
@@ -174,7 +225,7 @@ export function NuevaPropiedadForm() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Columna Izquierda: Formulario Principal (2 Columnas de ancho) */}
+        {/* Columna Izquierda: Formulario Principal (2 Columnas) */}
         <div className="lg:col-span-2 space-y-5">
           {/* Tarjeta 1: Ubicación & Identificación */}
           <div className="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
@@ -197,6 +248,7 @@ export function NuevaPropiedadForm() {
                 >
                   <option value="departamento">Departamento</option>
                   <option value="casa">Casa</option>
+                  <option value="ph">PH</option>
                   <option value="local">Local Comercial</option>
                   <option value="oficina">Oficina</option>
                   <option value="cochera">Cochera</option>
@@ -320,19 +372,19 @@ export function NuevaPropiedadForm() {
             </div>
           </div>
 
-          {/* Tarjeta 2: Multi-Titularidad (Propietarios y Splits %) */}
+          {/* Tarjeta 2: Co-Titularidad & Honorarios de Administración (Estilo SPOT) */}
           <div className="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-[#26a69a]" />
                 <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                  2. Co-Titularidad & Propietarios (Splits %)
+                  2. Co-Titularidad & Honorarios de Administración
                 </h2>
               </div>
 
               {/* Indicador de suma 100% */}
               <div className="flex items-center gap-2">
-                <span className="text-[11px] text-slate-500 font-medium">Total asignado:</span>
+                <span className="text-[11px] text-slate-500 font-medium">Split Total:</span>
                 <span
                   className={cn(
                     "px-2 py-0.5 rounded-full text-xs font-mono font-bold tabular-nums border",
@@ -377,12 +429,12 @@ export function NuevaPropiedadForm() {
               </button>
             </div>
 
-            {/* Listado de propietarios asignados con sliders o inputs de % */}
+            {/* Listado de propietarios asignados con split y honorarios % */}
             <div className="space-y-2.5">
               {propietarios.map((propietario) => (
                 <div
                   key={propietario.id}
-                  className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg shadow-2xs hover:border-slate-300 transition-colors"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-white border border-slate-200 rounded-lg shadow-2xs hover:border-slate-300 transition-colors gap-2"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-bold text-slate-800 truncate">
@@ -394,9 +446,10 @@ export function NuevaPropiedadForm() {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3 pl-3">
-                    <div className="flex items-center gap-1.5">
-                      <label className="text-[11px] text-slate-500 font-semibold">% Split:</label>
+                  <div className="flex items-center gap-3">
+                    {/* % Split titular */}
+                    <div className="flex items-center gap-1">
+                      <label className="text-[11px] text-slate-500 font-semibold">% Titular:</label>
                       <input
                         type="number"
                         min="1"
@@ -405,8 +458,26 @@ export function NuevaPropiedadForm() {
                         onChange={(e) =>
                           handlePorcentajeChange(propietario.id, Number(e.target.value))
                         }
-                        className="w-16 text-xs text-center font-mono font-bold bg-slate-50 border border-slate-300 rounded p-1.5 focus:ring-2 focus:ring-[#26a69a] outline-none"
+                        className="w-14 text-xs text-center font-mono font-bold bg-slate-50 border border-slate-300 rounded p-1.5 focus:ring-2 focus:ring-[#26a69a] outline-none"
                       />
+                    </div>
+
+                    {/* % Honorario de administración pactado */}
+                    <div className="flex items-center gap-1">
+                      <label className="text-[11px] text-slate-500 font-semibold">Hon. Inmob:</label>
+                      <div className="relative flex items-center">
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={propietario.honorario_porcentual}
+                          onChange={(e) =>
+                            handleHonorarioChange(propietario.id, Number(e.target.value))
+                          }
+                          className="w-14 text-xs text-center font-mono font-bold bg-slate-50 border border-slate-300 rounded p-1.5 pr-4 focus:ring-2 focus:ring-[#26a69a] outline-none"
+                        />
+                        <span className="absolute right-1 text-[10px] text-slate-400 font-mono">%</span>
+                      </div>
                     </div>
 
                     <button
@@ -426,7 +497,7 @@ export function NuevaPropiedadForm() {
             {!porcentajeValido && (
               <p className="text-xs text-rose-600 font-medium flex items-center gap-1.5">
                 <Info className="w-3.5 h-3.5" />
-                Para poder guardar, el porcentaje entre los titulares debe sumar exactamente 100%. (Actualmente suma {totalPorcentaje}%)
+                El porcentaje entre los titulares debe sumar exactamente 100%. (Actualmente suma {totalPorcentaje}%)
               </p>
             )}
           </div>
@@ -521,92 +592,301 @@ export function NuevaPropiedadForm() {
                 />
               </div>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Notas Privadas / Observaciones de Administración
+          {/* Tarjeta 4: Publicación en Vidriera Web & Portales (Superando SPOT "Publicación & I.A.") */}
+          <div className="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-[#26a69a]" />
+                <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                  4. Publicación en Vidriera Online & I.A.
+                </h2>
+              </div>
+
+              {/* Switch Publicar */}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <span className="text-xs font-bold text-slate-700">
+                  {formData.publicar_en_vidriera ? "Publicada en Web" : "Borrador Privado"}
+                </span>
+                <input
+                  type="checkbox"
+                  checked={formData.publicar_en_vidriera}
+                  onChange={(e) => handleInputChange("publicar_en_vidriera", e.target.checked)}
+                  className="w-4 h-4 accent-[#004d40] rounded"
+                />
               </label>
-              <textarea
-                rows={2}
-                placeholder="Ej: Llave del medidor en administración. El propietario solicita liquidaciones únicamente el día 15."
-                value={formData.notas}
-                onChange={(e) => handleInputChange("notas", e.target.value)}
-                className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-[#26a69a] outline-none"
-              />
             </div>
+
+            {formData.publicar_en_vidriera ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      Modalidad de Publicación *
+                    </label>
+                    <select
+                      value={formData.operacion_web}
+                      onChange={(e) => handleInputChange("operacion_web", e.target.value)}
+                      className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-[#26a69a] outline-none font-semibold text-slate-800"
+                    >
+                      <option value="alquiler">En Alquiler Permanente</option>
+                      <option value="venta">En Venta Directa</option>
+                      <option value="temporal">Alquiler Temporario</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      Moneda de Publicación
+                    </label>
+                    <select
+                      value={formData.moneda_web}
+                      onChange={(e) => handleInputChange("moneda_web", e.target.value)}
+                      className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-[#26a69a] outline-none font-mono"
+                    >
+                      <option value="ARS">Pesos Argentinos (ARS $)</option>
+                      <option value="USD">Dólares Estadounidenses (USD U$D)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      Precio de Publicación *
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="Ej: 450000 o 120000"
+                      value={formData.precio_web}
+                      onChange={(e) => handleInputChange("precio_web", e.target.value)}
+                      className="w-full text-xs font-mono font-bold bg-slate-50 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-[#26a69a] outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 text-xs">
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.mostrar_precio_web}
+                      onChange={(e) => handleInputChange("mostrar_precio_web", e.target.checked)}
+                      className="w-3.5 h-3.5 accent-[#004d40] rounded"
+                    />
+                    <span className="text-slate-700 font-medium">Mostrar precio al público</span>
+                  </label>
+
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.destacada_web}
+                      onChange={(e) => handleInputChange("destacada_web", e.target.checked)}
+                      className="w-3.5 h-3.5 accent-[#004d40] rounded"
+                    />
+                    <span className="text-slate-700 font-medium">Destacar en portada</span>
+                  </label>
+                </div>
+
+                {/* Título y Generador de IA */}
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-slate-700">
+                      Título Comercial Atractivo:
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleGenerateAIDescription}
+                      disabled={isGeneratingAI}
+                      className="flex items-center gap-1 text-[11px] font-bold text-[#004d40] hover:text-[#002d25] bg-[#E0F2F1] hover:bg-[#B2DFDB] px-2.5 py-1 rounded-md transition-colors"
+                    >
+                      <Wand2 className={cn("w-3 h-3 text-[#004d40]", isGeneratingAI && "animate-spin")} />
+                      <span>{isGeneratingAI ? "Generando con IA..." : "Redactar Ficha con IA"}</span>
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.titulo_web}
+                    onChange={(e) => handleInputChange("titulo_web", e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-[#26a69a] outline-none font-semibold text-slate-800"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Descripción Comercial para la Web:
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={formData.descripcion_web}
+                    onChange={(e) => handleInputChange("descripcion_web", e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-[#26a69a] outline-none"
+                  />
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs text-slate-500 italic p-3 bg-slate-50 rounded-lg border border-slate-200">
+                Esta propiedad se mantendrá como registro interno de administración. No será visible en el catálogo de tu Vidriera Online.
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Columna Derecha: Tarjeta de Vista Previa en Vivo (Live Preview) */}
+        {/* Columna Derecha: Vista Previa en Vivo (Live Preview Dual) */}
         <div className="space-y-4">
           <div className="sticky top-20 bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
-            <div className="flex items-center gap-1.5 border-b border-slate-100 pb-2.5">
-              <Sparkles className="w-4 h-4 text-[#26a69a]" />
-              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                Ficha del Inmueble (Vista Previa)
-              </h3>
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div className="flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-[#26a69a]" />
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                  Vista Previa
+                </h3>
+              </div>
+
+              {/* Selector de modo de vista previa */}
+              <div className="flex items-center bg-slate-100 p-0.5 rounded-lg text-[10px] font-bold">
+                <button
+                  type="button"
+                  onClick={() => setPreviewTab("vidriera")}
+                  className={cn(
+                    "px-2 py-1 rounded-md transition-colors",
+                    previewTab === "vidriera" ? "bg-white text-[#004d40] shadow-2xs" : "text-slate-500"
+                  )}
+                >
+                  Vidriera Web
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewTab("ficha")}
+                  className={cn(
+                    "px-2 py-1 rounded-md transition-colors",
+                    previewTab === "ficha" ? "bg-white text-[#004d40] shadow-2xs" : "text-slate-500"
+                  )}
+                >
+                  Ficha ERP
+                </button>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs">
-                <span className="text-[10px] font-extrabold text-[#004d40] bg-[#e0f2f1] px-2 py-0.5 rounded uppercase">
-                  {formData.tipo_inmueble} • {formData.destino}
+            {/* Render Preview */}
+            {previewTab === "vidriera" ? (
+              <div className="space-y-3">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Así se verá en tu catálogo online:
                 </span>
 
-                <h4 className="font-bold text-slate-900 text-sm mt-2">
-                  {formData.direccion_calle || "Dirección no especificada"}{" "}
-                  {formData.direccion_numero}
-                </h4>
-
-                {formData.piso_dpto && (
-                  <p className="text-slate-600 font-medium">Piso/Dpto: {formData.piso_dpto}</p>
-                )}
-
-                {formData.unidad_funcional && (
-                  <p className="text-slate-500 font-mono text-[11px]">{formData.unidad_funcional}</p>
-                )}
-
-                <p className="text-slate-500 mt-1">
-                  {formData.localidad}, {formData.provincia}
-                </p>
-              </div>
-
-              {/* Características rápidas */}
-              <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600">
-                <div className="p-2 bg-slate-50 rounded border border-slate-100">
-                  <span className="text-slate-400 block text-[10px]">Ambientes</span>
-                  <strong className="text-slate-800">{formData.ambientes} Amb.</strong>
-                </div>
-                <div className="p-2 bg-slate-50 rounded border border-slate-100">
-                  <span className="text-slate-400 block text-[10px]">Expensas</span>
-                  <strong className="text-slate-800">
-                    {formData.expensas_estimadas ? `$ ${formData.expensas_estimadas}` : "Sin expensas"}
-                  </strong>
-                </div>
-              </div>
-
-              {/* Propietarios y splits */}
-              <div>
-                <h5 className="text-[11px] font-bold text-slate-700 mb-1.5">
-                  Titulares Asignados ({propietarios.length}):
-                </h5>
-                <div className="space-y-1.5">
-                  {propietarios.map((p) => (
-                    <div
-                      key={p.id}
-                      className="text-xs p-2 bg-[#f0f9f8] rounded border border-[#b2dfdb] flex justify-between items-center"
-                    >
-                      <span className="font-semibold text-slate-800 truncate max-w-[150px]">
-                        {p.nombre}
+                <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+                  <div className="relative h-36 w-full bg-slate-100 overflow-hidden">
+                    <img
+                      src={formData.imagen_web}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2 left-2 flex gap-1">
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wide text-white bg-[#004d40] shadow-xs">
+                        {formData.operacion_web === "alquiler"
+                          ? "En Alquiler"
+                          : formData.operacion_web === "venta"
+                          ? "En Venta"
+                          : "Temporario"}
                       </span>
-                      <span className="font-mono font-bold text-[#004d40]">
-                        {p.porcentaje}%
+                      {formData.destacada_web && (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-400 text-slate-950 shadow-xs">
+                          Destacada
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="p-3 space-y-2">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-base font-black font-mono text-slate-900">
+                        {formData.mostrar_precio_web && formData.precio_web
+                          ? formatCurrency(Number(formData.precio_web), formData.moneda_web)
+                          : "Consultar Precio"}
+                      </span>
+                      {formData.expensas_estimadas && (
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          Exp. $ {formData.expensas_estimadas}
+                        </span>
+                      )}
+                    </div>
+
+                    <h4 className="font-bold text-slate-900 text-xs line-clamp-1">
+                      {formData.titulo_web || "Sin título comercial"}
+                    </h4>
+
+                    <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-[#26a69a]" />
+                      <span>{formData.direccion_calle || "Calle"} {formData.direccion_numero}, {formData.localidad}</span>
+                    </p>
+
+                    <div className="pt-2 border-t border-slate-100 grid grid-cols-3 gap-1 text-[10px] text-slate-600">
+                      <span className="flex items-center gap-1">
+                        <Bed className="w-3 h-3 text-slate-400" />
+                        <span>{formData.dormitorios} Dorm.</span>
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Bath className="w-3 h-3 text-slate-400" />
+                        <span>{formData.banios} Baño(s)</span>
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Maximize2 className="w-3 h-3 text-slate-400" />
+                        <span>{formData.superficie_total || "--"} m²</span>
                       </span>
                     </div>
-                  ))}
+
+                    <div className="pt-2">
+                      <div className="w-full flex items-center justify-center gap-1.5 py-1.5 px-2 text-[11px] font-bold text-[#004d40] bg-[#e0f2f1] rounded-lg">
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        <span>Consultar por WhatsApp</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-3">
+                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs">
+                  <span className="text-[10px] font-extrabold text-[#004d40] bg-[#e0f2f1] px-2 py-0.5 rounded uppercase">
+                    {formData.tipo_inmueble} • {formData.destino}
+                  </span>
+
+                  <h4 className="font-bold text-slate-900 text-sm mt-2">
+                    {formData.direccion_calle || "Dirección no especificada"}{" "}
+                    {formData.direccion_numero}
+                  </h4>
+
+                  {formData.piso_dpto && (
+                    <p className="text-slate-600 font-medium">Piso/Dpto: {formData.piso_dpto}</p>
+                  )}
+
+                  <p className="text-slate-500 mt-1">
+                    {formData.localidad}, {formData.provincia}
+                  </p>
+                </div>
+
+                <div>
+                  <h5 className="text-[11px] font-bold text-slate-700 mb-1.5">
+                    Titulares ({propietarios.length}):
+                  </h5>
+                  <div className="space-y-1.5">
+                    {propietarios.map((p) => (
+                      <div
+                        key={p.id}
+                        className="text-xs p-2 bg-[#f0f9f8] rounded border border-[#b2dfdb] flex justify-between items-center"
+                      >
+                        <span className="font-semibold text-slate-800 truncate max-w-[130px]">
+                          {p.nombre}
+                        </span>
+                        <div className="text-right font-mono text-[10px]">
+                          <span className="font-bold text-[#004d40] block">{p.porcentaje}% Titular</span>
+                          <span className="text-slate-500 block">Hon: {p.honorario_porcentual}%</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="pt-2 border-t border-slate-100">
               <button
