@@ -103,3 +103,27 @@ Este archivo documenta las decisiones técnicas y de arquitectura tomadas, sus f
 - **Consecuencias:**
   - Escalabilidad infinita: 1 sola instancia de Next.js sirve los sitios web de cientos de inmobiliarias sin desplegar sitios separados.
   - Gran valor comercial: permite ofrecer un tier "Pro" con dominio propio (`.com.ar`).
+
+---
+
+### ADR-008: Red MLS Colaborativa Inter-Inmobiliarias (Propiedades Compartidas y Reverse Matching)
+- **Fecha:** 2026-10-03
+- **Estado:** Aceptado
+- **Contexto:** Las inmobiliarias suelen perder operaciones por falta de inventario propio para un cliente demandante, o propiedades estancadas por falta de compradores. Se descarta el concepto "Marketplace" B2C para adoptar el estándar profesional internacional MLS (Multiple Listing Service).
+- **Decisión:**
+  - **Propiedades Compartidas (Co-brokering):** Atributo opcional `compartir_en_red_mls: boolean` y `comision_compartida_porcentaje: numeric` (por defecto 50%). Los colegas de la red pueden consultar el catálogo compartido y generar fichas neutras o coordinar visitas.
+  - **Búsquedas Activas (Reverse Matching):** Tabla `mls_busquedas_activas` donde una inmobiliaria publica una demanda insatisfecha. Un motor de matching en tiempo real sugiere coincidencias con inmuebles de otros tenants de la zona.
+- **Consecuencias:**
+  - Creación de un fuerte *Network Effect*: cuanto más crece la red de DeusX Inmobiliarias, mayor valor percibe cada suscriptor y menor es la tasa de cancelación (churn).
+
+---
+
+### ADR-009: Panel SuperAdmin de Gobierno y Licencias SaaS (Patrón Deus Gestión)
+- **Fecha:** 2026-10-03
+- **Estado:** Aceptado
+- **Contexto:** Mariano requiere gobernar de forma centralizada todas las licencias de inmobiliarias, planes de suscripción, facturación de cuotas, márgenes netos y consumos de infraestructura de nube (PostgreSQL, Storage, Vercel).
+- **Decisión:**
+  - Se implementa el módulo `/superadmin` protegido por rol de sistema (`role: 'superadmin'`).
+  - Reutilización del exitoso modelo de gestión financiera y de cuotas de Deus Gestión: Dashboard de MRR/ARR, matriz de planes (Estándar, Pro, Enterprise), control de estados de cuenta (Vigente, Prueba, Vencido, Suspendido) y métricas de cuotas de nube.
+- **Consecuencias:**
+  - Control total del negocio SaaS desde un único panel administrativo. Operaciones de congelamiento o reactivación de licencias en un clic.
