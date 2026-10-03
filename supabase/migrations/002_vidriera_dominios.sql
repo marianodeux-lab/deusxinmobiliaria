@@ -15,8 +15,14 @@ ALTER TABLE public.tenants
   ADD COLUMN IF NOT EXISTS logo_publico_url text,
   ADD COLUMN IF NOT EXISTS matricula_profesional text;
 
--- 2. Campos de Publicación Web en propiedades
+-- 2. Campos de Publicación Web y Características en propiedades
 ALTER TABLE public.propiedades
+  ADD COLUMN IF NOT EXISTS ambientes integer DEFAULT 2,
+  ADD COLUMN IF NOT EXISTS dormitorios integer DEFAULT 1,
+  ADD COLUMN IF NOT EXISTS banios integer DEFAULT 1,
+  ADD COLUMN IF NOT EXISTS cocheras integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS superficie_total numeric(10,2),
+  ADD COLUMN IF NOT EXISTS expensas_estimadas numeric(12,2),
   ADD COLUMN IF NOT EXISTS publicar_en_vidriera boolean DEFAULT true,
   ADD COLUMN IF NOT EXISTS operacion_web text CHECK (operacion_web IN ('alquiler', 'venta', 'temporal')) DEFAULT 'alquiler',
   ADD COLUMN IF NOT EXISTS moneda_web text CHECK (moneda_web IN ('ARS', 'USD')) DEFAULT 'ARS',
