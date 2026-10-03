@@ -67,7 +67,7 @@ export function TopBar() {
             DX
           </div>
           <div className="text-left hidden sm:block">
-            <p className="text-xs font-semibold text-slate-800 leading-tight">Deus Inmobiliaria</p>
+            <p className="text-xs font-semibold text-slate-800 leading-tight">DeusX Inmobiliarias</p>
             <p className="text-[10px] text-slate-600 leading-tight">Mariano (Administrador)</p>
           </div>
           <ChevronDown className="w-3.5 h-3.5 text-slate-600" />

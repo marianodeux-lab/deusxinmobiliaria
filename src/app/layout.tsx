@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DeusX Inmobiliaria | ERP SaaS PropTech",
+  title: "DeusX Inmobiliarias | ERP SaaS PropTech",
   description: "Plataforma integral de gestión de alquileres, cobranzas, liquidaciones y contratos inmobiliarios.",
 };
 

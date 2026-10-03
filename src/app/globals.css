@@ -2,9 +2,9 @@
 
 @layer base {
   :root {
-    /* Paleta Anti-Fatiga Visual (Slate / Zinc Cálido) */
-    --background: #f8fafc; /* Slate 50 mate relajado */
-    --foreground: #0f172a; /* Slate 900 de alto contraste legible */
+    /* Paleta Anti-Fatiga: Celeste Pastel Soberbio (Ice Slate / Soft Powder Blue) */
+    --background: #edf3f8; /* Celeste pastel relajante mate */
+    --foreground: #0f172a; /* Slate 900 de máxima legibilidad */
     
     --card: #ffffff;
     --card-foreground: #0f172a;
@@ -12,19 +12,20 @@
     --popover: #ffffff;
     --popover-foreground: #0f172a;
     
-    --primary: #1e293b; /* Slate 800 institucional */
-    --primary-foreground: #f8fafc;
+    /* Azul Institucional Predominante */
+    --primary: #0f2744; /* Azul marino profundo */
+    --primary-foreground: #f0f9ff;
     
-    --secondary: #f1f5f9; /* Slate 100 */
-    --secondary-foreground: #1e293b;
+    --secondary: #e2eaf2;
+    --secondary-foreground: #0f2744;
     
-    --muted: #f1f5f9;
-    --muted-foreground: #64748b; /* Slate 500 */
+    --muted: #e2eaf2;
+    --muted-foreground: #5a6e85;
     
-    --accent: #e2e8f0;
-    --accent-foreground: #0f172a;
+    --accent: #d8e5f3;
+    --accent-foreground: #0b1a30;
     
-    /* Acentos Semánticos Pasteles Muted (WCAG AA) */
+    /* Acentos Semánticos Pasteles (WCAG AA) */
     --status-active-bg: #ecfdf5;      /* Verde Salvia suave */
     --status-active-text: #065f46;
     --status-active-border: #a7f3d0;
@@ -37,57 +38,41 @@
     --status-danger-text: #9f1239;
     --status-danger-border: #fecdd3;
     
-    --status-info-bg: #f0f9ff;        /* Celeste Pizarra suave */
-    --status-info-text: #075985;
+    --status-info-bg: #e0f2fe;        /* Celeste hielo suave */
+    --status-info-text: #0369a1;
     --status-info-border: #bae6fd;
 
-    --border: #e2e8f0; /* Slate 200 */
-    --input: #e2e8f0;
-    --ring: #94a3b8;
+    --border: #d4e2ee; /* Borde celeste tenue */
+    --input: #d4e2ee;
+    --ring: #38bdf8;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: #09090b; /* Zinc 950 profundo */
-    --foreground: #f4f4f5;
+    --background: #070d17; /* Marino noche ultra profundo */
+    --foreground: #f0f6fc;
     
-    --card: #18181b;       /* Zinc 900 */
-    --card-foreground: #f4f4f5;
+    --card: #0d1829;
+    --card-foreground: #f0f6fc;
     
-    --popover: #18181b;
-    --popover-foreground: #f4f4f5;
+    --popover: #0d1829;
+    --popover-foreground: #f0f6fc;
     
-    --primary: #f4f4f5;
-    --primary-foreground: #18181b;
+    --primary: #38bdf8;
+    --primary-foreground: #070d17;
     
-    --secondary: #27272a;
-    --secondary-foreground: #f4f4f5;
+    --secondary: #13233a;
+    --secondary-foreground: #f0f6fc;
     
-    --muted: #27272a;
-    --muted-foreground: #a1a1aa;
+    --muted: #13233a;
+    --muted-foreground: #8fa6c1;
     
-    --accent: #27272a;
-    --accent-foreground: #f4f4f5;
+    --accent: #172c47;
+    --accent-foreground: #f0f6fc;
     
-    --status-active-bg: #064e3b33;
-    --status-active-text: #6ee7b7;
-    --status-active-border: #065f46;
-    
-    --status-warning-bg: #78350f33;
-    --status-warning-text: #fcd34d;
-    --status-warning-border: #92400e;
-    
-    --status-danger-bg: #88133733;
-    --status-danger-text: #fda4af;
-    --status-danger-border: #9f1239;
-    
-    --status-info-bg: #0c4a6e33;
-    --status-info-text: #7dd3fc;
-    --status-info-border: #075985;
-
-    --border: #27272a;
-    --input: #27272a;
-    --ring: #52525b;
+    --border: #1a3252;
+    --input: #1a3252;
+    --ring: #38bdf8;
   }
 }
 

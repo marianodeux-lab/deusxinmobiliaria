@@ -13,7 +13,7 @@ import {
 
 export default function DashboardPage() {
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
+    <div className="flex h-screen bg-[var(--background)] overflow-hidden font-sans">
       {/* Sidebar fijo de navegación */}
       <Sidebar />
 
