@@ -78,14 +78,12 @@ Este archivo documenta las decisiones técnicas y de arquitectura tomadas, sus f
 - **Estado:** Aceptado
 - **Contexto:** Los operadores y empleados inmobiliarios pasan entre 6 y 9 horas consecutivas frente a pantallas cargando contratos, recibos y liquidaciones. Los fondos blancos puros (`#ffffff`) causan deslumbramiento y fatiga ocular severa, mientras que los contrastes extremos o colores chillones generan rechazo y errores visuales en cifras numéricas.
 - **Decisión:**
-  - **Paleta Neutra Base:** Escala de grises Slate/Zinc cálidos (`bg-slate-50` o `bg-zinc-100` en modo claro con tarjetas en blanco roto o zinc-50; modo oscuro en `zinc-900` / `slate-950`).
-  - **Acentos Semánticos en Tonos Pasteles Muted:**
-    - Verde Salvia suave (`emerald-100` / `emerald-700` text): Al día / Cobrado / Vigente.
-    - Ámbar Cálido suave (`amber-100` / `amber-800` text): Próximo a vencer / Pendiente de cobro / En revisión.
-    - Rosa Terracota / Coral apagado (`rose-100` / `rose-800` text): Vencido / Mora / Reclamo urgente.
-    - Azul Pizarra suave (`sky-100` / `slate-700` text): Carpetas / Expedientes / Información general.
+  - **Estilo Clean Canvas:** Lateral en Gris Claro Cálido (Slate #f8fafc / #f1f5f9) que unifica la pantalla como un solo lienzo aireado, eliminando la sensación pesada y encajonada de las barras oscuras.
+  - **Acento Primario Oficial (Teal / Verde Petróleo #26A69A):** Seleccionado por psicología del color (estabilidad financiera, patrimonio, calma y balance). Se utiliza en ítems activos (`#e0f2f1`), botones de acción clave y métricas.
+  - **Fondo de Pantalla:** Celeste Pastel Suave / Ice Mint (`#edf6f7`), inspirado en los tonos `#E0F2F1` y `#E0F7FA` de la paleta oficial, libre de deslumbramiento y fatiga visual.
+  - **Acento de Marca DeusX:** Incorporación del logo oficial con la "X" escarlata/roja (`#e51a2d`) y gris grafito (`#4a4a4a`) en cápsula oscura de alto contraste.
   - **Tipografía y Legibilidad de Datos:**
-    - Fuente tipográfica moderna y nítida (`Geist` o `Inter`).
+    - Fuente tipográfica moderna y nítida (`Geist`).
     - Tabular figures obligatorias para números y monedas (`font-mono tabular-nums`) para evitar bailes de caracteres en columnas contables.
 - **Consecuencias:**
   - Interfaz sumamente relajada a la vista pero de alto contraste WCAG AA, que permite jornadas laborales prolongadas sin fatiga ocular.

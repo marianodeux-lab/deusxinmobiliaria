@@ -68,46 +68,54 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-slate-50/90 backdrop-blur-xs text-slate-700 flex flex-col shrink-0 h-screen sticky top-0 select-none border-r border-slate-200">
-      {/* Brand Header con Logo Oficial DeusX */}
-      <div className="h-16 border-b border-slate-200/90 flex items-center px-3.5 bg-white">
-        <Link href="/" className="flex items-center gap-2.5 w-full">
-          <div className="bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-2 shadow-2xs">
-            {/* Logo oficial DeusX */}
+    <aside className="w-64 bg-[#B2DFDB] text-slate-800 flex flex-col shrink-0 h-screen sticky top-0 select-none border-r border-[#80CBC4]">
+      {/* Brand Header con Logo Oficial DeusX (Fondo transparente, sin negro) */}
+      <div className="h-16 border-b border-[#80CBC4]/80 flex items-center px-4 bg-transparent">
+        <Link href="/" className="flex items-center gap-2 w-full group">
+          {/* Logo transparente sin fondo negro */}
+          <div className="flex items-center drop-shadow-[0_1px_1px_rgba(0,77,64,0.4)]">
             <img
               src="/Recursos/DeusX.png"
-              alt="DeusX Logo"
-              className="h-6 w-auto object-contain"
+              alt="DeusX Inmobiliarias"
+              className="h-7 w-auto object-contain"
             />
           </div>
-          <div className="leading-none">
-            <span className="text-[11px] font-bold text-slate-800 tracking-tight block">Inmobiliarias</span>
-            <span className="text-[9px] font-medium text-[#26a69a] block mt-0.5 font-mono">ERP PropTech</span>
+          <div className="leading-none ml-1">
+            <span className="text-[12px] font-extrabold text-[#004d40] tracking-tight block">Inmobiliarias</span>
+            <span className="text-[9px] font-bold text-[#00796b] block font-mono">ERP PropTech</span>
           </div>
         </Link>
       </div>
 
       {/* Acceso Rápido / Búsqueda Global */}
-      <div className="p-3 border-b border-slate-100 bg-white/40">
-        <button className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-slate-500 bg-white hover:bg-slate-100 rounded-lg border border-slate-200/90 shadow-2xs transition-colors">
+      <div className="p-3 border-b border-[#80CBC4]/60">
+        <button className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-[#004d40] bg-white/70 hover:bg-white rounded-lg border border-[#80CBC4] shadow-2xs transition-colors">
           <span className="flex items-center gap-2">
-            <Search className="w-3.5 h-3.5 text-[#26a69a]" />
+            <Search className="w-3.5 h-3.5 text-[#004d40]" />
             <span className="truncate">Buscar carpeta o DNI...</span>
           </span>
-          <kbd className="px-1.5 py-0.5 text-[10px] bg-slate-100 text-slate-600 border border-slate-200 rounded font-mono">
+          <kbd className="px-1.5 py-0.5 text-[10px] bg-[#E0F2F1] text-[#004d40] border border-[#80CBC4] rounded font-mono">
             Ctrl+K
           </kbd>
         </button>
       </div>
 
-      {/* Botón de Alta Rápida en Teal #26A69A */}
-      <div className="px-3 pt-3">
+      {/* Botones de Alta Rápida: Nueva Propiedad & Nuevo Contrato */}
+      <div className="px-3 pt-3 space-y-1.5">
+        <Link
+          href="/propiedades/nueva"
+          className="flex items-center justify-center gap-2 w-full py-2 px-3 text-xs font-bold text-white bg-[#004d40] hover:bg-[#00332c] rounded-lg shadow-xs transition-all active:scale-[0.98]"
+        >
+          <Building className="w-4 h-4 text-white" />
+          <span>+ Nueva Propiedad</span>
+        </Link>
+
         <Link
           href="/contratos/nuevo"
-          className="flex items-center justify-center gap-2 w-full py-2 px-3 text-xs font-semibold text-white bg-[#26a69a] hover:bg-[#1e8e84] rounded-lg shadow-2xs transition-all active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 w-full py-1.5 px-3 text-xs font-semibold text-[#004d40] bg-white/80 hover:bg-white border border-[#80CBC4] rounded-lg shadow-2xs transition-all active:scale-[0.98]"
         >
-          <PlusCircle className="w-4 h-4 text-white" />
-          <span>Nuevo Contrato / Carpeta</span>
+          <PlusCircle className="w-3.5 h-3.5 text-[#004d40]" />
+          <span>+ Nuevo Contrato</span>
         </Link>
       </div>
 
@@ -115,7 +123,7 @@ export function Sidebar() {
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
         {NAVIGATION.map((section) => (
           <div key={section.title} className="space-y-1">
-            <h4 className="px-2 text-[10px] font-bold text-slate-400 tracking-wider">
+            <h4 className="px-2 text-[10px] font-extrabold text-[#004d40]/75 tracking-wider uppercase">
               {section.title}
             </h4>
             <div className="space-y-0.5">
@@ -128,10 +136,10 @@ export function Sidebar() {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all group",
+                      "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all group",
                       isActive
-                        ? "bg-[#e0f2f1] text-[#00695c] font-semibold border-l-3 border-[#26a69a] shadow-2xs"
-                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
+                        ? "bg-white text-[#004d40] shadow-xs border-l-4 border-[#004d40]"
+                        : "text-[#004d40] hover:bg-white/50 hover:text-[#002d25]"
                     )}
                   >
                     <span className="flex items-center gap-2.5">
@@ -139,8 +147,8 @@ export function Sidebar() {
                         className={cn(
                           "w-4 h-4 transition-colors",
                           isActive
-                            ? "text-[#00695c]"
-                            : "text-slate-400 group-hover:text-slate-700"
+                            ? "text-[#004d40]"
+                            : "text-[#004d40]/80 group-hover:text-[#004d40]"
                         )}
                       />
                       <span>{item.label}</span>
@@ -151,10 +159,10 @@ export function Sidebar() {
                         className={cn(
                           "px-1.5 py-0.2 rounded-full text-[10px] font-mono tabular-nums font-bold",
                           item.badgeVariant === "warning"
-                            ? "bg-amber-100 text-amber-800 border border-amber-200"
+                            ? "bg-amber-100 text-amber-900 border border-amber-300"
                             : item.badgeVariant === "danger"
-                            ? "bg-rose-100 text-rose-800 border border-rose-200"
-                            : "bg-[#e0f2f1] text-[#00695c] border border-[#80cbc4]"
+                            ? "bg-rose-100 text-rose-900 border border-rose-300"
+                            : "bg-white text-[#004d40] border border-[#80CBC4]"
                         )}
                       >
                         {item.badge}
@@ -169,13 +177,13 @@ export function Sidebar() {
       </nav>
 
       {/* Footer Info / Estado del Sistema */}
-      <div className="p-3 border-t border-slate-200/80 bg-white/50">
-        <div className="flex items-center justify-between text-[11px] text-slate-500">
-          <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#26a69a] animate-pulse"></span>
-            <span className="text-slate-700 font-medium">Supabase RLS Activo</span>
+      <div className="p-3 border-t border-[#80CBC4]/80 bg-transparent">
+        <div className="flex items-center justify-between text-[11px] text-[#004d40]">
+          <span className="flex items-center gap-1.5 font-medium">
+            <span className="w-2 h-2 rounded-full bg-[#004d40] animate-pulse"></span>
+            <span>Supabase RLS Activo</span>
           </span>
-          <span className="font-mono text-[10px] text-slate-400">v0.1.0</span>
+          <span className="font-mono text-[10px] text-[#004d40]/70 font-semibold">v0.1.0</span>
         </div>
       </div>
     </aside>
