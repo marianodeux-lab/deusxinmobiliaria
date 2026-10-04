@@ -58,3 +58,11 @@
 - [x] Housekeeping Board: Control de limpieza de unidades (Limpio, Sucio post check-out, En limpieza, Inspeccionado). ✅ (2026-10-03)
 - [x] Generador de Voucher de Estadía con código PIN de cerradura electrónica y envío por WhatsApp. ✅ (2026-10-03)
 
+---
+
+## 🏢 Fase 7: Consorcios & Liquidación de Expensas
+- [x] Hub de Consorcios & Expensas (`/consorcios`): Desglose automático de Expensas Ordinarias (Inquilino) y Extraordinarias / Fondo de Reserva (Propietario). ✅ (2026-10-04)
+- [x] Directorio de Edificios/Consorcios con CUIT, datos de Administración y cuentas bancarias (CBU / Alias). ✅ (2026-10-04)
+- [x] Envío de comprobantes y avisos de vencimiento por WhatsApp con cálculo de 1er y 2do vencimiento con recargo. ✅ (2026-10-04)
+
+
