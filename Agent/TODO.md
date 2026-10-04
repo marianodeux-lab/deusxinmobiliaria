@@ -65,4 +65,19 @@
 - [x] Directorio de Edificios/Consorcios con CUIT, datos de Administración y cuentas bancarias (CBU / Alias). ✅ (2026-10-04)
 - [x] Envío de comprobantes y avisos de vencimiento por WhatsApp con cálculo de 1er y 2do vencimiento con recargo. ✅ (2026-10-04)
 
+---
+
+## 📈 Fase 8: Índices Económicos & Motor de Indexación
+- [x] Hub de Índices Oficiales (`/indices`): Series históricas de ICL (BCRA), IPC (INDEC), UVA y cotizaciones USD Oficial/Blue. ✅ (2026-10-04)
+- [x] Calculadora de Indexación: Coeficiente multiplicador, variación %, nuevo valor locativo y notificación preformateada. ✅ (2026-10-04)
+- [x] Aplicador de ajuste en 1 clic a contratos y devengamientos exigibles en `/cobranzas`. ✅ (2026-10-04)
+
+---
+
+## 💵 Fase 9: Facturación AFIP / ARCA & Caja Diaria
+- [x] Hub de Facturación & Caja (`/caja`): Libro diario de arqueo de tesorería (Efectivo ARS, Transferencias y Dólares físicos). ✅ (2026-10-04)
+- [x] Emisión de Facturas Electrónicas AFIP con asignación de CAE de 14 dígitos, vencimiento y Punto de Venta 0004. ✅ (2026-10-04)
+- [x] Generador de Comprobante Fiscal Oficial con código QR RG 4291/2018 verificable ante ARCA/AFIP y envío por WhatsApp. ✅ (2026-10-04)
+
+
 

@@ -32,6 +32,7 @@
 │   │   │   ├── temporarios/       # Hub de alquileres temporarios, ocupación y vouchers
 │   │   │   ├── consorcios/        # Liquidación de expensas, edificios y prorrateo
 │   │   │   ├── indices/           # Cotizaciones y series ICL / IPC / UVA / USD
+│   │   │   ├── caja/              # Facturación AFIP WSFE, comprobantes QR y caja diaria
 │   │   │   └── configuracion/     # Parámetros del tenant, talonarios y usuarios
 │   │   ├── api/                   # Route Handlers específicos (webhooks, cron jobs)
 │   │   └── layout.tsx
