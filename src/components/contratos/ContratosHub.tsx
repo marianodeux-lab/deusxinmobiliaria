@@ -342,7 +342,7 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#16171C] border-b border-[#262831] text-[11px] font-bold text-slate-400 tracking-wider uppercase">
+              <tr className="bg-[#101115] border-b border-[#262832] text-[11px] font-bold text-slate-100 tracking-wider uppercase">
                 <th className="py-3 px-3 text-center min-w-[5.5rem] w-24">Carpeta</th>
                 <th className="py-3 px-4 w-44">Vence / Vigencia</th>
                 <th className="py-3 px-4">Inmueble / Dirección</th>

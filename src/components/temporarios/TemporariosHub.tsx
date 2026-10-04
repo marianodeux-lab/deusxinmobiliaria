@@ -226,7 +226,7 @@ export function TemporariosHub({
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
         <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#262832] shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Unidades Temporarias</span>
+            <span className="text-xs font-semibold text-slate-200">Unidades Temporarias</span>
             <div className="w-7 h-7 rounded-lg bg-[#141519] border border-[#262832] flex items-center justify-center text-[#34D399]">
               <Home className="w-4 h-4" />
             </div>
@@ -234,7 +234,7 @@ export function TemporariosHub({
           <div className="text-2xl font-black text-white mt-2 font-mono">
             {kpis.totalPropiedadesTemporales}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             Departamentos y casas activas
           </div>
         </div>
@@ -355,11 +355,11 @@ export function TemporariosHub({
           </div>
 
           {/* Tabla de Reservas */}
-          <div className="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+          <div className="bg-[#1C1D23] rounded-xl border border-[#262832] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/75 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  <tr className="bg-[#101115] border-b border-[#262832] text-[11px] font-bold text-slate-100 uppercase tracking-wider">
                     <th className="py-3 px-4">Huésped & Origen</th>
                     <th className="py-3 px-4">Propiedad Temporal</th>
                     <th className="py-3 px-4">Fechas & Noches</th>

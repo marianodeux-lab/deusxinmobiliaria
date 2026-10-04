@@ -166,77 +166,77 @@ export function ConsorciosHub({
 
       {/* KPI METRIC CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#262832] shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Edificios / Consorcios</span>
-            <div className="w-7 h-7 rounded-lg bg-teal-50 flex items-center justify-center text-[#004d40]">
+            <span className="text-xs font-semibold text-slate-200">Edificios / Consorcios</span>
+            <div className="w-7 h-7 rounded-lg bg-[#141519] border border-[#262832] flex items-center justify-center text-[#34D399]">
               <Building2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-800 mt-2 font-mono">
+          <div className="text-2xl font-black text-white mt-2 font-mono">
             {kpis.totalConsorcios}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             {kpis.unidadesAdministradas} unidades funcionales
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Total Expensas Mes</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-700">
+            <span className="text-xs font-semibold text-[#A7F3D0]">Total Expensas Mes</span>
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] border border-[#10B981]/40 flex items-center justify-center text-[#34D399]">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-emerald-700 mt-2 font-mono">
+          <div className="text-xl font-black text-[#34D399] mt-2 font-mono">
             ${kpis.totalExpensasMes.toLocaleString("es-AR")}
           </div>
-          <div className="text-[11px] text-emerald-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Total emitido para el período
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-purple-500/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Ordinarias (Inquilinos)</span>
-            <div className="w-7 h-7 rounded-lg bg-purple-50 flex items-center justify-center text-purple-700">
+            <span className="text-xs font-semibold text-purple-200">Ordinarias (Inquilinos)</span>
+            <div className="w-7 h-7 rounded-lg bg-purple-950/60 border border-purple-700/50 flex items-center justify-center text-purple-300">
               <User className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-purple-700 mt-2 font-mono">
+          <div className="text-xl font-black text-purple-300 mt-2 font-mono">
             ${kpis.ordinariasInquilinos.toLocaleString("es-AR")}
           </div>
-          <div className="text-[11px] text-purple-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             Gastos habituales y servicios
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-amber-500/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Extraordinarias (Dueños)</span>
-            <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center text-amber-700">
+            <span className="text-xs font-semibold text-amber-200">Extraordinarias (Dueños)</span>
+            <div className="w-7 h-7 rounded-lg bg-amber-950/60 border border-amber-700/50 flex items-center justify-center text-amber-300">
               <Building className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-amber-700 mt-2 font-mono">
+          <div className="text-xl font-black text-amber-300 mt-2 font-mono">
             ${kpis.extraordinariasPropietarios.toLocaleString("es-AR")}
           </div>
-          <div className="text-[11px] text-amber-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             Fondo de reserva y mejoras
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs col-span-2 md:col-span-1">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#2DD4BF]/30 shadow-sm col-span-2 md:col-span-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Cobranza de Expensas</span>
-            <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+            <span className="text-xs font-semibold text-[#99F6E4]">Cobranza de Expensas</span>
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] border border-[#2DD4BF]/40 flex items-center justify-center text-[#2DD4BF]">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-blue-700 mt-2 font-mono">
+          <div className="text-2xl font-black text-[#2DD4BF] mt-2 font-mono">
             {kpis.tasaCobranzaExpensas}%
           </div>
-          <div className="text-[11px] text-blue-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             Efectividad de recaudación
           </div>
         </div>
@@ -246,7 +246,7 @@ export function ConsorciosHub({
       {activeTab === "expensas" && (
         <div className="space-y-4">
           {/* Barra de Filtros */}
-          <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs flex flex-col md:flex-row gap-3 items-center justify-between">
+          <div className="bg-[#1C1D23] p-3.5 rounded-xl border border-[#262832] shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
             <div className="relative w-full md:w-96">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
@@ -298,11 +298,11 @@ export function ConsorciosHub({
           </div>
 
           {/* Tabla de Expensas */}
-          <div className="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+          <div className="bg-[#1C1D23] rounded-xl border border-[#262832] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/75 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  <tr className="bg-[#101115] border-b border-[#262832] text-[11px] font-bold text-slate-100 uppercase tracking-wider">
                     <th className="py-3 px-4">Inmueble / Consorcio</th>
                     <th className="py-3 px-4">Carpeta & Inquilino</th>
                     <th className="py-3 px-4">Ordinarias (Inquilino)</th>
@@ -421,60 +421,60 @@ export function ConsorciosHub({
           {consorcios.map((c) => (
             <div
               key={c.id}
-              className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-5 space-y-4 hover:border-teal-300 transition-all"
+              className="bg-[#1C1D23] rounded-xl border border-[#262832] shadow-sm p-5 space-y-4 hover:border-[#10B981]/50 transition-all"
             >
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center justify-between border-b border-[#262832] pb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-lg bg-teal-50 text-[#004d40]">
+                  <div className="p-2 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40">
                     <Building className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-sm text-slate-800">{c.nombre}</h3>
-                    <p className="text-xs text-slate-500 font-medium">
+                    <h3 className="font-extrabold text-sm text-white">{c.nombre}</h3>
+                    <p className="text-xs text-slate-300 font-medium">
                       {c.direccion} · {c.localidad}
                     </p>
                   </div>
                 </div>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E0F2F1] text-[#004d40] border border-[#80CBC4]">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#00382E] text-[#34D399] border border-[#10B981]/40">
                   {c.unidades_count} Unidades
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                <div className="p-2.5 rounded-lg bg-[#141519] border border-[#262832]">
+                  <span className="text-[10px] uppercase font-bold text-slate-300 block">
                     Administración
                   </span>
-                  <span className="font-bold text-slate-800 block mt-0.5">{c.administrador}</span>
+                  <span className="font-bold text-white block mt-0.5">{c.administrador}</span>
                   {c.telefono_admin && (
-                    <span className="text-[11px] text-slate-500 flex items-center gap-1 mt-1">
+                    <span className="text-[11px] text-slate-300 flex items-center gap-1 mt-1">
                       <Phone className="w-3 h-3 text-slate-400" /> {c.telefono_admin}
                     </span>
                   )}
                 </div>
 
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                <div className="p-2.5 rounded-lg bg-[#141519] border border-[#262832]">
+                  <span className="text-[10px] uppercase font-bold text-slate-300 block">
                     Cuenta Pago Expensas
                   </span>
-                  <span className="font-bold text-slate-800 block mt-0.5">{c.banco}</span>
-                  <span className="text-[11px] font-mono text-[#004d40] font-bold mt-1 block">
+                  <span className="font-bold text-white block mt-0.5">{c.banco}</span>
+                  <span className="text-[11px] font-mono text-[#34D399] font-bold mt-1 block">
                     Alias: {c.cbu_alias}
                   </span>
                 </div>
               </div>
 
               <div>
-                <span className="text-[11px] font-bold text-slate-500 uppercase block mb-1.5">
+                <span className="text-[11px] font-bold text-slate-200 uppercase block mb-1.5">
                   Unidades Funcionales Vinculadas
                 </span>
                 <div className="space-y-1">
                   {c.propiedades_vinculadas.map((p, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between text-xs px-2.5 py-1.5 bg-slate-50 rounded border border-slate-100"
+                      className="flex items-center justify-between text-xs px-2.5 py-1.5 bg-[#141519] rounded border border-[#262832]"
                     >
-                      <span className="font-medium text-slate-700">{p.direccion}</span>
+                      <span className="font-medium text-slate-200">{p.direccion}</span>
                       <span className="font-mono text-[10px] text-slate-400">
                         {p.unidad_funcional || "U.F."} ({p.piso_dpto || "P.B."})
                       </span>

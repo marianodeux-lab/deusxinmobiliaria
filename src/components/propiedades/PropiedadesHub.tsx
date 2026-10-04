@@ -509,11 +509,11 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
         </div>
       ) : (
         /* VISTA TABLA DETALLADA */
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="bg-[#1C1D23] rounded-2xl border border-[#262832] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
+                <tr className="bg-[#101115] border-b border-[#262832] text-slate-100 font-bold uppercase tracking-wider text-[11px]">
                   <th className="py-3 px-4">Inmueble / Domicilio</th>
                   <th className="py-3 px-4">Tipo & Destino</th>
                   <th className="py-3 px-4">Amb / Dorm / Sup</th>

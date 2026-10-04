@@ -163,29 +163,48 @@ main .hover\:bg-slate-200:hover {
   background-color: #242630 !important;
 }
 
-/* Tipografías nítidas anti-fatiga */
+/* Tipografías nítidas anti-fatiga de alto contraste */
+main h1, main h2, main h3, main h4, main h5, main h6,
+[role="dialog"] h1, [role="dialog"] h2, [role="dialog"] h3, [role="dialog"] h4, [role="dialog"] h5, [role="dialog"] h6,
+.card-title, .card-header {
+  color: #FFFFFF !important;
+}
+
 main .text-slate-900,
 main .text-slate-800,
 [role="dialog"] .text-slate-900,
 [role="dialog"] .text-slate-800 {
-  color: #f8fafc !important;
+  color: #FFFFFF !important;
 }
 
 main .text-slate-700,
 [role="dialog"] .text-slate-700 {
-  color: #e2e8f0 !important;
+  color: #F8FAFC !important;
 }
 
 main .text-slate-600,
+[role="dialog"] .text-slate-600 {
+  color: #F1F5F9 !important;
+}
+
 main .text-slate-500,
-[role="dialog"] .text-slate-600,
 [role="dialog"] .text-slate-500 {
-  color: #94a3b8 !important;
+  color: #E2E8F0 !important;
 }
 
 main .text-slate-400,
 [role="dialog"] .text-slate-400 {
-  color: #818a99 !important;
+  color: #CBD5E1 !important; /* Silver suave de alto contraste y descansado para ojos */
+}
+
+main .text-slate-300,
+[role="dialog"] .text-slate-300 {
+  color: #E2E8F0 !important;
+}
+
+main label,
+[role="dialog"] label {
+  color: #F1F5F9 !important;
 }
 
 /* =========================================================
@@ -286,20 +305,38 @@ main .divide-slate-100 > * + * {
   border-color: #242630 !important;
 }
 
-/* Cabeceras de tabla */
-main thead {
+/* Cabeceras de tabla de alto contraste y legibilidad */
+main thead,
+table thead {
   background-color: #101115 !important;
-  border-bottom-color: #242630 !important;
+  border-bottom: 1px solid #262832 !important;
 }
 
-main th {
-  color: #94a3b8 !important;
+main thead tr,
+table thead tr {
+  background-color: #101115 !important;
+  border-bottom: 1px solid #262832 !important;
+}
+
+main thead th,
+main th,
+table thead th,
+table th,
+.table-header {
+  color: #F1F5F9 !important; /* Blanco suave Slate-100 para lectura nítida sin brillo excesivo */
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+}
+
+main thead th *,
+main th * {
+  color: inherit;
 }
 
 /* Botones secundarios */
 main .bg-slate-100 {
   background-color: #141519 !important;
-  color: #94a3b8 !important;
+  color: #E2E8F0 !important;
   border-color: #262832 !important;
 }
 

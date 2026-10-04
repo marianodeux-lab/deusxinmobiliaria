@@ -272,11 +272,11 @@ export function PersonasHub({ initialItems, initialKpis }: PersonasHubProps) {
       </div>
 
       {/* 4. TABLA DIRECTORIO DE PERSONAS */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+      <div className="bg-[#1C1D23] rounded-2xl border border-[#262832] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
+              <tr className="bg-[#101115] border-b border-[#262832] text-slate-100 font-bold uppercase tracking-wider text-[11px]">
                 <th className="py-3 px-4">Nombre / Razón Social</th>
                 <th className="py-3 px-4">Documento</th>
                 <th className="py-3 px-4">Roles en Sistema</th>

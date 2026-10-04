@@ -186,77 +186,77 @@ export function IndicesHub({
 
       {/* KPI METRIC CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">ICL (BCRA)</span>
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+            <span className="text-xs font-semibold text-[#A7F3D0]">ICL (BCRA)</span>
+            <span className="text-[10px] font-bold text-[#34D399] bg-[#00382E] px-1.5 py-0.5 rounded border border-[#10B981]/40">
               +{kpis.iclVariacionInteranual}% i.a.
             </span>
           </div>
-          <div className="text-2xl font-black text-slate-800 mt-2 font-mono">
+          <div className="text-2xl font-black text-white mt-2 font-mono">
             {kpis.iclUltimo.toFixed(2)}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             Índice Contratos de Locación
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#2DD4BF]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">IPC (INDEC)</span>
-            <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+            <span className="text-xs font-semibold text-[#99F6E4]">IPC (INDEC)</span>
+            <span className="text-[10px] font-bold text-[#2DD4BF] bg-[#00382E] px-1.5 py-0.5 rounded border border-[#2DD4BF]/40">
               +{kpis.ipcVariacionMensual}% m/m
             </span>
           </div>
-          <div className="text-2xl font-black text-blue-700 mt-2 font-mono">
+          <div className="text-2xl font-black text-[#2DD4BF] mt-2 font-mono">
             {kpis.ipcUltimo.toFixed(1)}
           </div>
-          <div className="text-[11px] text-blue-600/80 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             Inflación Minorista Oficial
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">UVA (BCRA)</span>
-            <div className="w-6 h-6 rounded-lg bg-teal-50 flex items-center justify-center text-[#004d40]">
+            <span className="text-xs font-semibold text-[#A7F3D0]">UVA (BCRA)</span>
+            <div className="w-6 h-6 rounded-lg bg-[#00382E] border border-[#10B981]/40 flex items-center justify-center text-[#34D399]">
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-800 mt-2 font-mono">
+          <div className="text-2xl font-black text-white mt-2 font-mono">
             ${kpis.uvaUltimo.toFixed(2)}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             Unidad de Valor Adquisitivo
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Dólar Oficial / Blue</span>
-            <div className="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-700">
+            <span className="text-xs font-semibold text-[#A7F3D0]">Dólar Oficial / Blue</span>
+            <div className="w-6 h-6 rounded-lg bg-[#00382E] border border-[#10B981]/40 flex items-center justify-center text-[#34D399]">
               <DollarSign className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="text-lg font-black text-slate-800 mt-2 font-mono flex items-baseline gap-1">
+          <div className="text-lg font-black text-white mt-2 font-mono flex items-baseline gap-1">
             ${kpis.usdOficial} <span className="text-xs text-slate-400">/</span> ${kpis.usdBlue}
           </div>
-          <div className="text-[11px] text-emerald-600 mt-0.5">
+          <div className="text-[11px] text-[#34D399] mt-0.5 font-medium">
             Brecha: {Math.round(((kpis.usdBlue - kpis.usdOficial) / kpis.usdOficial) * 100)}%
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs col-span-2 md:col-span-1">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-amber-500/30 shadow-sm col-span-2 md:col-span-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Ajustes Requeridos</span>
-            <div className="w-6 h-6 rounded-lg bg-amber-50 flex items-center justify-center text-amber-700">
+            <span className="text-xs font-semibold text-amber-200">Ajustes Requeridos</span>
+            <div className="w-6 h-6 rounded-lg bg-amber-950/60 border border-amber-700/50 flex items-center justify-center text-amber-300">
               <AlertTriangle className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="text-2xl font-black text-amber-700 mt-2 font-mono">
+          <div className="text-2xl font-black text-amber-300 mt-2 font-mono">
             {kpis.contratosPendientesAjuste} Carpetas
           </div>
-          <div className="text-[11px] text-amber-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             Período cumplido para actualizar
           </div>
         </div>
@@ -476,11 +476,11 @@ export function IndicesHub({
             </span>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+          <div className="bg-[#1C1D23] rounded-xl border border-[#262832] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/75 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  <tr className="bg-[#101115] border-b border-[#262832] text-[11px] font-bold text-slate-100 uppercase tracking-wider">
                     <th className="py-3 px-4">Carpeta & Inmueble</th>
                     <th className="py-3 px-4">Inquilino</th>
                     <th className="py-3 px-4">Índice & Frecuencia</th>
@@ -595,8 +595,8 @@ export function IndicesHub({
 
           <div className="overflow-x-auto max-h-[500px]">
             <table className="w-full text-left border-collapse">
-              <thead className="sticky top-0 bg-slate-100 z-10">
-                <tr className="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <thead className="sticky top-0 bg-[#101115] z-10">
+                <tr className="border-b border-[#262832] text-[11px] font-bold text-slate-100 uppercase tracking-wider">
                   <th className="py-2.5 px-4">Índice</th>
                   <th className="py-2.5 px-4">Fecha de Publicación</th>
                   <th className="py-2.5 px-4">Valor Registrado</th>

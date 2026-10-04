@@ -216,9 +216,9 @@ export function SuperAdminDashboard({ initialData }: { initialData: SuperAdminMe
       </div>
 
       {/* Tabla de Inmobiliarias Suscriptas */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="bg-[#1C1D23] rounded-xl border border-[#262832] shadow-sm overflow-hidden">
         {/* Barra de Filtros */}
-        <div className="p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-slate-50/50">
+        <div className="p-4 border-b border-[#262832] flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#141519]">
           <div className="flex-1 relative max-w-md">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
@@ -258,7 +258,7 @@ export function SuperAdminDashboard({ initialData }: { initialData: SuperAdminMe
         {/* Tabla Responsive */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
-            <thead className="bg-slate-100/70 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[10px]">
+            <thead className="bg-[#101115] border-b border-[#262832] text-slate-100 font-bold uppercase tracking-wider text-[11px]">
               <tr>
                 <th className="py-3 px-4">Inmobiliaria / Cliente</th>
                 <th className="py-3 px-4">CUIT & Contacto</th>

@@ -174,84 +174,84 @@ export function MantenimientoHub({
 
       {/* KPI METRIC CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#262832] shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Tickets Activos</span>
-            <div className="w-7 h-7 rounded-lg bg-teal-50 flex items-center justify-center text-[#004d40]">
+            <span className="text-xs font-semibold text-slate-200">Tickets Activos</span>
+            <div className="w-7 h-7 rounded-lg bg-[#141519] border border-[#262832] flex items-center justify-center text-[#34D399]">
               <Wrench className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-800 mt-2 font-mono">
+          <div className="text-2xl font-black text-white mt-2 font-mono">
             {kpis.abiertos + kpis.enCurso}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             {kpis.abiertos} por iniciar · {kpis.enCurso} en curso
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#2DD4BF]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">En Reparación</span>
-            <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+            <span className="text-xs font-semibold text-[#99F6E4]">En Reparación</span>
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] border border-[#2DD4BF]/40 flex items-center justify-center text-[#2DD4BF]">
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-blue-700 mt-2 font-mono">
+          <div className="text-2xl font-black text-[#2DD4BF] mt-2 font-mono">
             {kpis.enCurso}
           </div>
-          <div className="text-[11px] text-blue-600/80 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Con técnico asignado
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-rose-500/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Urgencias Críticas</span>
-            <div className="w-7 h-7 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
+            <span className="text-xs font-semibold text-rose-300">Urgencias Críticas</span>
+            <div className="w-7 h-7 rounded-lg bg-rose-950/60 border border-rose-700/50 flex items-center justify-center text-rose-400">
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-rose-600 mt-2 font-mono">
+          <div className="text-2xl font-black text-rose-300 mt-2 font-mono">
             {kpis.urgentes}
           </div>
-          <div className="text-[11px] text-rose-500 mt-0.5">
+          <div className="text-[11px] text-rose-200/80 mt-0.5">
             Requieren atención prioritaria
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Costo Operativo Total</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-700">
+            <span className="text-xs font-semibold text-[#A7F3D0]">Costo Operativo Total</span>
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] border border-[#10B981]/40 flex items-center justify-center text-[#34D399]">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-emerald-700 mt-2 font-mono">
+          <div className="text-xl font-black text-[#34D399] mt-2 font-mono">
             ${kpis.costoTotalMes.toLocaleString("es-AR")}
           </div>
-          <div className="text-[11px] text-emerald-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Presupuestado y ejecutado
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs col-span-2 md:col-span-1">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-amber-500/30 shadow-sm col-span-2 md:col-span-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Retención Propietarios</span>
-            <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center text-amber-700">
+            <span className="text-xs font-semibold text-amber-200">Retención Propietarios</span>
+            <div className="w-7 h-7 rounded-lg bg-amber-950/60 border border-amber-700/50 flex items-center justify-center text-amber-300">
               <Building className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-amber-700 mt-2 font-mono">
+          <div className="text-xl font-black text-amber-300 mt-2 font-mono">
             ${kpis.deduciblesPropietario.toLocaleString("es-AR")}
           </div>
-          <div className="text-[11px] text-amber-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             A descontar en rendición
           </div>
         </div>
       </div>
 
       {/* BARRA DE FILTROS & BÚSQUEDA */}
-      <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs flex flex-col md:flex-row gap-3 items-center justify-between">
+      <div className="bg-[#1C1D23] p-3.5 rounded-xl border border-[#262832] shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
         <div className="relative w-full md:w-96">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -353,11 +353,11 @@ export function MantenimientoHub({
         </div>
       ) : (
         /* VISTA 2: TABLA DETALLADA */
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+        <div className="bg-[#1C1D23] rounded-xl border border-[#262832] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50/75 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                <tr className="bg-[#101115] border-b border-[#262832] text-[11px] font-bold text-slate-100 uppercase tracking-wider">
                   <th className="py-3 px-4">Prioridad / Título</th>
                   <th className="py-3 px-4">Inmueble / Carpeta</th>
                   <th className="py-3 px-4">Técnico Asignado</th>
@@ -526,14 +526,14 @@ function KanbanColumn({
   nextAction?: { label: string; nextState: any };
 }) {
   const borderHeader = {
-    slate: "border-slate-300 bg-slate-100/70 text-slate-800",
-    amber: "border-amber-300 bg-amber-50/70 text-amber-900",
-    blue: "border-blue-300 bg-blue-50/70 text-blue-900",
-    teal: "border-[#80CBC4] bg-[#E0F2F1]/70 text-[#004d40]",
+    slate: "border-[#262832] bg-[#141519] text-white",
+    amber: "border-amber-500/40 bg-amber-950/60 text-amber-300",
+    blue: "border-teal-500/40 bg-[#00382E] text-[#2DD4BF]",
+    teal: "border-[#10B981]/40 bg-[#00382E] text-[#34D399]",
   }[variant];
 
   return (
-    <div className="bg-slate-50/80 rounded-xl border border-slate-200/90 p-3 flex flex-col gap-3 min-h-[480px]">
+    <div className="bg-[#141519] rounded-xl border border-[#262832] p-3 flex flex-col gap-3 min-h-[480px]">
       <div
         className={cn(
           "px-3 py-2 rounded-lg border flex items-center justify-between font-bold text-xs",
@@ -541,14 +541,14 @@ function KanbanColumn({
         )}
       >
         <span>{title}</span>
-        <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[11px] font-mono shadow-2xs">
+        <span className="w-5 h-5 rounded-full bg-[#08090C] border border-[#262832] flex items-center justify-center text-[11px] font-mono text-white shadow-2xs">
           {count}
         </span>
       </div>
 
       <div className="space-y-2.5 flex-1 overflow-y-auto max-h-[620px] pr-0.5">
         {items.length === 0 ? (
-          <div className="h-32 border border-dashed border-slate-200 rounded-lg flex items-center justify-center text-[11px] text-slate-400">
+          <div className="h-32 border border-dashed border-[#262832] rounded-lg flex items-center justify-center text-[11px] text-slate-400">
             Sin incidentes aquí
           </div>
         ) : (
@@ -556,34 +556,34 @@ function KanbanColumn({
             <div
               key={ticket.id}
               onClick={() => onSelectTicket(ticket)}
-              className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs hover:shadow-xs transition-all cursor-pointer hover:border-teal-300 space-y-2.5 group"
+              className="bg-[#1C1D23] p-3.5 rounded-lg border border-[#262832] shadow-sm hover:border-[#10B981]/50 transition-all cursor-pointer space-y-2.5 group"
             >
               <div className="flex items-center justify-between gap-2">
                 <PriorityBadge prioridad={ticket.prioridad} />
-                <span className="font-mono font-bold text-xs text-slate-700">
+                <span className="font-mono font-bold text-xs text-white">
                   ${ticket.costo_total.toLocaleString("es-AR")}
                 </span>
               </div>
 
               <div>
-                <h4 className="font-bold text-xs text-slate-900 leading-snug group-hover:text-[#004d40]">
+                <h4 className="font-bold text-xs text-white leading-snug group-hover:text-[#34D399]">
                   {ticket.titulo}
                 </h4>
-                <p className="text-[11px] text-slate-500 line-clamp-2 mt-1">
+                <p className="text-[11px] text-slate-300 line-clamp-2 mt-1">
                   {ticket.descripcion}
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-slate-100 flex flex-col gap-1 text-[11px] text-slate-600">
+              <div className="pt-2 border-t border-[#262832] flex flex-col gap-1 text-[11px] text-slate-300">
                 <div className="flex items-center gap-1.5">
                   <Building className="w-3 h-3 text-slate-400 shrink-0" />
-                  <span className="truncate">{ticket.direccion_inmueble}</span>
+                  <span className="truncate text-slate-200">{ticket.direccion_inmueble}</span>
                 </div>
 
                 <div className="flex items-center justify-between mt-1">
-                  <div className="flex items-center gap-1 text-slate-500">
+                  <div className="flex items-center gap-1 text-slate-400">
                     <User className="w-3 h-3 text-slate-400" />
-                    <span className="truncate max-w-[120px] font-medium text-slate-700">
+                    <span className="truncate max-w-[120px] font-medium text-slate-200">
                       {ticket.proveedor_nombre}
                     </span>
                   </div>
@@ -597,7 +597,7 @@ function KanbanColumn({
                       target="_blank"
                       rel="noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="p-1 rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
+                      className="p-1 rounded bg-[#00382E] text-[#34D399] border border-[#10B981]/40 hover:text-white transition-colors"
                       title="WhatsApp al técnico"
                     >
                       <MessageCircle className="w-3.5 h-3.5" />
@@ -616,7 +616,7 @@ function KanbanColumn({
                       e.stopPropagation();
                       onCambiarEstado(ticket.id, nextAction.nextState);
                     }}
-                    className="flex items-center gap-1 text-[10px] font-bold text-[#004d40] hover:text-[#002e26] bg-[#E0F2F1] hover:bg-[#B2DFDB] px-2 py-1 rounded transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1 text-[10px] font-bold text-white bg-gradient-to-r from-[#004D40] to-[#10B981] hover:brightness-110 px-2.5 py-1 rounded transition-colors disabled:opacity-50"
                   >
                     {isUpdatingStatus === ticket.id ? "Guardando..." : nextAction.label}
                     <ArrowRight className="w-3 h-3" />

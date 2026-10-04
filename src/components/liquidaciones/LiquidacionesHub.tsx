@@ -424,11 +424,11 @@ export function LiquidacionesHub({
 
       {activeTab === "pendientes" ? (
         /* 5. TABLA DE PENDIENTES DE RENDICIÓN */
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="bg-[#1C1D23] rounded-2xl border border-[#262832] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
+                <tr className="bg-[#101115] border-b border-[#262832] text-slate-100 font-bold uppercase tracking-wider text-[11px]">
                   <th className="py-3 px-3 min-w-[5.5rem] w-24">Carpeta</th>
                   <th className="py-3 px-4">Propietario (Beneficiario)</th>
                   <th className="py-3 px-4">Inmueble / Domicilio</th>
@@ -565,13 +565,13 @@ export function LiquidacionesHub({
         </div>
       ) : (
         /* 6. TABLA DE HISTORIAL DE RENDICIONES */
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="bg-[#1C1D23] rounded-2xl border border-[#262832] shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-[#262832] flex items-center justify-between">
             <div>
-              <h3 className="font-bold text-slate-900 text-sm">
+              <h3 className="font-bold text-white text-sm">
                 Registro Histórico de Rendiciones a Propietarios
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-300">
                 Constancias de transferencia bancaria y recibos de rendición de cuentas locativas.
               </p>
             </div>
@@ -580,7 +580,7 @@ export function LiquidacionesHub({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
+                <tr className="bg-[#101115] border-b border-[#262832] text-slate-100 font-bold uppercase tracking-wider text-[11px]">
                   <th className="py-3 px-4">Nº Liquidación</th>
                   <th className="py-3 px-4">Fecha</th>
                   <th className="py-3 px-4">Propietario & Carpeta</th>

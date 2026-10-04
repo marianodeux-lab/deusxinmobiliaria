@@ -143,77 +143,77 @@ export function ReportesHub({
 
       {/* KPI METRIC CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#262832] shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Cobranzas Brutas Anuales</span>
-            <div className="w-7 h-7 rounded-lg bg-teal-50 flex items-center justify-center text-[#004d40]">
+            <span className="text-xs font-semibold text-slate-200">Cobranzas Brutas Anuales</span>
+            <div className="w-7 h-7 rounded-lg bg-[#141519] border border-[#262832] flex items-center justify-center text-[#34D399]">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-slate-800 mt-2 font-mono">
+          <div className="text-xl font-black text-white mt-2 font-mono">
             ${kpis.totalBrutoCobradoAnio.toLocaleString("es-AR")}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-[11px] text-slate-300 mt-0.5">
             Total alquileres devengados
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Honorarios Inmobiliaria</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-700">
+            <span className="text-xs font-semibold text-[#A7F3D0]">Honorarios Inmobiliaria</span>
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] border border-[#10B981]/40 flex items-center justify-center text-[#34D399]">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-emerald-700 mt-2 font-mono">
+          <div className="text-xl font-black text-[#34D399] mt-2 font-mono">
             ${kpis.totalHonorariosInmobiliaria.toLocaleString("es-AR")}
           </div>
-          <div className="text-[11px] text-emerald-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Comisión neta de administración
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#2DD4BF]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Rendido a Propietarios</span>
-            <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+            <span className="text-xs font-semibold text-[#99F6E4]">Rendido a Propietarios</span>
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] border border-[#2DD4BF]/40 flex items-center justify-center text-[#2DD4BF]">
               <Building className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-blue-700 mt-2 font-mono">
+          <div className="text-xl font-black text-[#2DD4BF] mt-2 font-mono">
             ${kpis.totalRendidoNeto.toLocaleString("es-AR")}
           </div>
-          <div className="text-[11px] text-blue-600/80 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Transferido neto de gastos
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Efectividad de Cobro</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-700">
+            <span className="text-xs font-semibold text-[#A7F3D0]">Efectividad de Cobro</span>
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] border border-[#10B981]/40 flex items-center justify-center text-[#34D399]">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-emerald-700 mt-2 font-mono">
+          <div className="text-2xl font-black text-[#34D399] mt-2 font-mono">
             {kpis.tasaEfectividadCobro}%
           </div>
-          <div className="text-[11px] text-emerald-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Contratos al día sin morosidad
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs col-span-2 md:col-span-1">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-amber-500/30 shadow-sm col-span-2 md:col-span-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Retenciones IIBB</span>
-            <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center text-amber-700">
+            <span className="text-xs font-semibold text-amber-200">Retenciones IIBB</span>
+            <div className="w-7 h-7 rounded-lg bg-amber-950/60 border border-amber-700/50 flex items-center justify-center text-amber-300">
               <FileText className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-amber-700 mt-2 font-mono">
+          <div className="text-xl font-black text-amber-300 mt-2 font-mono">
             ${kpis.retencionesEstimadasIIBB.toLocaleString("es-AR")}
           </div>
-          <div className="text-[11px] text-amber-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Estimado fiscal anual (ARBA/AGIP)
           </div>
         </div>
@@ -221,11 +221,11 @@ export function ReportesHub({
 
       {/* VISTA 1: BALANCE MENSUAL */}
       {activeTab === "mensual" && (
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+        <div className="bg-[#1C1D23] rounded-xl border border-[#262832] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50/75 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                <tr className="bg-[#101115] border-b border-[#262832] text-[11px] font-bold text-slate-100 uppercase tracking-wider">
                   <th className="py-3 px-4">Mes</th>
                   <th className="py-3 px-4 text-right">Cobranzas Brutas</th>
                   <th className="py-3 px-4 text-right">Honorarios (4.13%)</th>
@@ -298,11 +298,11 @@ export function ReportesHub({
             </span>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+          <div className="bg-[#1C1D23] rounded-xl border border-[#262832] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/75 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  <tr className="bg-[#101115] border-b border-[#262832] text-[11px] font-bold text-slate-100 uppercase tracking-wider">
                     <th className="py-3 px-4">Propietario / CUIT</th>
                     <th className="py-3 px-4">Inmuebles Asignados</th>
                     <th className="py-3 px-4 text-right">Renta Bruta Anual</th>
