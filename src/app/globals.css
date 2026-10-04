@@ -2,81 +2,73 @@
 
 @layer base {
   :root {
-    /* Paleta Clean Canvas Anti-Fatiga (Slate Cálido + Celeste/Teal Pastel) */
-    --background: #edf6f7; /* Celeste Pastel Muted muy suave y relajante (inspirado en #E0F2F1 / #E0F7FA) */
-    --foreground: #0f172a; /* Slate 900 de lectura nítida */
+    /* Paleta Dark Obsidian / Emerald Slate (Inspirada en el Mockup UI Oficial de DeusX) */
+    --background: #080d16; /* Obsidian Canvas Deep */
+    --foreground: #f8fafc; /* Nítido blanco slate */
     
-    --card: #ffffff;
-    --card-foreground: #0f172a;
+    --card: #0f172a;       /* Slate 900 Glass Card */
+    --card-foreground: #f8fafc;
     
-    --popover: #ffffff;
-    --popover-foreground: #0f172a;
+    --popover: #0f172a;
+    --popover-foreground: #f8fafc;
     
-    /* Acento Primario: Teal / Verde Petróleo de la Paleta Oficial (#26A69A) */
-    --primary: #26a69a;
-    --primary-foreground: #ffffff;
+    /* Acentos de Marca */
+    --primary: #10b981;    /* Bright Emerald Mint (#10B981) */
+    --primary-foreground: #022c22;
     
-    /* Acento de Marca DeusX: Rojo Escarlata (#e51a2d) */
-    --brand-red: #e51a2d;
+    --brand-red: #f43f5e;
     --brand-red-foreground: #ffffff;
     
-    --secondary: #e0f2f1; /* Teal pastel muy suave */
-    --secondary-foreground: #00695c;
+    --secondary: #132238;  /* Elevated Navy Slate */
+    --secondary-foreground: #2dd4bf;
     
-    --muted: #f1f5f9;
-    --muted-foreground: #5a6e85;
+    --muted: #0d1522;
+    --muted-foreground: #94a3b8;
     
-    --accent: #dcf1f0;
-    --accent-foreground: #004d40;
+    --accent: #004d40;     /* Deep Emerald Brand */
+    --accent-foreground: #34d399;
     
-    /* Acentos Semánticos Pasteles (WCAG AA) */
-    --status-active-bg: #e8f5e9;      /* Verde Menta suave (#E8F5E9) */
-    --status-active-text: #1b5e20;
-    --status-active-border: #a5d6a7;
-    
-    --status-warning-bg: #fffde7;     /* Ámbar Arena suave */
-    --status-warning-text: #f57f17;
-    --status-warning-border: #fff59d;
-    
-    --status-danger-bg: #fce4ec;      /* Rosa Terracota de la paleta (#FCE4EC) */
-    --status-danger-text: #c2185b;
-    --status-danger-border: #f8bbd0;
-    
-    --status-info-bg: #e0f7fa;        /* Celeste Hielo (#E0F7FA) */
-    --status-info-text: #00838f;
-    --status-info-border: #80deea;
-
-    --border: #d2e4e8; /* Borde celeste grisáceo tenue */
-    --input: #d2e4e8;
-    --ring: #26a69a;
+    --border: #1e293b;     /* Slate 800 */
+    --input: #1e293b;
+    --ring: #10b981;
     --radius: 0.5rem;
+    
+    /* Estados Semánticos Glow en Oscuro */
+    --status-active-bg: rgba(16, 185, 129, 0.15);
+    --status-active-text: #34d399;
+    --status-active-border: rgba(16, 185, 129, 0.3);
+    
+    --status-warning-bg: rgba(245, 158, 11, 0.15);
+    --status-warning-text: #fbbf24;
+    --status-warning-border: rgba(245, 158, 11, 0.3);
+    
+    --status-danger-bg: rgba(244, 63, 94, 0.15);
+    --status-danger-text: #fb7185;
+    --status-danger-border: rgba(244, 63, 94, 0.3);
+    
+    --status-info-bg: rgba(6, 182, 212, 0.15);
+    --status-info-text: #38bdf8;
+    --status-info-border: rgba(6, 182, 212, 0.3);
   }
 
   .dark {
-    --background: #0b1418;
-    --foreground: #f1f5f9;
-    
-    --card: #121f24;
-    --card-foreground: #f1f5f9;
-    
-    --popover: #121f24;
-    --popover-foreground: #f1f5f9;
-    
-    --primary: #4db6ac;
-    --primary-foreground: #0b1418;
-    
-    --secondary: #1a2f36;
-    --secondary-foreground: #80cbc4;
-    
-    --muted: #1a2f36;
-    --muted-foreground: #7d9ba6;
-    
-    --accent: #233f48;
-    --accent-foreground: #f1f5f9;
-    
-    --border: #1e353e;
-    --input: #1e353e;
-    --ring: #26a69a;
+    --background: #080d16;
+    --foreground: #f8fafc;
+    --card: #0f172a;
+    --card-foreground: #f8fafc;
+    --popover: #0f172a;
+    --popover-foreground: #f8fafc;
+    --primary: #10b981;
+    --primary-foreground: #022c22;
+    --secondary: #132238;
+    --secondary-foreground: #2dd4bf;
+    --muted: #0d1522;
+    --muted-foreground: #94a3b8;
+    --accent: #004d40;
+    --accent-foreground: #34d399;
+    --border: #1e293b;
+    --input: #1e293b;
+    --ring: #10b981;
   }
 }
 
@@ -91,18 +83,156 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Scrollbars limpias para tablas densas */
+/* Scrollbars limpias para tablas densas en modo oscuro */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #080d16;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
+  background: #1e293b;
+  border-radius: 9999px;
 }
-.dark ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
+::-webkit-scrollbar-thumb:hover {
+  background: #2dd4bf;
+}
+
+/* =========================================================
+   ADAPTACIONES DE TEMA OSCURO PARA MÓDULOS ERP (Dentro de <main>)
+   Transforma automáticamente las vistas en la interfaz PropTech
+   de alto impacto simulada en la Landing Page
+========================================================= */
+
+main {
+  color: #f8fafc;
+}
+
+/* Contenedores de tarjeta blancos convertidos a Slate 900 oscuro */
+main .bg-white {
+  background-color: #0f172a !important;
+  color: #f8fafc;
+}
+
+/* Bordes claros convertidos a Slate 800 */
+main .border-slate-200, 
+main .border-slate-200\/90, 
+main .border-slate-200\/80,
+main .border-slate-200\/60,
+main .border-slate-100 {
+  border-color: #1e293b !important;
+}
+
+/* Fondos secundarios y cabeceras de tablas */
+main .bg-slate-50, 
+main .bg-slate-50\/80, 
+main .bg-slate-50\/70 {
+  background-color: #0b1320 !important;
+}
+
+/* Hover de filas de tablas */
+main .hover\:bg-slate-50\/80:hover, 
+main .hover\:bg-slate-50:hover, 
+main .hover\:bg-slate-100:hover {
+  background-color: #132238 !important;
+}
+
+/* Tipografías adaptadas para contraste en modo oscuro */
+main .text-slate-900,
+main .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+main .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+main .text-slate-600,
+main .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+main .text-slate-400 {
+  color: #64748b !important;
+}
+
+/* Inputs, Selects y Textareas en modo oscuro */
+main input, main select, main textarea {
+  background-color: #0b1320 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+main input::placeholder {
+  color: #64748b !important;
+}
+
+/* Separadores en listas y tablas */
+main .divide-slate-100 > * + * {
+  border-color: #1e293b !important;
+}
+
+/* Cabeceras de tabla */
+main thead {
+  background-color: #080d16 !important;
+  border-bottom-color: #1e293b !important;
+}
+
+main th {
+  color: #94a3b8 !important;
+}
+
+/* Botones secundarios */
+main .bg-slate-100 {
+  background-color: #162438 !important;
+  color: #94a3b8 !important;
+  border-color: #1e293b !important;
+}
+
+main .bg-slate-800 {
+  background-color: #004d40 !important;
+  color: #ffffff !important;
+}
+
+main .bg-slate-900 {
+  background-color: #0b1320 !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+
+/* Badges con Glow Translúcido Neón */
+main .bg-emerald-50 {
+  background-color: rgba(6, 78, 59, 0.4) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+main .bg-amber-50 {
+  background-color: rgba(120, 53, 15, 0.4) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+main .bg-rose-50 {
+  background-color: rgba(136, 19, 55, 0.4) !important;
+  color: #fb7185 !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+}
+
+main .bg-blue-50 {
+  background-color: rgba(12, 74, 110, 0.4) !important;
+  color: #38bdf8 !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+main .bg-teal-50 {
+  background-color: rgba(19, 78, 74, 0.4) !important;
+  color: #2dd4bf !important;
+  border-color: rgba(45, 212, 191, 0.3) !important;
+}
+
+main .bg-\[\#E0F2F1\] {
+  background-color: rgba(0, 77, 64, 0.4) !important;
+  color: #2dd4bf !important;
 }
