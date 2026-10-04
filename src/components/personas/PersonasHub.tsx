@@ -101,83 +101,84 @@ export function PersonasHub({ initialItems, initialKpis }: PersonasHubProps) {
       {/* 2. TARJETAS KPI EJECUTIVAS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
         {/* KPI: Total */}
-        <div className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
+        <div className="p-3.5 rounded-2xl bg-[#1C1D23] border border-[#262832] shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
               Total Contactos
             </span>
-            <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#141519] border border-[#262832] text-slate-300 flex items-center justify-center">
               <Users className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-1.5 text-2xl font-extrabold text-slate-900 font-mono">
+          <div className="mt-1.5 text-2xl font-extrabold text-white font-mono">
             {kpis.totalPersonas}
           </div>
-          <div className="mt-1 text-[10px] text-slate-500">Registrados en el sistema</div>
+          <div className="mt-1 text-[10px] text-slate-400">Registrados en el sistema</div>
         </div>
 
         {/* KPI: Propietarios */}
-        <div className="p-3.5 rounded-2xl bg-white border border-emerald-200/80 shadow-2xs">
+        {/* KPI: Propietarios */}
+        <div className="p-3.5 rounded-2xl bg-[#1C1D23] border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-emerald-800 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-[#A7F3D0] uppercase tracking-wider">
               Propietarios
             </span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center">
               <Building className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-1.5 text-2xl font-extrabold text-emerald-950 font-mono">
+          <div className="mt-1.5 text-2xl font-extrabold text-[#34D399] font-mono">
             {kpis.totalPropietarios}
           </div>
-          <div className="mt-1 text-[10px] text-emerald-700">Locadores titulares</div>
+          <div className="mt-1 text-[10px] text-slate-400">Locadores titulares</div>
         </div>
 
         {/* KPI: Inquilinos */}
-        <div className="p-3.5 rounded-2xl bg-white border border-blue-200/80 shadow-2xs">
+        <div className="p-3.5 rounded-2xl bg-[#1C1D23] border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-blue-800 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-[#A7F3D0] uppercase tracking-wider">
               Inquilinos
             </span>
-            <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center">
               <User className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-1.5 text-2xl font-extrabold text-blue-950 font-mono">
+          <div className="mt-1.5 text-2xl font-extrabold text-[#34D399] font-mono">
             {kpis.totalInquilinos}
           </div>
-          <div className="mt-1 text-[10px] text-blue-700">Locatarios en alquiler</div>
+          <div className="mt-1 text-[10px] text-slate-400">Locatarios en alquiler</div>
         </div>
 
         {/* KPI: Garantes */}
-        <div className="p-3.5 rounded-2xl bg-white border border-purple-200/80 shadow-2xs">
+        <div className="p-3.5 rounded-2xl bg-[#1C1D23] border border-purple-500/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-purple-800 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-purple-200 uppercase tracking-wider">
               Garantes
             </span>
-            <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-purple-950/60 text-purple-300 border border-purple-700/50 flex items-center justify-center">
               <Shield className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-1.5 text-2xl font-extrabold text-purple-950 font-mono">
+          <div className="mt-1.5 text-2xl font-extrabold text-purple-300 font-mono">
             {kpis.totalGarantes}
           </div>
-          <div className="mt-1 text-[10px] text-purple-700">Co-deudores fiadores</div>
+          <div className="mt-1 text-[10px] text-slate-400">Co-deudores fiadores</div>
         </div>
 
         {/* KPI: Proveedores */}
-        <div className="p-3.5 rounded-2xl bg-white border border-amber-200/80 shadow-2xs">
+        <div className="p-3.5 rounded-2xl bg-[#1C1D23] border border-amber-500/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-amber-800 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-amber-200 uppercase tracking-wider">
               Proveedores
             </span>
-            <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-amber-950/60 text-amber-300 border border-amber-700/50 flex items-center justify-center">
               <Wrench className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-1.5 text-2xl font-extrabold text-amber-950 font-mono">
+          <div className="mt-1.5 text-2xl font-extrabold text-amber-300 font-mono">
             {kpis.totalProveedores}
           </div>
-          <div className="mt-1 text-[10px] text-amber-700">Técnicos & Mantenimiento</div>
+          <div className="mt-1 text-[10px] text-slate-400">Técnicos & Mantenimiento</div>
         </div>
       </div>
 
@@ -296,10 +297,10 @@ export function PersonasHub({ initialItems, initialKpis }: PersonasHubProps) {
                 </tr>
               ) : (
                 filteredItems.map((persona) => (
-                  <tr key={persona.id} className="hover:bg-slate-50/80 transition-colors">
+                  <tr key={persona.id} className="hover:bg-[#242630] transition-colors">
                     {/* 1. NOMBRE */}
                     <td className="py-3 px-4 align-top">
-                      <div className="font-bold text-slate-900">
+                      <div className="font-bold text-white">
                         {persona.nombre_completo}
                       </div>
                       <div className="text-[10px] text-slate-400 capitalize">
@@ -309,7 +310,7 @@ export function PersonasHub({ initialItems, initialKpis }: PersonasHubProps) {
 
                     {/* 2. DOCUMENTO */}
                     <td className="py-3 px-4 align-top">
-                      <span className="font-mono font-medium text-slate-800">
+                      <span className="font-mono font-medium text-slate-200">
                         {persona.documento_tipo}: {persona.documento_numero}
                       </span>
                     </td>
@@ -322,10 +323,10 @@ export function PersonasHub({ initialItems, initialKpis }: PersonasHubProps) {
                             key={i}
                             className={cn(
                               "px-2 py-0.5 rounded text-[10px] font-bold uppercase",
-                              r === "propietario" && "bg-emerald-50 text-emerald-800 border border-emerald-200/60",
-                              r === "inquilino" && "bg-blue-50 text-blue-800 border border-blue-200/60",
-                              r === "garante" && "bg-purple-50 text-purple-800 border border-purple-200/60",
-                              r === "proveedor" && "bg-amber-50 text-amber-800 border border-amber-200/60"
+                              r === "propietario" && "bg-[#00382E] text-[#34D399] border border-[#10B981]/40",
+                              r === "inquilino" && "bg-[#004D40]/60 text-[#34D399] border border-[#10B981]/40",
+                              r === "garante" && "bg-purple-950/60 text-purple-300 border border-purple-700/60",
+                              r === "proveedor" && "bg-amber-950/60 text-amber-300 border border-amber-700/60"
                             )}
                           >
                             {r}
@@ -337,13 +338,13 @@ export function PersonasHub({ initialItems, initialKpis }: PersonasHubProps) {
                     {/* 4. CONTACTO */}
                     <td className="py-3 px-4 align-top">
                       {persona.telefono && (
-                        <div className="flex items-center gap-1.5 text-slate-800 font-mono">
+                        <div className="flex items-center gap-1.5 text-slate-200 font-mono">
                           <Phone className="w-3 h-3 text-slate-400 shrink-0" />
                           <span>{persona.telefono}</span>
                         </div>
                       )}
                       {persona.email && (
-                        <div className="flex items-center gap-1.5 text-slate-500 text-[11px] mt-0.5 truncate max-w-[180px]">
+                        <div className="flex items-center gap-1.5 text-slate-400 text-[11px] mt-0.5 truncate max-w-[180px]">
                           <Mail className="w-3 h-3 text-slate-400 shrink-0" />
                           <span className="truncate">{persona.email}</span>
                         </div>
@@ -353,8 +354,8 @@ export function PersonasHub({ initialItems, initialKpis }: PersonasHubProps) {
                     {/* 5. CBU / ALIAS */}
                     <td className="py-3 px-4 align-top">
                       {persona.cbu_alias ? (
-                        <div className="font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60 inline-flex items-center gap-1 text-[11px]">
-                          <CreditCard className="w-3 h-3 text-emerald-600" />
+                        <div className="font-mono text-[#34D399] bg-[#00382E]/60 px-2 py-0.5 rounded border border-[#10B981]/30 inline-flex items-center gap-1 text-[11px]">
+                          <CreditCard className="w-3 h-3 text-[#10B981]" />
                           <span>{persona.cbu_alias}</span>
                         </div>
                       ) : (
@@ -372,7 +373,7 @@ export function PersonasHub({ initialItems, initialKpis }: PersonasHubProps) {
                             <span
                               key={i}
                               title={`${c.direccion_inmueble} (${c.rol})`}
-                              className="px-2 py-0.5 bg-slate-100 text-slate-800 font-mono font-bold text-[10px] rounded border border-slate-200"
+                              className="px-2 py-0.5 bg-[#141519] text-slate-200 font-mono font-bold text-[10px] rounded border border-[#262832]"
                             >
                               #{c.carpeta_numero.length > 5 ? c.carpeta_numero.slice(-4) : c.carpeta_numero}
                             </span>
@@ -389,7 +390,7 @@ export function PersonasHub({ initialItems, initialKpis }: PersonasHubProps) {
                             href={buildWhatsAppLink(persona.telefono, `Hola ${persona.nombre_completo}, le escribimos de DeusX Inmobiliaria.`)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors border border-emerald-200/60"
+                            className="p-1.5 text-[#34D399] hover:text-white hover:bg-[#00382E] rounded-lg transition-colors border border-[#10B981]/30"
                             title="Chatear por WhatsApp"
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
@@ -398,9 +399,9 @@ export function PersonasHub({ initialItems, initialKpis }: PersonasHubProps) {
 
                         <button
                           onClick={() => setSelectedPersonaDrawer(persona)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 font-bold text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 font-bold text-xs text-slate-300 hover:text-white bg-[#141519] hover:bg-[#1C1D23] rounded-lg border border-[#262832] transition-colors"
                         >
-                          <Eye className="w-3 h-3 text-slate-500" />
+                          <Eye className="w-3 h-3 text-slate-400" />
                           <span>Legajo</span>
                         </button>
                       </div>

@@ -224,14 +224,14 @@ export function TemporariosHub({
 
       {/* KPI METRIC CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#262832] shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Unidades Temporarias</span>
-            <div className="w-7 h-7 rounded-lg bg-teal-50 flex items-center justify-center text-[#004d40]">
+            <span className="text-xs font-semibold text-slate-400">Unidades Temporarias</span>
+            <div className="w-7 h-7 rounded-lg bg-[#141519] border border-[#262832] flex items-center justify-center text-[#34D399]">
               <Home className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-800 mt-2 font-mono">
+          <div className="text-2xl font-black text-white mt-2 font-mono">
             {kpis.totalPropiedadesTemporales}
           </div>
           <div className="text-[11px] text-slate-400 mt-0.5">
@@ -239,62 +239,62 @@ export function TemporariosHub({
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">En Estadía (Hoy)</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-700">
+            <span className="text-xs font-semibold text-[#A7F3D0]">En Estadía (Hoy)</span>
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] border border-[#10B981]/40 flex items-center justify-center text-[#34D399]">
               <BedDouble className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-emerald-700 mt-2 font-mono">
+          <div className="text-2xl font-black text-[#34D399] mt-2 font-mono">
             {kpis.huespedesEnEstadia}
           </div>
-          <div className="text-[11px] text-emerald-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Huéspedes ocupando unidades
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#2DD4BF]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Tasa de Ocupación</span>
-            <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+            <span className="text-xs font-semibold text-[#99F6E4]">Tasa de Ocupación</span>
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] border border-[#2DD4BF]/40 flex items-center justify-center text-[#2DD4BF]">
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-blue-700 mt-2 font-mono">
+          <div className="text-2xl font-black text-[#2DD4BF] mt-2 font-mono">
             {kpis.tasaOcupacionPromedio}%
           </div>
-          <div className="text-[11px] text-blue-600/80 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Promedio mensual proyectado
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Facturación USD</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-700">
+            <span className="text-xs font-semibold text-[#A7F3D0]">Facturación USD</span>
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] border border-[#10B981]/40 flex items-center justify-center text-[#34D399]">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-emerald-700 mt-2 font-mono">
+          <div className="text-xl font-black text-[#34D399] mt-2 font-mono">
             US$ {kpis.ingresosMesUSD.toLocaleString("en-US")}
           </div>
-          <div className="text-[11px] text-emerald-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Reservas internacionales
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs col-span-2 md:col-span-1">
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-amber-500/30 shadow-sm col-span-2 md:col-span-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Facturación ARS</span>
-            <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center text-amber-700">
+            <span className="text-xs font-semibold text-amber-200">Facturación ARS</span>
+            <div className="w-7 h-7 rounded-lg bg-amber-950/60 border border-amber-700/50 flex items-center justify-center text-amber-300">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-xl font-black text-amber-700 mt-2 font-mono">
+          <div className="text-xl font-black text-amber-300 mt-2 font-mono">
             ${kpis.ingresosMesARS.toLocaleString("es-AR")}
           </div>
-          <div className="text-[11px] text-amber-600 mt-0.5">
+          <div className="text-[11px] text-slate-300 font-medium mt-0.5">
             Reservas nacionales
           </div>
         </div>
@@ -620,25 +620,25 @@ function CanalBadge({ canal }: { canal: string }) {
   switch (canal) {
     case "Airbnb":
       return (
-        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-950/60 text-rose-300 border border-rose-700/50">
           Airbnb
         </span>
       );
     case "Booking.com":
       return (
-        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-950/60 text-sky-300 border border-sky-700/50">
           Booking.com
         </span>
       );
     case "WhatsApp":
       return (
-        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#00382E]/60 text-[#34D399] border border-[#10B981]/40">
           WhatsApp
         </span>
       );
     default:
       return (
-        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-50 text-teal-800 border border-teal-200">
+        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#004D40]/60 text-[#34D399] border border-[#10B981]/40">
           Directo
         </span>
       );
@@ -649,25 +649,25 @@ function EstadoReservaBadge({ estado }: { estado: string }) {
   switch (estado) {
     case "confirmada":
       return (
-        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-100 text-amber-800 border border-amber-300">
+        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-950/60 text-amber-300 border border-amber-700/60">
           Confirmada
         </span>
       );
     case "en_estadia":
       return (
-        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#00382E] text-[#34D399] border border-[#10B981]/50">
           En Estadía
         </span>
       );
     case "check_out_realizado":
       return (
-        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-slate-100 text-slate-700 border border-slate-300">
+        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#141519] text-slate-300 border border-[#262832]">
           Check-out OK
         </span>
       );
     default:
       return (
-        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-rose-100 text-rose-800 border border-rose-300">
+        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-rose-950/60 text-rose-300 border border-rose-700/60">
           Cancelada
         </span>
       );
@@ -678,25 +678,25 @@ function LimpiezaBadge({ limpieza }: { limpieza: string }) {
   switch (limpieza) {
     case "limpio":
       return (
-        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1 w-max">
+        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#00382E]/60 text-[#34D399] border border-[#10B981]/40 flex items-center gap-1 w-max">
           <Sparkles className="w-2.5 h-2.5" /> Limpio
         </span>
       );
     case "en_limpieza":
       return (
-        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 flex items-center gap-1 w-max">
+        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-950/50 text-amber-300 border border-amber-700/50 flex items-center gap-1 w-max">
           <Clock className="w-2.5 h-2.5" /> En Limpieza
         </span>
       );
     case "inspeccionado":
       return (
-        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200 flex items-center gap-1 w-max">
+        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-950/50 text-purple-300 border border-purple-700/50 flex items-center gap-1 w-max">
           <ShieldCheck className="w-2.5 h-2.5" /> Inspeccionado
         </span>
       );
     default:
       return (
-        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-1 w-max">
+        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-950/50 text-rose-300 border border-rose-700/50 flex items-center gap-1 w-max">
           <AlertCircle className="w-2.5 h-2.5" /> Sucio
         </span>
       );

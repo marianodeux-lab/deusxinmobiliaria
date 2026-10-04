@@ -139,94 +139,94 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
       {/* 2. TARJETAS KPI EJECUTIVAS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Total Inmuebles */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#262832] shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
               Total Inmuebles
             </span>
-            <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#141519] border border-[#262832] text-slate-300 flex items-center justify-center">
               <Building className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-extrabold text-slate-900 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-white font-mono tracking-tight">
               {kpis.totalPropiedades}
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-500">
+          <div className="mt-2 text-[11px] text-slate-400">
             Unidades físicas en la cartera activa
           </div>
         </div>
 
         {/* KPI 2: Alquiladas / Ocupación */}
-        <div className="p-4 rounded-2xl bg-white border border-emerald-200/80 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#10B981]/30 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-[#A7F3D0] uppercase tracking-wider">
               Alquiladas (Ocupación)
             </span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#00382E] border border-[#10B981]/40 text-[#34D399] flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-extrabold text-emerald-950 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-[#34D399] font-mono tracking-tight">
               {kpis.totalAlquiladas}
             </span>
-            <span className="text-xs font-bold text-emerald-700">
+            <span className="text-xs font-bold text-[#A7F3D0]">
               {kpis.tasaOcupacion}% Ocupación
             </span>
           </div>
           {/* Barra de Ocupación */}
-          <div className="mt-2 w-full bg-emerald-100 rounded-full h-1.5 overflow-hidden">
+          <div className="mt-2 w-full bg-[#101115] rounded-full h-1.5 overflow-hidden">
             <div
-              className="bg-emerald-600 h-1.5 rounded-full transition-all duration-500"
+              className="bg-[#10B981] h-1.5 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(100, kpis.tasaOcupacion)}%` }}
             />
           </div>
-          <div className="mt-1 text-[11px] text-emerald-700">
+          <div className="mt-1 text-[11px] text-slate-300 font-medium">
             {kpis.totalAlquiladas} inmuebles con contrato de locación vigente
           </div>
         </div>
 
         {/* KPI 3: Disponibles / Vacantes */}
-        <div className="p-4 rounded-2xl bg-white border border-blue-200/80 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#2DD4BF]/30 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-blue-800 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-[#99F6E4] uppercase tracking-wider">
               Disponibles / Vacantes
             </span>
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#00382E] border border-[#2DD4BF]/40 text-[#2DD4BF] flex items-center justify-center">
               <Home className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-extrabold text-blue-950 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-[#2DD4BF] font-mono tracking-tight">
               {kpis.totalDisponibles}
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-blue-700 font-medium">
+          <div className="mt-2 text-[11px] text-slate-300 font-medium">
             Listas para alquiler o venta inmediata
           </div>
         </div>
 
         {/* KPI 4: Publicadas en Vidriera Web */}
-        <div className="p-4 rounded-2xl bg-white border border-teal-200/80 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#10B981]/30 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-teal-800 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-[#A7F3D0] uppercase tracking-wider">
               Vidriera Web Online
             </span>
-            <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#00382E] border border-[#10B981]/40 text-[#34D399] flex items-center justify-center">
               <Globe className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-extrabold text-teal-950 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-[#34D399] font-mono tracking-tight">
               {kpis.totalPublicadasVidriera}
             </span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#00382E] text-[#34D399] border border-[#10B981]/40">
               NIC.ar
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-teal-700 font-medium">
+          <div className="mt-2 text-[11px] text-slate-300 font-medium">
             Propiedades visibles en el portal público de la agencia
           </div>
         </div>
@@ -424,30 +424,30 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
                   {/* Bloque de Información Locativa / Comercial */}
                   <div className="p-4 flex-1 space-y-3">
                     {estaAlquilado ? (
-                      <div className="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100 text-xs space-y-1">
+                      <div className="p-2.5 rounded-xl bg-[#141519] border border-[#10B981]/35 text-xs space-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-emerald-800 font-bold uppercase">
+                          <span className="text-[10px] text-[#34D399] font-bold uppercase">
                             Canon Locativo Vigente:
                           </span>
-                          <span className="font-mono font-bold text-emerald-950 text-xs">
+                          <span className="font-mono font-bold text-white text-xs">
                             {formatCurrency(p.contrato_activo?.valor_alquiler_actual || 0, p.contrato_activo?.moneda_base || "ARS")}
                           </span>
                         </div>
-                        <div className="text-[11px] text-slate-700">
-                          Inquilino: <span className="font-semibold">{p.contrato_activo?.inquilino_nombre}</span>
+                        <div className="text-[11px] text-slate-300">
+                          Inquilino: <span className="font-bold text-white">{p.contrato_activo?.inquilino_nombre}</span>
                         </div>
                       </div>
                     ) : (
-                      <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs space-y-1">
+                      <div className="p-2.5 rounded-xl bg-[#141519] border border-[#262832] text-xs space-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-slate-500 font-bold uppercase">
+                          <span className="text-[10px] text-slate-400 font-bold uppercase">
                             Precio de Publicación:
                           </span>
-                          <span className="font-mono font-bold text-slate-900 text-xs">
+                          <span className="font-mono font-bold text-white text-xs">
                             {p.precio_web ? formatCurrency(p.precio_web, p.moneda_web) : "A Consultar"}
                           </span>
                         </div>
-                        <div className="text-[11px] text-slate-500">
+                        <div className="text-[11px] text-slate-400">
                           Destino: {p.destino} • Operación: {p.operacion_web}
                         </div>
                       </div>
@@ -457,7 +457,7 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
                     <div className="text-xs pt-1 flex items-center justify-between">
                       <div>
                         <span className="text-[10px] text-slate-400 block font-semibold">Propietario:</span>
-                        <span className="font-bold text-slate-800 line-clamp-1">{primerPropietario.nombre}</span>
+                        <span className="font-bold text-slate-200 line-clamp-1">{primerPropietario.nombre}</span>
                       </div>
                       {primerPropietario.telefono && (
                         <a
@@ -467,7 +467,7 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
                           )}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors border border-emerald-200/60"
+                          className="p-1.5 text-[#34D399] hover:text-white hover:bg-[#00382E] rounded-lg transition-colors border border-[#10B981]/30"
                           title="Contactar al Propietario por WhatsApp"
                         >
                           <MessageCircle className="w-3.5 h-3.5" />
@@ -726,36 +726,36 @@ function FichaTecnicaModal({ propiedad, onClose }: FichaTecnicaModalProps) {
               Estado de Ocupación / Contrato
             </h4>
             {estaAlquilado ? (
-              <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-2">
+              <div className="p-3 bg-[#141519] rounded-xl border border-[#10B981]/35 space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 font-bold text-emerald-950">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <div className="flex items-center gap-1.5 font-bold text-[#34D399]">
+                    <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
                     <span>Contrato de Alquiler Vigente (Carpeta #{propiedad.contrato_activo?.carpeta_numero})</span>
                   </div>
-                  <span className="font-mono font-extrabold text-emerald-950 text-sm">
+                  <span className="font-mono font-extrabold text-white text-sm">
                     {formatCurrency(propiedad.contrato_activo?.valor_alquiler_actual || 0, propiedad.contrato_activo?.moneda_base || "ARS")} / mes
                   </span>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-700 pt-1 border-t border-emerald-200/60">
+                <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-300 pt-1 border-t border-[#262832]">
                   <div>
-                    <span className="text-slate-500 block">Inquilino (Locatario):</span>
-                    <span className="font-bold">{propiedad.contrato_activo?.inquilino_nombre}</span>
+                    <span className="text-slate-400 block">Inquilino (Locatario):</span>
+                    <span className="font-bold text-white">{propiedad.contrato_activo?.inquilino_nombre}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block">Vencimiento del Contrato:</span>
-                    <span className="font-bold font-mono">{propiedad.contrato_activo?.fecha_fin}</span>
+                    <span className="text-slate-400 block">Vencimiento del Contrato:</span>
+                    <span className="font-bold font-mono text-slate-200">{propiedad.contrato_activo?.fecha_fin}</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-3 bg-blue-50 rounded-xl border border-blue-200 text-blue-900 flex items-center justify-between">
+              <div className="p-3 bg-[#141519] rounded-xl border border-[#2DD4BF]/30 text-[#2DD4BF] flex items-center justify-between">
                 <div className="flex items-center gap-1.5 font-bold">
-                  <Home className="w-4 h-4 text-blue-600" />
+                  <Home className="w-4 h-4 text-[#2DD4BF]" />
                   <span>Inmueble Disponible / Vacante para Comercializar</span>
                 </div>
                 <Link
                   href="/contratos"
-                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs shadow-2xs"
+                  className="px-3 py-1 bg-gradient-to-r from-[#004D40] to-[#10B981] hover:brightness-110 text-white rounded-lg font-bold text-xs shadow-2xs"
                 >
                   Crear Contrato
                 </Link>

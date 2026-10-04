@@ -3,23 +3,23 @@
 @layer base {
   :root {
     /* =========================================================
-       PALETA GRIS OSCURO CARBÓN & VERDE ESMERALDA (Sin Azul)
-       - Menú / Sidebar: Gris bien oscuro (#121316)
-       - Canvas / Fondo de la app: Gris oscuro (#18191E)
-       - Tarjetas y Contenedores: Gris oscuro (#1F2026)
+       SISTEMA VISUAL OBSIDIAN GRAPHITE & VERDE ESMERALDA
+       - Menú (Sidebar) & Head (TopBar): Ultra Oscuro Carbón (#08090B)
+       - Canvas / Fondo de la app: Gris Oscuro Anti-Fatiga (#141519)
+       - Tarjetas y Contenedores: Gris Grafito (#1C1D23)
        - Acento Predominante: Verde Esmeralda (#004D40, #10B981, #34D399)
        ========================================================= */
-    --background: #18191e; /* Gris oscuro canvas */
+    --background: #141519; /* Gris oscuro anti-fatiga */
     --foreground: #f8fafc; /* Blanco nítido lectura */
     
-    --card: #1f2026;       /* Gris oscuro tarjetas */
+    --card: #1c1d23;       /* Gris oscuro tarjetas */
     --card-foreground: #f8fafc;
     
-    --popover: #1f2026;
+    --popover: #1c1d23;
     --popover-foreground: #f8fafc;
     
-    /* Verde Esmeralda Predominante */
-    --primary: #10b981;    /* Esmeralda brillante / menta */
+    /* Verde Esmeralda */
+    --primary: #10b981;    /* Esmeralda menta */
     --primary-foreground: #ffffff;
     
     --brand-emerald-dark: #00382e;
@@ -28,17 +28,17 @@
     --brand-mint: #10b981;
     --brand-mint-neon: #34d399;
     
-    --secondary: #262831;  /* Gris secundario elevado */
+    --secondary: #242630;  /* Gris secundario elevado */
     --secondary-foreground: #34d399;
     
-    --muted: #16171c;
+    --muted: #101115;
     --muted-foreground: #94a3b8;
     
-    --accent: #004d40;     /* Verde esmeralda profundo */
+    --accent: #004d40;
     --accent-foreground: #34d399;
     
-    --border: #2a2c35;     /* Borde gris neutro grafito */
-    --input: #16171c;
+    --border: #262832;     /* Borde gris grafito */
+    --input: #101115;
     --ring: #10b981;
     --radius: 0.5rem;
     
@@ -61,22 +61,22 @@
   }
 
   .dark {
-    --background: #18191e;
+    --background: #141519;
     --foreground: #f8fafc;
-    --card: #1f2026;
+    --card: #1c1d23;
     --card-foreground: #f8fafc;
-    --popover: #1f2026;
+    --popover: #1c1d23;
     --popover-foreground: #f8fafc;
     --primary: #10b981;
     --primary-foreground: #ffffff;
-    --secondary: #262831;
+    --secondary: #242630;
     --secondary-foreground: #34d399;
-    --muted: #16171c;
+    --muted: #101115;
     --muted-foreground: #94a3b8;
     --accent: #004d40;
     --accent-foreground: #34d399;
-    --border: #2a2c35;
-    --input: #16171c;
+    --border: #262832;
+    --input: #101115;
     --ring: #10b981;
   }
 }
@@ -92,84 +92,183 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Scrollbars limpias en gris oscuro y verde esmeralda */
+/* Scrollbars limpias en gris ultra oscuro y verde esmeralda */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #121316;
+  background: #08090b;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2c35;
+  background: #262832;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #10b981;
 }
 
+/* Chrome Ultra Oscuro Absoluto (Sidebar Menú & TopBar Head) */
+aside {
+  background-color: #030304 !important;
+  border-color: #0f1014 !important;
+}
+
+header {
+  background-color: rgba(3, 3, 4, 0.98) !important;
+  border-color: #0f1014 !important;
+}
+
 /* =========================================================
-   ADAPTACIONES DE GRIS OSCURO & VERDE ESMERALDA (Dentro de <main>)
-   Reemplaza completamente todo lo azul oscuro y claro por
-   Gris Oscuro Grafito y Verde Esmeralda predominante.
+   ADAPTACIONES DE CONTRASTE Y ANTI-FATIGA VISUAL
+   Asegura legibilidad instantánea sin encandilar ni fatigar.
 ========================================================= */
 
-main {
+main, [role="dialog"], .modal-content {
   color: #f8fafc;
 }
 
-/* Contenedores de tarjeta: Gris Oscuro (#1F2026) */
-main .bg-white {
-  background-color: #1f2026 !important;
+/* Contenedores de tarjeta: Gris Oscuro (#1C1D23) */
+main .bg-white,
+[role="dialog"] .bg-white,
+.modal-dark .bg-white {
+  background-color: #1c1d23 !important;
   color: #f8fafc;
 }
 
-/* Bordes: Gris Grafito Neutro (#2A2C35) */
+/* Bordes: Gris Grafito Neutro (#262832) */
 main .border-slate-200, 
 main .border-slate-200\/90, 
 main .border-slate-200\/80,
 main .border-slate-200\/60,
-main .border-slate-100 {
-  border-color: #2a2c35 !important;
+main .border-slate-100,
+[role="dialog"] .border-slate-200,
+[role="dialog"] .border-slate-100 {
+  border-color: #262832 !important;
 }
 
-/* Fondos secundarios y cabeceras: Gris Oscuro Intermedio (#16171C) */
+/* Fondos secundarios y cabeceras: Gris Oscuro Intermedio (#141519) */
 main .bg-slate-50, 
 main .bg-slate-50\/80, 
-main .bg-slate-50\/70 {
-  background-color: #16171c !important;
+main .bg-slate-50\/70,
+[role="dialog"] .bg-slate-50 {
+  background-color: #141519 !important;
 }
 
-/* Hover de filas en tablas: Gris (#252831) */
+/* Hover de filas en tablas */
 main .hover\:bg-slate-50\/80:hover, 
 main .hover\:bg-slate-50:hover, 
-main .hover\:bg-slate-100:hover {
-  background-color: #252831 !important;
+main .hover\:bg-slate-100:hover,
+main .hover\:bg-slate-200:hover {
+  background-color: #242630 !important;
 }
 
-/* Tipografías nítidas */
+/* Tipografías nítidas anti-fatiga */
 main .text-slate-900,
-main .text-slate-800 {
+main .text-slate-800,
+[role="dialog"] .text-slate-900,
+[role="dialog"] .text-slate-800 {
   color: #f8fafc !important;
 }
 
-main .text-slate-700 {
+main .text-slate-700,
+[role="dialog"] .text-slate-700 {
   color: #e2e8f0 !important;
 }
 
 main .text-slate-600,
-main .text-slate-500 {
+main .text-slate-500,
+[role="dialog"] .text-slate-600,
+[role="dialog"] .text-slate-500 {
   color: #94a3b8 !important;
 }
 
-main .text-slate-400 {
-  color: #64748b !important;
+main .text-slate-400,
+[role="dialog"] .text-slate-400 {
+  color: #818a99 !important;
 }
 
-/* Inputs, Selects y Textareas en gris oscuro con focus esmeralda */
+/* =========================================================
+   REGLAS DE ALTO CONTRASTE PARA CIFRAS Y TEXTOS EN TARJETAS
+   Elimina textos oscuros (950, 900, 800) que se pierden en el fondo
+========================================================= */
+
+/* Cifras y Acentos Esmeralda / Verdes */
+.text-emerald-950,
+.text-emerald-900,
+.text-emerald-800,
+.text-emerald-700,
+.text-green-950,
+.text-green-900,
+.text-green-800,
+.text-green-700 {
+  color: #34d399 !important; /* Menta luminosa, descansada y de alto contraste */
+}
+
+.text-teal-950,
+.text-teal-900,
+.text-teal-800,
+.text-teal-700 {
+  color: #2dd4bf !important;
+}
+
+/* Cifras y Acentos Ámbar / Pendientes */
+.text-amber-950,
+.text-amber-900,
+.text-amber-800,
+.text-amber-700,
+.text-yellow-950,
+.text-yellow-900,
+.text-yellow-800,
+.text-yellow-700 {
+  color: #fbbf24 !important; /* Ámbar cálido luminoso */
+}
+
+/* Cifras y Acentos Rosa / Mora / Alertas */
+.text-rose-950,
+.text-rose-900,
+.text-rose-800,
+.text-rose-700,
+.text-red-950,
+.text-red-900,
+.text-red-800,
+.text-red-700 {
+  color: #fb7185 !important; /* Coral suave legible */
+}
+
+/* Cifras Naranjas y Violetas */
+.text-orange-950,
+.text-orange-900,
+.text-orange-800,
+.text-orange-700 {
+  color: #fb923c !important;
+}
+
+.text-purple-950,
+.text-purple-900,
+.text-purple-800,
+.text-purple-700 {
+  color: #c084fc !important;
+}
+
+/* Cifras Azules y Cyan convertidas a Menta Esmeralda */
+.text-blue-950,
+.text-blue-900,
+.text-blue-800,
+.text-blue-700,
+.text-blue-600,
+.text-cyan-950,
+.text-cyan-900,
+.text-cyan-800,
+.text-cyan-700,
+.text-cyan-600 {
+  color: #34d399 !important;
+}
+
+/* Inputs, Selects y Textareas */
 main input, main select, main textarea {
-  background-color: #16171c !important;
-  border-color: #2a2c35 !important;
+  background-color: #101115 !important;
+  border-color: #262832 !important;
   color: #f8fafc !important;
 }
 
@@ -184,13 +283,13 @@ main input::placeholder {
 
 /* Separadores en listas y tablas */
 main .divide-slate-100 > * + * {
-  border-color: #262831 !important;
+  border-color: #242630 !important;
 }
 
 /* Cabeceras de tabla */
 main thead {
-  background-color: #16171c !important;
-  border-bottom-color: #262831 !important;
+  background-color: #101115 !important;
+  border-bottom-color: #242630 !important;
 }
 
 main th {
@@ -199,9 +298,9 @@ main th {
 
 /* Botones secundarios */
 main .bg-slate-100 {
-  background-color: #16171c !important;
+  background-color: #141519 !important;
   color: #94a3b8 !important;
-  border-color: #2a2c35 !important;
+  border-color: #262832 !important;
 }
 
 /* Botones activos y destacados en Verde Esmeralda */
@@ -212,12 +311,12 @@ main .bg-slate-800 {
 }
 
 main .bg-slate-900 {
-  background-color: #121316 !important;
+  background-color: #08090b !important;
   color: #f8fafc !important;
-  border-color: #2a2c35 !important;
+  border-color: #262832 !important;
 }
 
-/* Badges: Verde Esmeralda Predominante (Eliminando todo azul) */
+/* Badges con Glow Translúcido */
 main .bg-emerald-50,
 main .bg-blue-50,
 main .bg-teal-50,
@@ -226,13 +325,6 @@ main .bg-\[\#E0F7FA\] {
   background-color: rgba(0, 77, 64, 0.45) !important;
   color: #34d399 !important;
   border-color: rgba(16, 185, 129, 0.4) !important;
-}
-
-main .text-blue-600,
-main .text-blue-500,
-main .text-cyan-600,
-main .text-cyan-500 {
-  color: #34d399 !important;
 }
 
 main .bg-amber-50 {
@@ -246,3 +338,39 @@ main .bg-rose-50 {
   color: #fb7185 !important;
   border-color: rgba(244, 63, 94, 0.35) !important;
 }
+
+/* Bordes sutiles de tarjetas KPI con resplandor suave */
+main .border-emerald-200, 
+main .border-emerald-200\/80, 
+main .border-emerald-100 {
+  border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+main .border-amber-200, 
+main .border-amber-200\/80, 
+main .border-amber-200\/90, 
+main .border-amber-100 {
+  border-color: rgba(245, 158, 11, 0.35) !important;
+}
+
+main .border-rose-200, 
+main .border-rose-200\/80, 
+main .border-rose-100 {
+  border-color: rgba(244, 63, 94, 0.35) !important;
+}
+
+main .border-blue-200, 
+main .border-blue-200\/80, 
+main .border-blue-100,
+main .border-teal-200, 
+main .border-teal-200\/80, 
+main .border-teal-100 {
+  border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+main .border-purple-200, 
+main .border-purple-200\/80, 
+main .border-purple-100 {
+  border-color: rgba(192, 132, 252, 0.35) !important;
+}
+

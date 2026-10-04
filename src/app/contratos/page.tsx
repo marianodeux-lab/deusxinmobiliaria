@@ -28,19 +28,19 @@ export default async function ContratosPage() {
   const comisionEstimada = Math.round(montoTotalAlquileres * 0.08); // 8% honorario estándar
 
   return (
-    <div className="flex h-screen bg-[#18191E] text-slate-100 overflow-hidden font-sans">
-      {/* Sidebar Menú: Gris bien oscuro (#121316) */}
+    <div className="flex h-screen bg-[#141519] text-slate-100 overflow-hidden font-sans">
+      {/* Sidebar Menú: Ultra Oscuro (#08090B) */}
       <Sidebar />
 
-      {/* Área Principal de Trabajo: Fondo Gris Oscuro (#18191E) */}
+      {/* Área Principal de Trabajo: Fondo Gris Oscuro Anti-Fatiga (#141519) */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        {/* Barra superior con cotizaciones e indicadores */}
+        {/* Barra superior ultra oscura (#08090B) */}
         <TopBar />
 
         {/* Contenido Principal */}
         <main className="flex-1 p-5 space-y-5 max-w-[1600px] w-full mx-auto">
           {/* Cabecera de Página */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#2A2C35]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#262832]">
             <div>
               <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <span>Hub de Contratos & Carpetas de Locación</span>

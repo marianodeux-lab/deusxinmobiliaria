@@ -283,96 +283,96 @@ export function CobranzasHub({
       {/* 2. TARJETAS KPI EJECUTIVAS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Total Exigible */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#262832] shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
               Total a Recaudar
             </span>
-            <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#141519] text-slate-300 border border-[#262832] flex items-center justify-center">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-extrabold text-slate-900 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-white font-mono tracking-tight">
               {formatCurrency(kpis.totalExigibleArs, "ARS")}
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-500">
+          <div className="mt-2 text-[11px] text-slate-400">
             {kpis.cantidadTotal} contratos devengados en el mes
           </div>
         </div>
 
         {/* KPI 2: Total Efectivizado / Cobrado */}
-        <div className="p-4 rounded-2xl bg-white border border-emerald-200/80 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#10B981]/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-[#A7F3D0] uppercase tracking-wider">
               Cobrado / Recaudado
             </span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-extrabold text-emerald-950 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-[#34D399] font-mono tracking-tight">
               {formatCurrency(kpis.totalCobradoArs, "ARS")}
             </span>
-            <span className="text-xs font-bold text-emerald-700">
+            <span className="text-xs font-bold text-[#A7F3D0]">
               {kpis.porcentajeCobrado}%
             </span>
           </div>
           {/* Barra de Progreso */}
-          <div className="mt-2 w-full bg-emerald-100 rounded-full h-1.5 overflow-hidden">
+          <div className="mt-2 w-full bg-[#101115] rounded-full h-1.5 overflow-hidden">
             <div
-              className="bg-emerald-600 h-1.5 rounded-full transition-all duration-500"
+              className="bg-[#10B981] h-1.5 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(100, kpis.porcentajeCobrado)}%` }}
             />
           </div>
-          <div className="mt-1 text-[11px] text-emerald-700">
+          <div className="mt-1 text-[11px] text-slate-400">
             {kpis.cantidadCobrados} de {kpis.cantidadTotal} alquileres cancelados
           </div>
         </div>
 
         {/* KPI 3: Pendientes a Vencer */}
-        <div className="p-4 rounded-2xl bg-white border border-amber-200/80 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-amber-500/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-amber-800 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-amber-200 uppercase tracking-wider">
               Pendientes de Cobro
             </span>
-            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-amber-950/60 text-amber-300 border border-amber-700/50 flex items-center justify-center">
               <Clock className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-extrabold text-amber-950 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-amber-300 font-mono tracking-tight">
               {formatCurrency(kpis.totalPendienteArs, "ARS")}
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-amber-700 font-medium">
+          <div className="mt-2 text-[11px] text-slate-400 font-medium">
             {kpis.cantidadPendientes} contratos por vencer antes del día 10
           </div>
         </div>
 
         {/* KPI 4: Cartera en Mora */}
-        <div className="p-4 rounded-2xl bg-white border border-rose-200/80 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-rose-500/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-rose-800 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-rose-200 uppercase tracking-wider">
               Cartera en Mora
             </span>
-            <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-rose-950/60 text-rose-300 border border-rose-700/50 flex items-center justify-center">
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-extrabold text-rose-950 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-rose-300 font-mono tracking-tight">
               {formatCurrency(kpis.totalMoraArs, "ARS")}
             </span>
             {kpis.cantidadMora > 0 && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-800 animate-pulse">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-950/80 text-rose-300 border border-rose-700/60 animate-pulse">
                 {kpis.cantidadMora} en mora
               </span>
             )}
           </div>
-          <div className="mt-2 text-[11px] text-rose-700 font-medium">
+          <div className="mt-2 text-[11px] text-slate-400 font-medium">
             {kpis.cantidadMora === 0
               ? "0 atrasos registrados ¡Al día!"
               : `${kpis.cantidadMora} alquileres vencidos con punitorios`}
@@ -554,23 +554,23 @@ export function CobranzasHub({
 
                         {/* 2. INMUEBLE */}
                         <td className="py-3 px-4 align-top">
-                          <div className="font-bold text-slate-900">
+                          <div className="font-bold text-white">
                             {item.inmueble.direccion}
                           </div>
-                          <div className="text-[10px] text-slate-500 mt-0.5">
+                          <div className="text-[10px] text-slate-400 mt-0.5">
                             {item.inmueble.localidad}
                           </div>
                           <div className="text-[10px] text-slate-400 mt-0.5">
-                            Dueño: <span className="font-medium text-slate-600">{item.propietario.nombre}</span>
+                            Dueño: <span className="font-medium text-slate-300">{item.propietario.nombre}</span>
                           </div>
                         </td>
 
                         {/* 3. INQUILINO */}
                         <td className="py-3 px-4 align-top">
-                          <div className="font-semibold text-slate-900">
+                          <div className="font-semibold text-white">
                             {item.inquilino.nombre}
                           </div>
-                          <div className="text-[10px] text-slate-500">
+                          <div className="text-[10px] text-slate-400">
                             {item.inquilino.documento}
                           </div>
                           {item.inquilino.telefono && (
@@ -578,7 +578,7 @@ export function CobranzasHub({
                               href={buildWhatsAppLink(item.inquilino.telefono, `Hola ${item.inquilino.nombre}, le escribimos de DeusX Inmobiliaria respecto al alquiler de ${item.inmueble.direccion}.`)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-[10px] text-emerald-700 hover:text-emerald-800 font-medium mt-0.5"
+                              className="inline-flex items-center gap-1 text-[10px] text-[#34D399] hover:text-white font-medium mt-0.5"
                             >
                               <Phone className="w-2.5 h-2.5" />
                               <span>{item.inquilino.telefono}</span>
@@ -588,22 +588,22 @@ export function CobranzasHub({
 
                         {/* 4. VENCIMIENTO */}
                         <td className="py-3 px-4 align-top">
-                          <div className="font-mono font-medium text-slate-800">
+                          <div className="font-mono font-medium text-slate-200">
                             {formatDate(item.fecha_vencimiento)}
                           </div>
                           {item.estado_cobranza === "mora" && (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded mt-1">
-                              <AlertTriangle className="w-3 h-3 text-rose-600" />
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-300 bg-rose-950/60 border border-rose-700/60 px-1.5 py-0.5 rounded mt-1">
+                              <AlertTriangle className="w-3 h-3 text-rose-400" />
                               Atraso {item.dias_mora} días
                             </span>
                           )}
                           {item.estado_cobranza === "pendiente" && (
-                            <span className="text-[10px] text-slate-500 mt-0.5 block">
+                            <span className="text-[10px] text-slate-400 mt-0.5 block">
                               Vence este mes
                             </span>
                           )}
                           {item.estado_cobranza === "cobrado" && (
-                            <span className="text-[10px] text-emerald-700 font-medium mt-0.5 block">
+                            <span className="text-[10px] text-[#34D399] font-medium mt-0.5 block">
                               Recibo Oficial Emitido
                             </span>
                           )}
@@ -611,14 +611,14 @@ export function CobranzasHub({
 
                         {/* 5. DESGLOSE & TOTAL EXIGIBLE */}
                         <td className="py-3 px-4 align-top">
-                          <div className="font-mono font-extrabold text-slate-900 text-sm">
+                          <div className="font-mono font-extrabold text-white text-sm">
                             {formatCurrency(item.total_exigible, item.moneda)}
                           </div>
-                          <div className="text-[10px] text-slate-500 mt-0.5 space-y-0.5">
+                          <div className="text-[10px] text-slate-300 mt-0.5 space-y-0.5">
                             <div>Alq: {formatCurrency(item.monto_alquiler, item.moneda)}</div>
                             {item.monto_expensas > 0 && <div>Exp: +{formatCurrency(item.monto_expensas, item.moneda)}</div>}
                             {item.monto_punitorios > 0 && (
-                              <div className="text-rose-600 font-semibold">
+                              <div className="text-rose-400 font-semibold">
                                 Mora: +{formatCurrency(item.monto_punitorios, item.moneda)}
                               </div>
                             )}
@@ -629,12 +629,12 @@ export function CobranzasHub({
                         <td className="py-3 px-4 align-top">
                           {item.estado_cobranza === "cobrado" && (
                             <div>
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#00382E] text-[#34D399] border border-[#10B981]/50">
+                                <CheckCircle2 className="w-3 h-3 text-[#10B981]" />
                                 Cobrado
                               </span>
                               {item.recibo_emitido && (
-                                <div className="text-[10px] font-mono text-slate-500 mt-1">
+                                <div className="text-[10px] font-mono text-slate-400 mt-1">
                                   Nº {item.recibo_emitido.numero}
                                 </div>
                               )}
@@ -642,16 +642,16 @@ export function CobranzasHub({
                           )}
 
                           {item.estado_cobranza === "pendiente" && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                              <Clock className="w-3 h-3 text-amber-600" />
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950/60 text-amber-300 border border-amber-700/60">
+                              <Clock className="w-3 h-3 text-amber-400" />
                               Pendiente
                             </span>
                           )}
 
                           {item.estado_cobranza === "mora" && (
                             <div>
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-200">
-                                <AlertTriangle className="w-3 h-3 text-rose-600" />
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-950/60 text-rose-300 border border-rose-700/60">
+                                <AlertTriangle className="w-3 h-3 text-rose-400" />
                                 En Mora ({item.dias_mora}d)
                               </span>
                             </div>
@@ -686,7 +686,7 @@ export function CobranzasHub({
                               target="_blank"
                               rel="noopener noreferrer"
                               title={item.estado_cobranza === "cobrado" ? "Re-enviar Recibo por WhatsApp" : "Enviar Aviso / Reclamo de Pago por WhatsApp"}
-                              className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors border border-emerald-200/80"
+                              className="p-1.5 text-[#34D399] hover:text-white hover:bg-[#00382E] rounded-lg transition-colors border border-[#10B981]/30"
                             >
                               <MessageCircle className="w-3.5 h-3.5" />
                             </a>
@@ -696,15 +696,15 @@ export function CobranzasHub({
                               <button
                                 onClick={() => handleDescargarReciboExistente(item)}
                                 title="Descargar Recibo X Oficial PDF"
-                                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors"
+                                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg bg-[#141519] hover:bg-[#1C1D23] text-slate-300 hover:text-white border border-[#262832] transition-colors"
                               >
-                                <FileText className="w-3.5 h-3.5 text-slate-500" />
+                                <FileText className="w-3.5 h-3.5 text-slate-400" />
                                 <span>Recibo PDF</span>
                               </button>
                             ) : (
                               <button
                                 onClick={() => setSelectedPeriodoForCobro(item)}
-                                className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-lg bg-[#004d40] hover:bg-[#00332c] text-white shadow-2xs transition-colors"
+                                className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-lg bg-gradient-to-r from-[#004D40] to-[#10B981] hover:brightness-110 text-white shadow-2xs transition-colors"
                               >
                                 <Receipt className="w-3.5 h-3.5" />
                                 <span>Cobrar</span>

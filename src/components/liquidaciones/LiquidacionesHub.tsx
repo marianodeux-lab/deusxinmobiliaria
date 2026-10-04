@@ -280,82 +280,82 @@ export function LiquidacionesHub({
       {/* 2. TARJETAS KPI EJECUTIVAS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Total Pendiente a Rendir */}
-        <div className="p-4 rounded-2xl bg-white border border-amber-200/90 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-amber-500/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-amber-800 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-amber-200 uppercase tracking-wider">
               Pendiente a Rendir
             </span>
-            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-amber-950/60 text-amber-300 border border-amber-700/50 flex items-center justify-center">
               <Clock className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-extrabold text-amber-950 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-amber-300 font-mono tracking-tight">
               {formatCurrency(kpis.totalPendienteRendirArs, "ARS")}
             </span>
             {kpis.cantidadPendientes > 0 && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-950/80 text-amber-300 border border-amber-700/60">
                 {kpis.cantidadPendientes} a transferir
               </span>
             )}
           </div>
-          <div className="mt-2 text-[11px] text-amber-700">
+          <div className="mt-2 text-[11px] text-slate-400">
             Fondos de propietarios en custodia listos para liquidar
           </div>
         </div>
 
         {/* KPI 2: Total Rendido en el Mes */}
-        <div className="p-4 rounded-2xl bg-white border border-emerald-200/80 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#10B981]/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-[#A7F3D0] uppercase tracking-wider">
               Rendido en el Mes
             </span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-extrabold text-emerald-950 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-[#34D399] font-mono tracking-tight">
               {formatCurrency(kpis.totalRendidoMesArs, "ARS")}
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-emerald-700">
+          <div className="mt-2 text-[11px] text-slate-400">
             {kpis.cantidadRendidas} liquidaciones completadas
           </div>
         </div>
 
         {/* KPI 3: Honorarios Ganados por Administración */}
-        <div className="p-4 rounded-2xl bg-white border border-teal-200/80 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#10B981]/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-teal-800 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-[#A7F3D0] uppercase tracking-wider">
               Honorarios Inmobiliaria
             </span>
-            <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-extrabold text-teal-950 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-[#34D399] font-mono tracking-tight">
               {formatCurrency(kpis.totalComisionesGanadasArs, "ARS")}
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-teal-700 font-medium">
+          <div className="mt-2 text-[11px] text-slate-400 font-medium">
             Comisión retenida por administración (4.13% - 5%)
           </div>
         </div>
 
         {/* KPI 4: Total Bruto Administrado */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#262832] shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
               Total Bruto Administrado
             </span>
-            <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#141519] text-slate-300 border border-[#262832] flex items-center justify-center">
               <Building className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-extrabold text-slate-900 font-mono tracking-tight">
+            <span className="text-2xl font-extrabold text-white font-mono tracking-tight">
               {formatCurrency(kpis.totalBrutoPercibidoMesArs + kpis.totalPendienteRendirArs, "ARS")}
             </span>
           </div>
@@ -462,19 +462,19 @@ export function LiquidacionesHub({
 
                       {/* 2. PROPIETARIO */}
                       <td className="py-3 px-4 align-top">
-                        <div className="font-bold text-slate-900">
+                        <div className="font-bold text-white">
                           {p.propietario.nombre}
                         </div>
-                        <div className="text-[10px] text-slate-500">
+                        <div className="text-[10px] text-slate-400">
                           {p.propietario.documento}
                         </div>
                         {p.propietario.cbu_alias ? (
-                          <div className="text-[10px] font-mono text-emerald-700 mt-0.5 flex items-center gap-1">
-                            <CreditCard className="w-3 h-3 text-emerald-600" />
+                          <div className="text-[10px] font-mono text-[#34D399] mt-0.5 flex items-center gap-1">
+                            <CreditCard className="w-3 h-3 text-[#10B981]" />
                             <span>Alias: {p.propietario.cbu_alias}</span>
                           </div>
                         ) : (
-                          <span className="text-[10px] text-amber-700 italic block mt-0.5">
+                          <span className="text-[10px] text-amber-300 italic block mt-0.5">
                             CBU no registrado
                           </span>
                         )}
@@ -482,43 +482,43 @@ export function LiquidacionesHub({
 
                       {/* 3. INMUEBLE */}
                       <td className="py-3 px-4 align-top">
-                        <div className="font-medium text-slate-800">
+                        <div className="font-medium text-slate-200">
                           {p.inmueble.direccion}
                         </div>
-                        <div className="text-[10px] text-slate-500">
+                        <div className="text-[10px] text-slate-400">
                           {p.inmueble.localidad}
                         </div>
                         <div className="text-[10px] text-slate-400 mt-0.5">
-                          Inquilino: <span className="text-slate-600 font-medium">{p.inquilino.nombre}</span>
+                          Inquilino: <span className="text-slate-300 font-medium">{p.inquilino.nombre}</span>
                         </div>
                       </td>
 
                       {/* 4. CANON COBRADO */}
                       <td className="py-3 px-4 align-top">
-                        <div className="font-mono font-bold text-slate-900">
+                        <div className="font-mono font-bold text-white">
                           {formatCurrency(p.total_bruto_percibido, p.moneda)}
                         </div>
-                        <div className="text-[10px] text-emerald-700 font-medium mt-0.5">
+                        <div className="text-[10px] text-[#34D399] font-medium mt-0.5">
                           ✓ Cobrado al Inquilino
                         </div>
                       </td>
 
                       {/* 5. HONORARIOS */}
                       <td className="py-3 px-4 align-top">
-                        <div className="font-mono font-semibold text-rose-700">
+                        <div className="font-mono font-semibold text-rose-300">
                           - {formatCurrency(p.monto_comision_calculado, p.moneda)}
                         </div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">
+                        <div className="text-[10px] text-slate-400 mt-0.5">
                           Comisión Inmobiliaria ({p.porcentaje_comision_defecto}%)
                         </div>
                       </td>
 
                       {/* 6. NETO A TRANSFERIR */}
                       <td className="py-3 px-4 align-top">
-                        <div className="font-mono font-extrabold text-emerald-950 text-sm">
+                        <div className="font-mono font-extrabold text-[#34D399] text-sm">
                           {formatCurrency(p.monto_neto_estimado, p.moneda)}
                         </div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">
+                        <div className="text-[10px] text-slate-400 mt-0.5">
                           Saldo Líquido al Locador
                         </div>
                       </td>
@@ -541,7 +541,7 @@ export function LiquidacionesHub({
                             target="_blank"
                             rel="noopener noreferrer"
                             title="Contactar al Propietario por WhatsApp"
-                            className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors border border-emerald-200/80"
+                            className="p-1.5 text-[#34D399] hover:text-white hover:bg-[#00382E] rounded-lg transition-colors border border-[#10B981]/30"
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
                           </a>
@@ -549,7 +549,7 @@ export function LiquidacionesHub({
                           {/* Botón Liquidar */}
                           <button
                             onClick={() => setSelectedForLiquidacion(p)}
-                            className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-lg bg-[#004d40] hover:bg-[#00332c] text-white shadow-2xs transition-colors"
+                            className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-lg bg-gradient-to-r from-[#004D40] to-[#10B981] hover:brightness-110 text-white shadow-2xs transition-colors"
                           >
                             <Wallet className="w-3.5 h-3.5" />
                             <span>Liquidar</span>

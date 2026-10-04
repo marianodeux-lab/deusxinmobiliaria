@@ -22,7 +22,7 @@ interface MacroIndicatorProps {
 
 function MacroIndicator({ label, value, date, trend = "up" }: MacroIndicatorProps) {
   return (
-    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#18191E] border border-[#2A2C35] rounded-lg text-xs shadow-2xs">
+    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#08090C] border border-[#17181F] rounded-lg text-xs shadow-2xs">
       <span className="font-semibold text-slate-400">{label}</span>
       <span className="font-mono tabular-nums font-bold text-white">{value}</span>
       <span className="text-[10px] text-slate-500">({date})</span>
@@ -32,7 +32,7 @@ function MacroIndicator({ label, value, date, trend = "up" }: MacroIndicatorProp
 
 export function TopBar() {
   return (
-    <header className="h-16 border-b border-[#22242B] bg-[#121316]/95 backdrop-blur-md sticky top-0 z-30 px-4 flex items-center justify-between text-slate-200">
+    <header className="h-16 border-b border-[#0F1014] bg-[#030304]/98 backdrop-blur-md sticky top-0 z-30 px-4 flex items-center justify-between text-slate-200">
       {/* Indicadores Económicos Oficiales (Ticker en cabecera) */}
       <div className="flex items-center gap-2 overflow-x-auto py-1 no-scrollbar">
         <div className="flex items-center gap-1.5 text-xs text-slate-400 mr-1 font-medium">
@@ -70,11 +70,11 @@ export function TopBar() {
           </button>
         </div>
 
-        <div className="h-6 w-px bg-[#262831] mx-1"></div>
+        <div className="h-6 w-px bg-[#0F1014] mx-1"></div>
 
         {/* Tenant Activo & Usuario */}
-        <div className="flex items-center gap-2.5 pl-1 cursor-pointer hover:bg-[#18191E] px-2 py-1 rounded-lg transition-colors border border-transparent hover:border-[#2A2C35]">
-          <div className="w-8 h-8 rounded-lg bg-[#0D0E10] border border-[#10B981]/40 flex items-center justify-center shadow-xs">
+        <div className="flex items-center gap-2.5 pl-1 cursor-pointer hover:bg-[#08090C] px-2 py-1 rounded-lg transition-colors border border-transparent hover:border-[#17181F]">
+          <div className="w-8 h-8 rounded-lg bg-[#000000] border border-[#10B981]/40 flex items-center justify-center shadow-xs">
             <img src="/Recursos/icons/icon-192x192.png" alt="DX" className="w-5 h-5 object-contain" />
           </div>
           <div className="text-left hidden sm:block">

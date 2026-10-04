@@ -80,9 +80,9 @@ export function Sidebar() {
   }, []);
 
   return (
-    <aside className="w-64 bg-[#121316] text-slate-300 flex flex-col shrink-0 h-screen sticky top-0 select-none border-r border-[#22242B] shadow-2xl">
-      {/* Brand Header con Logo Oficial DeusX (Fondo Gris Muy Oscuro) */}
-      <div className="h-16 border-b border-[#22242B] flex items-center px-4 bg-[#0D0E10]">
+    <aside className="w-64 bg-[#030304] text-slate-300 flex flex-col shrink-0 h-screen sticky top-0 select-none border-r border-[#0F1014] shadow-2xl">
+      {/* Brand Header con Logo Oficial DeusX (Fondo Ultra Oscuro #000000) */}
+      <div className="h-16 border-b border-[#0F1014] flex items-center px-4 bg-[#000000]">
         <Link href="/" className="flex items-center gap-2.5 w-full group">
           <div className="flex items-center">
             <img
@@ -103,13 +103,13 @@ export function Sidebar() {
       </div>
 
       {/* Acceso Rápido / Búsqueda Global */}
-      <div className="p-3 border-b border-[#22242B]">
-        <button className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-slate-400 bg-[#18191E] hover:bg-[#1F2026] hover:text-white rounded-lg border border-[#2A2C35] shadow-xs transition-colors">
+      <div className="p-3 border-b border-[#0F1014]">
+        <button className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-slate-400 bg-[#08090C] hover:bg-[#0E1015] hover:text-white rounded-lg border border-[#17181F] shadow-xs transition-colors">
           <span className="flex items-center gap-2">
             <Search className="w-3.5 h-3.5 text-[#10B981]" />
             <span className="truncate">Buscar carpeta o DNI...</span>
           </span>
-          <kbd className="px-1.5 py-0.5 text-[10px] bg-[#121316] text-slate-400 border border-[#2A2C35] rounded font-mono">
+          <kbd className="px-1.5 py-0.5 text-[10px] bg-[#000000] text-slate-400 border border-[#17181F] rounded font-mono">
             Ctrl+K
           </kbd>
         </button>
@@ -127,7 +127,7 @@ export function Sidebar() {
 
         <Link
           href="/contratos/nuevo"
-          className="flex items-center justify-center gap-2 w-full py-1.5 px-3 text-xs font-bold text-[#34D399] bg-[#18191E] hover:bg-[#1F2026] border border-[#10B981]/40 rounded-lg shadow-2xs transition-all active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 w-full py-1.5 px-3 text-xs font-bold text-[#34D399] bg-[#08090C] hover:bg-[#0E1015] border border-[#10B981]/30 rounded-lg shadow-2xs transition-all active:scale-[0.98]"
         >
           <PlusCircle className="w-3.5 h-3.5 text-[#10B981]" />
           <span>+ Nuevo Contrato</span>
@@ -161,8 +161,8 @@ export function Sidebar() {
                       className={cn(
                         "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all group",
                         isActive
-                          ? "bg-gradient-to-r from-[#004D40] to-[#00332A] text-white font-bold shadow-md border-l-4 border-[#10B981]"
-                          : "text-slate-400 hover:bg-[#18191E] hover:text-white"
+                          ? "bg-gradient-to-r from-[#00382E] to-[#001D17] text-white font-bold shadow-md border-l-4 border-[#10B981]"
+                          : "text-slate-400 hover:bg-[#08090C] hover:text-white"
                       )}
                     >
                       <span className="flex items-center gap-2.5">
@@ -201,7 +201,7 @@ export function Sidebar() {
       </nav>
 
       {/* Footer Info / Estado del Sistema */}
-      <div className="p-3 border-t border-[#22242B] bg-[#0D0E10]">
+      <div className="p-3 border-t border-[#0F1014] bg-[#000000]">
         <div className="flex items-center justify-between text-[11px] text-slate-400">
           <span className="flex items-center gap-1.5 font-medium">
             <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
