@@ -3,6 +3,8 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { SuperAdminDashboard } from "@/components/superadmin/SuperAdminDashboard";
 import { getSuperAdminDataAction } from "@/modules/superadmin/actions";
+import { isSuperAdminUserAction } from "@/modules/auth/actions";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "SuperAdmin Cockpit | DeusX Inmobiliarias",
@@ -10,6 +12,12 @@ export const metadata = {
 };
 
 export default async function SuperAdminPage() {
+  const isSuperAdmin = await isSuperAdminUserAction();
+  if (!isSuperAdmin) {
+    // Si no es el administrador de la plataforma, redirige sin revelar existencia del panel
+    redirect("/");
+  }
+
   const adminData = await getSuperAdminDataAction();
 
   return (

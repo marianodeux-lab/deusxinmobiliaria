@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { isSuperAdminUserAction } from "@/modules/auth/actions";
 import {
   FolderKanban,
   Receipt,
@@ -72,6 +73,11 @@ const NAVIGATION: NavSection[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false);
+
+  useEffect(() => {
+    isSuperAdminUserAction().then(setIsSuperAdmin).catch(() => setIsSuperAdmin(false));
+  }, []);
 
   return (
     <aside className="w-64 bg-[#B2DFDB] text-slate-800 flex flex-col shrink-0 h-screen sticky top-0 select-none border-r border-[#80CBC4]">
@@ -127,15 +133,23 @@ export function Sidebar() {
 
       {/* Navegación Principal */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
-        {NAVIGATION.map((section) => (
-          <div key={section.title} className="space-y-1">
-            <h4 className="px-2 text-[10px] font-extrabold text-[#004d40]/75 tracking-wider uppercase">
-              {section.title}
-            </h4>
-            <div className="space-y-0.5">
-              {section.items.map((item) => {
-                const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
-                const Icon = item.icon;
+        {NAVIGATION.map((section) => {
+          const visibleItems = section.items.filter((item) => {
+            if (item.href === "/superadmin") return isSuperAdmin;
+            return true;
+          });
+
+          if (visibleItems.length === 0) return null;
+
+          return (
+            <div key={section.title} className="space-y-1">
+              <h4 className="px-2 text-[10px] font-extrabold text-[#004d40]/75 tracking-wider uppercase">
+                {section.title}
+              </h4>
+              <div className="space-y-0.5">
+                {visibleItems.map((item) => {
+                  const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
+                  const Icon = item.icon;
 
                 return (
                   <Link
@@ -179,7 +193,8 @@ export function Sidebar() {
               })}
             </div>
           </div>
-        ))}
+        );
+      })}
       </nav>
 
       {/* Footer Info / Estado del Sistema */}

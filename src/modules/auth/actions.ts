@@ -136,3 +136,19 @@ export async function logoutAction() {
   revalidatePath("/", "layout");
   redirect("/login");
 }
+
+/**
+ * Server Action: Verificar si el usuario autenticado es el SuperAdmin (marianodeux@gmail.com)
+ * El resto de los usuarios tienen denegado el acceso y visibilidad al panel.
+ */
+export async function isSuperAdminUserAction(): Promise<boolean> {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !user.email) return false;
+    return user.email.toLowerCase().trim() === "marianodeux@gmail.com";
+  } catch {
+    return false;
+  }
+}
+
