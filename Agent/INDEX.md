@@ -33,6 +33,7 @@
 │   │   │   ├── consorcios/        # Liquidación de expensas, edificios y prorrateo
 │   │   │   ├── indices/           # Cotizaciones y series ICL / IPC / UVA / USD
 │   │   │   ├── caja/              # Facturación AFIP WSFE, comprobantes QR y caja diaria
+│   │   │   ├── reportes/          # Balances anuales, certificados impositivos y CSV
 │   │   │   └── configuracion/     # Parámetros del tenant, talonarios y usuarios
 │   │   ├── api/                   # Route Handlers específicos (webhooks, cron jobs)
 │   │   └── layout.tsx

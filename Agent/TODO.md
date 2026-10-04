@@ -79,5 +79,20 @@
 - [x] Emisión de Facturas Electrónicas AFIP con asignación de CAE de 14 dígitos, vencimiento y Punto de Venta 0004. ✅ (2026-10-04)
 - [x] Generador de Comprobante Fiscal Oficial con código QR RG 4291/2018 verificable ante ARCA/AFIP y envío por WhatsApp. ✅ (2026-10-04)
 
+---
+
+## 📊 Fase 10: Reportes Financieros & Rendición Anual
+- [x] Hub de Reportes (`/reportes`): Balance mensual consolidado (cobranzas brutas, honorarios, gastos y neto rendido). ✅ (2026-10-04)
+- [x] Informe impositivo anual para propietarios: Certificado de retenciones y detalle de ingresos locativos para contadores (Ganancias/Bienes Personales). ✅ (2026-10-04)
+- [x] Exportador directo a Excel / CSV con formato universal compatible con sistemas contables. ✅ (2026-10-04)
+
+---
+
+## ⚙️ Fase 11: Configuración del Tenant & Parámetros Operativos
+- [x] Hub de Configuración (`/configuracion`): Gestión de hasta 10 emisores AFIP, CUIT, matrículas de martillero y certificados digitales. ✅ (2026-10-04)
+- [x] Links rápidos a portales de servicios públicos para consulta de deudas (CEYS, ABSA, Camuzzi, Municipalidad, ARBA). ✅ (2026-10-04)
+- [x] Memos masivos en recibos para inquilinos y propietarios, alertas de incremento y parámetros de mora diaria. ✅ (2026-10-04)
+
+
 
 
