@@ -249,7 +249,23 @@ export function generarReciboPdf(data: ReciboPdfData) {
     footerY + 16
   );
 
-  // Descargar archivo PDF
-  const filename = `Recibo_${data.carpetaNumero}_${data.periodoMesAnio.replace(/\s+/g, "_")}.pdf`;
-  doc.save(filename);
+  // Descargar archivo PDF con nombre sanitizado (sin '#' ni caracteres que rompan la descarga en Chrome)
+  const cleanCarpeta = (data.carpetaNumero || "Locacion").replace(/[^a-zA-Z0-9_-]/g, "");
+  const cleanPeriodo = (data.periodoMesAnio || "Periodo").replace(/[^a-zA-Z0-9_-]/g, "_");
+  const cleanNumero = (data.numeroRecibo || "0001").replace(/[^a-zA-Z0-9_-]/g, "-");
+  const filename = `Recibo_X_Oficial_Nro_${cleanNumero}_Carpeta_${cleanCarpeta}_${cleanPeriodo}.pdf`;
+
+  try {
+    const pdfBlob = doc.output("blob");
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+  } catch {
+    doc.save(filename);
+  }
 }

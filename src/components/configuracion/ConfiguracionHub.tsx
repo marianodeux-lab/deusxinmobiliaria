@@ -26,6 +26,7 @@ import {
   saveConfiguracionAction,
 } from "@/modules/configuracion/actions";
 import { cn } from "@/lib/utils";
+import { ImportadorSpotModal } from "./ImportadorSpotModal";
 
 interface ConfiguracionHubProps {
   initialConfig: TenantConfiguracionCompleta;
@@ -33,6 +34,7 @@ interface ConfiguracionHubProps {
 
 export function ConfiguracionHub({ initialConfig }: ConfiguracionHubProps) {
   const [config, setConfig] = useState<TenantConfiguracionCompleta>(initialConfig);
+  const [showImportadorSpot, setShowImportadorSpot] = useState(false);
   const [activeTab, setActiveTab] = useState<"responsables" | "servicios" | "memos" | "operativos">("responsables");
   const [activeResponsableIndex, setActiveResponsableIndex] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
@@ -135,22 +137,54 @@ export function ConfiguracionHub({ initialConfig }: ConfiguracionHubProps) {
           </p>
         </div>
 
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowImportadorSpot(true)}
+            className="px-4 py-2 text-xs font-bold text-[#004d40] bg-[#e0f2f1] hover:bg-[#b2dfdb] border border-[#80cbc4] rounded-xl shadow-xs transition-all flex items-center gap-2 active:scale-95"
+          >
+            <Upload className="w-4 h-4 text-[#00796b]" />
+            <span>Importar AR Comercial / Spot</span>
+          </button>
+
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="px-5 py-2 text-xs font-bold text-white bg-[#004d40] hover:bg-[#00332c] rounded-xl shadow-md transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50"
+          >
+            {savedSuccess ? (
+              <>
+                <CheckCircle2 className="w-4 h-4 text-[#80CBC4]" />
+                <span>¡Guardado con Éxito!</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                <span>{isSaving ? "Guardando..." : "Guardar Cambios"}</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Banner informativo de Datos de Demostración & Purga 1-Clic */}
+      <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-slate-50 border border-teal-200/80 rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-2xs">
+        <div className="flex items-start gap-3">
+          <div className="p-2 rounded-xl bg-teal-100 text-teal-800 shrink-0 mt-0.5">
+            <Info className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-xs font-bold text-teal-950">Entorno de Producción & Carga de Datos del Cliente</h3>
+            <p className="text-[11px] text-teal-900/90 mt-0.5 max-w-2xl leading-relaxed">
+              Esta instancia contiene datos de ejemplo para explorar el ERP. Cuando estés listo para ingresar tus datos reales de <strong>https://arcomercialgestion.com/</strong>, podés importar el archivo .txt o vaciar la base de datos de demostración con 1 solo clic para comenzar limpio.
+            </p>
+          </div>
+        </div>
         <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="px-5 py-2 text-xs font-bold text-white bg-[#004d40] hover:bg-[#00332c] rounded-xl shadow-md transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50"
+          onClick={() => setShowImportadorSpot(true)}
+          className="px-4 py-2 text-xs font-bold text-teal-950 bg-white hover:bg-teal-50 border border-teal-300 rounded-xl shadow-xs transition-all shrink-0 flex items-center gap-1.5"
         >
-          {savedSuccess ? (
-            <>
-              <CheckCircle2 className="w-4 h-4 text-[#80CBC4]" />
-              <span>¡Guardado con Éxito!</span>
-            </>
-          ) : (
-            <>
-              <Save className="w-4 h-4" />
-              <span>{isSaving ? "Guardando..." : "Guardar Cambios"}</span>
-            </>
-          )}
+          <Upload className="w-3.5 h-3.5 text-teal-700" />
+          <span>Asistente de Importación & Limpieza</span>
         </button>
       </div>
 
@@ -751,6 +785,12 @@ export function ConfiguracionHub({ initialConfig }: ConfiguracionHubProps) {
           </div>
         </div>
       )}
+
+      {/* Modal Asistente de Importación Spot y Limpieza de Tenant */}
+      <ImportadorSpotModal
+        isOpen={showImportadorSpot}
+        onClose={() => setShowImportadorSpot(false)}
+      />
     </div>
   );
 }

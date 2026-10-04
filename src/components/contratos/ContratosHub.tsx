@@ -18,9 +18,11 @@ import {
   Phone,
   FileText,
   MessageCircle,
+  TrendingUp,
 } from "lucide-react";
 import { formatCurrency, formatDate, calculateContractProgress, cn } from "@/lib/utils";
 import { generarReciboPdf } from "@/lib/pdf/reciboGenerator";
+import { generarContratoPdf } from "@/lib/pdf/contratoGenerator";
 import { registrarCobranzaAction } from "@/modules/cobranzas/actions";
 import {
   buildWhatsAppLink,
@@ -238,6 +240,7 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<"todos" | "vigentes" | "por_vencer" | "mora">("todos");
   const [selectedContratoForCobro, setSelectedContratoForCobro] = useState<ContratoItem | null>(null);
+  const [menuAbiertoId, setMenuAbiertoId] = useState<string | null>(null);
 
   const [contratosList, setContratosList] = useState<ContratoItem[]>(
     initialContratos && initialContratos.length > 0 ? initialContratos : MOCK_CONTRATOS
@@ -266,6 +269,36 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
       return true;
     });
   }, [searchTerm, filterStatus]);
+
+  const handleDescargarContratoPdf = (c: ContratoItem) => {
+    generarContratoPdf({
+      carpetaNumero: c.carpeta_numero,
+      tipoContrato: "Locación con Destino Habitacional (DNU 70/2023)",
+      fechaInicio: c.fecha_inicio,
+      fechaFin: c.fecha_fin,
+      montoActual: c.monto_alquiler_actual,
+      moneda: c.moneda,
+      tipoAjuste: c.tipo_ajuste,
+      frecuenciaAjusteMeses: c.frecuencia_ajuste_meses,
+      inmueble: {
+        direccion: `${c.direccion.calle} ${c.direccion.numero}${c.direccion.piso_dpto ? ` ${c.direccion.piso_dpto}` : ""}${c.direccion.uf ? ` (${c.direccion.uf})` : ""}`,
+        localidad: c.direccion.localidad,
+        provincia: "Buenos Aires",
+      },
+      locador: {
+        nombre: c.propietario.nombre,
+        documento: c.propietario.documento,
+        cuit: c.propietario.documento,
+        telefono: c.propietario.telefono,
+      },
+      locatario: {
+        nombre: c.inquilino.nombre,
+        documento: c.inquilino.documento,
+        cuit: c.inquilino.documento,
+        telefono: c.inquilino.telefono,
+      },
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -539,16 +572,65 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
                         </a>
                         <button
                           title="Descargar Contrato PDF"
-                          className="p-1.5 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-md transition-colors"
+                          onClick={() => handleDescargarContratoPdf(contrato)}
+                          className="p-1.5 text-slate-400 hover:text-white hover:bg-[#2A2C35] rounded-md transition-colors"
                         >
                           <FileText className="w-4 h-4" />
                         </button>
-                        <button
-                          title="Opciones avanzadas"
-                          className="p-1.5 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-md transition-colors"
-                        >
-                          <MoreVertical className="w-4 h-4" />
-                        </button>
+                        <div className="relative">
+                          <button
+                            title="Opciones avanzadas"
+                            onClick={() => setMenuAbiertoId(menuAbiertoId === contrato.id ? null : contrato.id)}
+                            className="p-1.5 text-slate-400 hover:text-white hover:bg-[#2A2C35] rounded-md transition-colors"
+                          >
+                            <MoreVertical className="w-4 h-4" />
+                          </button>
+
+                          {menuAbiertoId === contrato.id && (
+                            <>
+                              <div
+                                className="fixed inset-0 z-40"
+                                onClick={() => setMenuAbiertoId(null)}
+                              />
+                              <div className="absolute right-0 top-full mt-1 w-56 bg-[#1C1D23] rounded-xl shadow-2xl border border-[#2E303B] z-50 py-1.5 text-xs font-semibold text-slate-200 animate-in fade-in zoom-in-95">
+                                <button
+                                  onClick={() => {
+                                    setMenuAbiertoId(null);
+                                    setSelectedContratoForCobro(contrato);
+                                  }}
+                                  className="w-full text-left px-3.5 py-2 hover:bg-[#004D40]/50 hover:text-[#34D399] flex items-center gap-2 transition-colors"
+                                >
+                                  <Receipt className="w-3.5 h-3.5 text-[#34D399]" />
+                                  <span>Registrar Cobro & Recibo X</span>
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setMenuAbiertoId(null);
+                                    handleDescargarContratoPdf(contrato);
+                                  }}
+                                  className="w-full text-left px-3.5 py-2 hover:bg-[#262832] hover:text-white flex items-center gap-2 transition-colors"
+                                >
+                                  <FileText className="w-3.5 h-3.5 text-slate-400" />
+                                  <span>Descargar Contrato PDF</span>
+                                </button>
+                                <a
+                                  href="/indices"
+                                  className="w-full text-left px-3.5 py-2 hover:bg-[#262832] hover:text-white flex items-center gap-2 transition-colors block"
+                                >
+                                  <TrendingUp className="w-3.5 h-3.5 text-teal-400" />
+                                  <span>Calcular Ajuste ICL/IPC</span>
+                                </a>
+                                <a
+                                  href="/liquidaciones"
+                                  className="w-full text-left px-3.5 py-2 hover:bg-[#262832] hover:text-white flex items-center gap-2 transition-colors block"
+                                >
+                                  <Wallet className="w-3.5 h-3.5 text-emerald-400" />
+                                  <span>Liquidar a Propietario</span>
+                                </a>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </td>
                   </tr>

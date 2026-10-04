@@ -16,6 +16,8 @@ export const metadata = {
   description: "Administración integral de contratos de locación, índices de ajuste, cobros y liquidaciones.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ContratosPage() {
   const contratos = await getContratosHubAction();
 
