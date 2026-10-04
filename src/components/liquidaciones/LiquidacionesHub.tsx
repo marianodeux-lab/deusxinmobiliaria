@@ -280,86 +280,80 @@ export function LiquidacionesHub({
       {/* 2. TARJETAS KPI EJECUTIVAS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Total Pendiente a Rendir */}
-        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-amber-500/35 shadow-sm relative overflow-hidden">
+        <div className="p-4 rounded-xl bg-[#1C1D23] border border-amber-500/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-amber-200 uppercase tracking-wider">
               Pendiente a Rendir
             </span>
-            <div className="w-8 h-8 rounded-lg bg-amber-950/60 text-amber-300 border border-amber-700/50 flex items-center justify-center">
-              <Clock className="w-4 h-4" />
+            <div className="flex items-center gap-1.5 shrink-0">
+              {kpis.cantidadPendientes > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-950/80 text-amber-300 border border-amber-700/60 shrink-0 whitespace-nowrap">
+                  {kpis.cantidadPendientes} a transferir
+                </span>
+              )}
+              <div className="w-7 h-7 rounded-lg bg-amber-950/60 text-amber-300 border border-amber-700/50 flex items-center justify-center shrink-0">
+                <Clock className="w-3.5 h-3.5" />
+              </div>
             </div>
           </div>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-extrabold text-amber-300 font-mono tracking-tight">
-              {formatCurrency(kpis.totalPendienteRendirArs, "ARS")}
-            </span>
-            {kpis.cantidadPendientes > 0 && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-950/80 text-amber-300 border border-amber-700/60">
-                {kpis.cantidadPendientes} a transferir
-              </span>
-            )}
+          <div className="mt-2 text-xl font-bold text-amber-300 font-mono tracking-tight whitespace-nowrap">
+            {formatCurrency(kpis.totalPendienteRendirArs, "ARS")}
           </div>
-          <div className="mt-2 text-[11px] text-slate-400">
+          <div className="mt-1.5 text-[11px] text-slate-400">
             Fondos de propietarios en custodia listos para liquidar
           </div>
         </div>
 
         {/* KPI 2: Total Rendido en el Mes */}
-        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#10B981]/35 shadow-sm relative overflow-hidden">
+        <div className="p-4 rounded-xl bg-[#1C1D23] border border-[#10B981]/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-[#A7F3D0] uppercase tracking-wider">
               Rendido en el Mes
             </span>
-            <div className="w-8 h-8 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center">
-              <CheckCircle2 className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-2">
-            <span className="text-2xl font-extrabold text-[#34D399] font-mono tracking-tight">
-              {formatCurrency(kpis.totalRendidoMesArs, "ARS")}
-            </span>
+          <div className="mt-2 text-xl font-bold text-[#34D399] font-mono tracking-tight whitespace-nowrap">
+            {formatCurrency(kpis.totalRendidoMesArs, "ARS")}
           </div>
-          <div className="mt-2 text-[11px] text-slate-400">
+          <div className="mt-1.5 text-[11px] text-slate-400">
             {kpis.cantidadRendidas} liquidaciones completadas
           </div>
         </div>
 
         {/* KPI 3: Honorarios Ganados por Administración */}
-        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#10B981]/35 shadow-sm relative overflow-hidden">
+        <div className="p-4 rounded-xl bg-[#1C1D23] border border-[#10B981]/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-[#A7F3D0] uppercase tracking-wider">
               Honorarios Inmobiliaria
             </span>
-            <div className="w-8 h-8 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center">
-              <DollarSign className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center shrink-0">
+              <DollarSign className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-2">
-            <span className="text-2xl font-extrabold text-[#34D399] font-mono tracking-tight">
-              {formatCurrency(kpis.totalComisionesGanadasArs, "ARS")}
-            </span>
+          <div className="mt-2 text-xl font-bold text-[#34D399] font-mono tracking-tight whitespace-nowrap">
+            {formatCurrency(kpis.totalComisionesGanadasArs, "ARS")}
           </div>
-          <div className="mt-2 text-[11px] text-slate-400 font-medium">
+          <div className="mt-1.5 text-[11px] text-slate-400 font-medium">
             Comisión retenida por administración (4.13% - 5%)
           </div>
         </div>
 
         {/* KPI 4: Total Bruto Administrado */}
-        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#262832] shadow-sm relative overflow-hidden">
+        <div className="p-4 rounded-xl bg-[#1C1D23] border border-[#262832] shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
               Total Bruto Administrado
             </span>
-            <div className="w-8 h-8 rounded-lg bg-[#141519] text-slate-300 border border-[#262832] flex items-center justify-center">
-              <Building className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-lg bg-[#141519] text-slate-300 border border-[#262832] flex items-center justify-center shrink-0">
+              <Building className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-2">
-            <span className="text-2xl font-extrabold text-white font-mono tracking-tight">
-              {formatCurrency(kpis.totalBrutoPercibidoMesArs + kpis.totalPendienteRendirArs, "ARS")}
-            </span>
+          <div className="mt-2 text-xl font-bold text-white font-mono tracking-tight whitespace-nowrap">
+            {formatCurrency(kpis.totalBrutoPercibidoMesArs + kpis.totalPendienteRendirArs, "ARS")}
           </div>
-          <div className="mt-2 text-[11px] text-slate-500">
+          <div className="mt-1.5 text-[11px] text-slate-400">
             Volumen locativo operado en el período
           </div>
         </div>

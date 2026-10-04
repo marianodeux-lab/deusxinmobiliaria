@@ -242,15 +242,15 @@ export function NuevoContratoForm() {
 
             {/* Propietarios detectados automáticamente de la propiedad */}
             {inmuebleSeleccionado && (
-              <div className="p-3 bg-[#f0f9f8] rounded-lg border border-[#b2dfdb] text-xs">
-                <span className="text-[10px] font-bold text-[#004d40] uppercase tracking-wider block mb-1">
+              <div className="p-3 bg-[#141519] rounded-lg border border-[#10B981]/30 text-xs shadow-2xs">
+                <span className="text-[10px] font-bold text-[#34D399] uppercase tracking-wider block mb-1">
                   Propietario(s) Titular(es) Vinculados a la Propiedad:
                 </span>
                 <div className="space-y-1">
                   {inmuebleSeleccionado.propietarios.map((p) => (
-                    <div key={p.id} className="flex justify-between font-semibold text-slate-800">
+                    <div key={p.id} className="flex justify-between font-semibold text-slate-200">
                       <span>{p.nombre}</span>
-                      <span className="font-mono text-[#004d40]">{p.porcentaje}% Titularidad</span>
+                      <span className="font-mono text-[#34D399] font-bold">{p.porcentaje}% Titularidad</span>
                     </div>
                   ))}
                 </div>
@@ -497,36 +497,36 @@ export function NuevoContratoForm() {
 
             <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
               <div className="flex justify-between">
-                <span className="text-slate-500">Inmueble:</span>
-                <span className="font-bold text-slate-900 text-right truncate max-w-[160px]">
+                <span className="text-slate-400">Inmueble:</span>
+                <span className="font-bold text-white text-right truncate max-w-[160px]">
                   {inmuebleSeleccionado?.direccion}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">Inquilino:</span>
-                <span className="font-semibold text-slate-800 text-right truncate max-w-[160px]">
+                <span className="text-slate-400">Inquilino:</span>
+                <span className="font-semibold text-slate-200 text-right truncate max-w-[160px]">
                   {inquilinoSeleccionado?.nombre}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">Vigencia:</span>
-                <span className="font-mono text-slate-800 font-semibold">
+                <span className="text-slate-400">Vigencia:</span>
+                <span className="font-mono text-slate-200 font-semibold">
                   {formatDate(fechaInicio)} al {formatDate(fechaFinCalculada)}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">Canon Inicial:</span>
-                <span className="font-mono font-bold text-slate-900">
+                <span className="text-slate-400">Canon Inicial:</span>
+                <span className="font-mono font-bold text-white">
                   {formatCurrency(valorAlquilerInicial, moneda)}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">Comisión Adm. ({porcentajeHonorarios}%):</span>
-                <span className="font-mono text-[#004d40] font-bold">
+                <span className="text-slate-400">Comisión Adm. ({porcentajeHonorarios}%):</span>
+                <span className="font-mono text-[#34D399] font-bold">
                   {formatCurrency(valorAlquilerInicial * (porcentajeHonorarios / 100), moneda)}
                 </span>
               </div>
@@ -534,18 +534,18 @@ export function NuevoContratoForm() {
 
             {/* Cronograma Proyectado de Actualizaciones */}
             <div>
-              <h4 className="text-[11px] font-bold text-slate-700 mb-1.5 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-[#004d40]" />
+              <h4 className="text-[11px] font-bold text-slate-300 mb-1.5 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-[#10B981]" />
                 <span>Fechas Proyectadas de Ajuste {tipoAjuste}:</span>
               </h4>
               <div className="space-y-1 max-h-44 overflow-y-auto pr-1">
                 {cronogramaAjustes.map((aj, idx) => (
                   <div
                     key={idx}
-                    className="p-1.5 bg-[#f0f9f8] rounded border border-[#b2dfdb] flex justify-between text-[11px]"
+                    className="p-1.5 bg-[#141519] rounded border border-[#262832] hover:border-[#10B981]/40 flex justify-between text-[11px] transition-colors"
                   >
-                    <span className="text-slate-700 font-medium">Mes {aj.mes} ({aj.fecha})</span>
-                    <span className="font-bold text-[#004d40] font-mono">Ajuste {aj.tipo}</span>
+                    <span className="text-slate-200 font-medium">Mes {aj.mes} ({aj.fecha})</span>
+                    <span className="font-bold text-[#34D399] font-mono">Ajuste {aj.tipo}</span>
                   </div>
                 ))}
               </div>

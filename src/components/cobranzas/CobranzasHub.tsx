@@ -283,42 +283,40 @@ export function CobranzasHub({
       {/* 2. TARJETAS KPI EJECUTIVAS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Total Exigible */}
-        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#262832] shadow-sm relative overflow-hidden">
+        <div className="p-4 rounded-xl bg-[#1C1D23] border border-[#262832] shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
               Total a Recaudar
             </span>
-            <div className="w-8 h-8 rounded-lg bg-[#141519] text-slate-300 border border-[#262832] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#141519] text-slate-300 border border-[#262832] flex items-center justify-center shrink-0">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-2">
-            <span className="text-2xl font-extrabold text-white font-mono tracking-tight">
-              {formatCurrency(kpis.totalExigibleArs, "ARS")}
-            </span>
+          <div className="mt-2 text-xl font-bold text-white font-mono tracking-tight whitespace-nowrap">
+            {formatCurrency(kpis.totalExigibleArs, "ARS")}
           </div>
-          <div className="mt-2 text-[11px] text-slate-400">
+          <div className="mt-1.5 text-[11px] text-slate-400">
             {kpis.cantidadTotal} contratos devengados en el mes
           </div>
         </div>
 
         {/* KPI 2: Total Efectivizado / Cobrado */}
-        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-[#10B981]/35 shadow-sm relative overflow-hidden">
+        <div className="p-4 rounded-xl bg-[#1C1D23] border border-[#10B981]/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-[#A7F3D0] uppercase tracking-wider">
               Cobrado / Recaudado
             </span>
-            <div className="w-8 h-8 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center">
-              <CheckCircle2 className="w-4 h-4" />
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-xs font-bold text-[#A7F3D0] bg-[#00382E] px-1.5 py-0.5 rounded border border-[#10B981]/40 whitespace-nowrap">
+                {kpis.porcentajeCobrado}%
+              </span>
+              <div className="w-7 h-7 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+              </div>
             </div>
           </div>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-extrabold text-[#34D399] font-mono tracking-tight">
-              {formatCurrency(kpis.totalCobradoArs, "ARS")}
-            </span>
-            <span className="text-xs font-bold text-[#A7F3D0]">
-              {kpis.porcentajeCobrado}%
-            </span>
+          <div className="mt-2 text-xl font-bold text-[#34D399] font-mono tracking-tight whitespace-nowrap">
+            {formatCurrency(kpis.totalCobradoArs, "ARS")}
           </div>
           {/* Barra de Progreso */}
           <div className="mt-2 w-full bg-[#101115] rounded-full h-1.5 overflow-hidden">
@@ -327,52 +325,50 @@ export function CobranzasHub({
               style={{ width: `${Math.min(100, kpis.porcentajeCobrado)}%` }}
             />
           </div>
-          <div className="mt-1 text-[11px] text-slate-400">
+          <div className="mt-1.5 text-[11px] text-slate-400">
             {kpis.cantidadCobrados} de {kpis.cantidadTotal} alquileres cancelados
           </div>
         </div>
 
         {/* KPI 3: Pendientes a Vencer */}
-        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-amber-500/35 shadow-sm relative overflow-hidden">
+        <div className="p-4 rounded-xl bg-[#1C1D23] border border-amber-500/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-amber-200 uppercase tracking-wider">
               Pendientes de Cobro
             </span>
-            <div className="w-8 h-8 rounded-lg bg-amber-950/60 text-amber-300 border border-amber-700/50 flex items-center justify-center">
-              <Clock className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-lg bg-amber-950/60 text-amber-300 border border-amber-700/50 flex items-center justify-center shrink-0">
+              <Clock className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-2">
-            <span className="text-2xl font-extrabold text-amber-300 font-mono tracking-tight">
-              {formatCurrency(kpis.totalPendienteArs, "ARS")}
-            </span>
+          <div className="mt-2 text-xl font-bold text-amber-300 font-mono tracking-tight whitespace-nowrap">
+            {formatCurrency(kpis.totalPendienteArs, "ARS")}
           </div>
-          <div className="mt-2 text-[11px] text-slate-400 font-medium">
+          <div className="mt-1.5 text-[11px] text-slate-400 font-medium">
             {kpis.cantidadPendientes} contratos por vencer antes del día 10
           </div>
         </div>
 
         {/* KPI 4: Cartera en Mora */}
-        <div className="p-4 rounded-2xl bg-[#1C1D23] border border-rose-500/35 shadow-sm relative overflow-hidden">
+        <div className="p-4 rounded-xl bg-[#1C1D23] border border-rose-500/35 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-rose-200 uppercase tracking-wider">
               Cartera en Mora
             </span>
-            <div className="w-8 h-8 rounded-lg bg-rose-950/60 text-rose-300 border border-rose-700/50 flex items-center justify-center">
-              <AlertTriangle className="w-4 h-4" />
+            <div className="flex items-center gap-1.5 shrink-0">
+              {kpis.cantidadMora > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-950/80 text-rose-300 border border-rose-700/60 shrink-0 whitespace-nowrap">
+                  {kpis.cantidadMora} en mora
+                </span>
+              )}
+              <div className="w-7 h-7 rounded-lg bg-rose-950/60 text-rose-300 border border-rose-700/50 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-3.5 h-3.5" />
+              </div>
             </div>
           </div>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-extrabold text-rose-300 font-mono tracking-tight">
-              {formatCurrency(kpis.totalMoraArs, "ARS")}
-            </span>
-            {kpis.cantidadMora > 0 && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-950/80 text-rose-300 border border-rose-700/60 animate-pulse">
-                {kpis.cantidadMora} en mora
-              </span>
-            )}
+          <div className="mt-2 text-xl font-bold text-rose-300 font-mono tracking-tight whitespace-nowrap">
+            {formatCurrency(kpis.totalMoraArs, "ARS")}
           </div>
-          <div className="mt-2 text-[11px] text-slate-400 font-medium">
+          <div className="mt-1.5 text-[11px] text-slate-400 font-medium">
             {kpis.cantidadMora === 0
               ? "0 atrasos registrados ¡Al día!"
               : `${kpis.cantidadMora} alquileres vencidos con punitorios`}
@@ -629,7 +625,7 @@ export function CobranzasHub({
                         <td className="py-3 px-4 align-top">
                           {item.estado_cobranza === "cobrado" && (
                             <div>
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#00382E] text-[#34D399] border border-[#10B981]/50">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#00382E] text-[#34D399] border border-[#10B981]/50 whitespace-nowrap shrink-0">
                                 <CheckCircle2 className="w-3 h-3 text-[#10B981]" />
                                 Cobrado
                               </span>
@@ -642,7 +638,7 @@ export function CobranzasHub({
                           )}
 
                           {item.estado_cobranza === "pendiente" && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950/60 text-amber-300 border border-amber-700/60">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950/60 text-amber-300 border border-amber-700/60 whitespace-nowrap shrink-0">
                               <Clock className="w-3 h-3 text-amber-400" />
                               Pendiente
                             </span>
@@ -650,7 +646,7 @@ export function CobranzasHub({
 
                           {item.estado_cobranza === "mora" && (
                             <div>
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-950/60 text-rose-300 border border-rose-700/60">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-950/60 text-rose-300 border border-rose-700/60 whitespace-nowrap shrink-0">
                                 <AlertTriangle className="w-3 h-3 text-rose-400" />
                                 En Mora ({item.dias_mora}d)
                               </span>

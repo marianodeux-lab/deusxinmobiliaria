@@ -137,18 +137,29 @@ export async function logoutAction() {
   redirect("/login");
 }
 
+const SUPERADMIN_EMAILS = [
+  "marianodeux@gmail.com",
+  "deusinmobiliaria9@gmail.com",
+];
+
 /**
- * Server Action: Verificar si el usuario autenticado es el SuperAdmin (marianodeux@gmail.com)
- * El resto de los usuarios tienen denegado el acceso y visibilidad al panel.
+ * Server Action: Verificar si el usuario autenticado es el SuperAdmin (marianodeux@gmail.com o deusinmobiliaria9@gmail.com)
+ * En entorno de desarrollo local (localhost), habilita el acceso para pruebas de gobierno SaaS.
  */
 export async function isSuperAdminUserAction(): Promise<boolean> {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !user.email) return false;
-    return user.email.toLowerCase().trim() === "marianodeux@gmail.com";
-  } catch {
+    if (user && user.email) {
+      return SUPERADMIN_EMAILS.includes(user.email.toLowerCase().trim());
+    }
+    // En desarrollo local en localhost, permitir acceso para configuración y testing
+    if (process.env.NODE_ENV === "development") {
+      return true;
+    }
     return false;
+  } catch {
+    return process.env.NODE_ENV === "development";
   }
 }
 

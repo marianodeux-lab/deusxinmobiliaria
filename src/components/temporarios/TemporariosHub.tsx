@@ -27,7 +27,7 @@ import {
   Home,
   Check,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import {
   ReservaTemporariaItem,
   TemporariosKpis,
@@ -151,73 +151,76 @@ export function TemporariosHub({
   return (
     <div className="space-y-6">
       {/* HEADER DE MÓDULO */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-teal-100 shadow-xs">
+      <div className="flex flex-col 2xl:flex-row 2xl:items-center justify-between gap-4 bg-[#1C1D23] p-5 rounded-xl border border-[#262832] shadow-sm">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-teal-50 text-[#004d40]">
-              <CalendarDays className="w-6 h-6 text-[#004d40]" />
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-lg bg-[#00382E] border border-[#10B981]/30 text-[#34D399] shrink-0">
+              <CalendarDays className="w-6 h-6 text-[#34D399]" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-                Alquileres Temporarios & Vacacionales
-                <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-[#E0F2F1] text-[#004d40] border border-[#80CBC4]">
-                  {items.length} Reservas
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight whitespace-nowrap">
+                  Alquileres Temporarios & Vacacionales
+                </h1>
+                <span className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 min-w-[130px] rounded-full text-xs font-bold bg-[#00382E] text-[#34D399] border border-[#10B981]/40 whitespace-nowrap shrink-0 shadow-sm tracking-wide">
+                  <span className="w-2 h-2 rounded-full bg-[#10B981] shrink-0" />
+                  <span>{items.length} Reservas</span>
                 </span>
-              </h1>
-              <p className="text-xs text-slate-500 font-medium">
+              </div>
+              <p className="text-xs text-slate-400 font-medium mt-1">
                 Control de check-in / check-out, sincronización de canales (Airbnb/Booking), tarifas por noche y housekeeping.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-between 2xl:justify-end gap-3 pt-2 2xl:pt-0 border-t border-[#262832]/60 2xl:border-t-0">
           {/* Tabs Selector */}
-          <div className="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200">
+          <div className="flex items-center bg-[#101115] p-1 rounded-lg border border-[#262832]">
             <button
               onClick={() => setActiveTab("reservas")}
               className={cn(
-                "px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5",
+                "px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap",
                 activeTab === "reservas"
-                  ? "bg-white text-[#004d40] shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-[#1C1D23] text-[#34D399] border border-[#10B981]/30 shadow-xs"
+                  : "text-slate-400 hover:text-white"
               )}
             >
-              <ListFilter className="w-3.5 h-3.5" />
-              Reservas
+              <ListFilter className="w-3.5 h-3.5 shrink-0" />
+              <span>Reservas</span>
             </button>
             <button
               onClick={() => setActiveTab("calendario")}
               className={cn(
-                "px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5",
+                "px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap",
                 activeTab === "calendario"
-                  ? "bg-white text-[#004d40] shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-[#1C1D23] text-[#34D399] border border-[#10B981]/30 shadow-xs"
+                  : "text-slate-400 hover:text-white"
               )}
             >
-              <Calendar className="w-3.5 h-3.5" />
-              Matriz Ocupación
+              <Calendar className="w-3.5 h-3.5 shrink-0" />
+              <span>Matriz Ocupación</span>
             </button>
             <button
               onClick={() => setActiveTab("housekeeping")}
               className={cn(
-                "px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5",
+                "px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap",
                 activeTab === "housekeeping"
-                  ? "bg-white text-[#004d40] shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-[#1C1D23] text-[#34D399] border border-[#10B981]/30 shadow-xs"
+                  : "text-slate-400 hover:text-white"
               )}
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              Housekeeping
+              <Sparkles className="w-3.5 h-3.5 shrink-0" />
+              <span>Housekeeping</span>
             </button>
           </div>
 
           <button
             onClick={() => setIsCrearModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#004d40] hover:bg-[#00382e] text-white rounded-lg text-sm font-bold shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99]"
+            className="flex items-center gap-2 px-4 py-2 bg-[#004d40] hover:bg-[#00382e] text-white rounded-lg text-sm font-bold shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99] whitespace-nowrap shrink-0 border border-[#10B981]/30"
           >
-            <Plus className="w-4 h-4" />
-            Nueva Reserva
+            <Plus className="w-4 h-4 shrink-0" />
+            <span>Nueva Reserva</span>
           </button>
         </div>
       </div>
@@ -304,7 +307,7 @@ export function TemporariosHub({
       {activeTab === "reservas" && (
         <div className="space-y-4">
           {/* Barra de Filtros */}
-          <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs flex flex-col md:flex-row gap-3 items-center justify-between">
+          <div className="bg-[#1C1D23] p-3.5 rounded-xl border border-[#262832] shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
             <div className="relative w-full md:w-96">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
@@ -312,23 +315,23 @@ export function TemporariosHub({
                 placeholder="Buscar por huésped, dirección o código..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#004d40] focus:bg-white"
+                className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#101115] border border-[#262832] text-slate-100 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#10B981] placeholder:text-slate-500"
               />
             </div>
 
             <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
               {/* Filtro Canal */}
-              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg text-xs font-medium">
+              <div className="flex items-center gap-1 bg-[#101115] p-1 rounded-lg text-xs font-medium border border-[#262832]">
                 <span className="text-slate-400 text-[10px] uppercase font-bold px-1.5">Canal:</span>
                 {["todos", "Directo", "Airbnb", "Booking.com"].map((canal) => (
                   <button
                     key={canal}
                     onClick={() => setFilterCanal(canal)}
                     className={cn(
-                      "px-2.5 py-1 rounded-md text-xs font-semibold capitalize transition-colors",
+                      "px-2.5 py-1 rounded-md text-xs font-semibold capitalize transition-colors whitespace-nowrap",
                       filterCanal === canal
-                        ? "bg-[#004d40] text-white"
-                        : "text-slate-600 hover:text-slate-900"
+                        ? "bg-[#004d40] text-[#34D399] border border-[#10B981]/40"
+                        : "text-slate-400 hover:text-white"
                     )}
                   >
                     {canal}
@@ -337,18 +340,18 @@ export function TemporariosHub({
               </div>
 
               {/* Filtro Estado */}
-              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg text-xs font-medium">
+              <div className="flex items-center gap-1 bg-[#101115] p-1 rounded-lg text-xs font-medium border border-[#262832]">
                 <span className="text-slate-400 text-[10px] uppercase font-bold px-1.5">Estado:</span>
                 <select
                   value={filterEstado}
                   onChange={(e) => setFilterEstado(e.target.value)}
-                  className="bg-transparent text-xs font-semibold text-slate-700 focus:outline-none pr-1"
+                  className="bg-transparent text-xs font-semibold text-slate-200 focus:outline-none pr-1"
                 >
-                  <option value="todos">Todos</option>
-                  <option value="confirmada">Confirmadas</option>
-                  <option value="en_estadia">En Estadía</option>
-                  <option value="check_out_realizado">Check-out Realizado</option>
-                  <option value="cancelada">Canceladas</option>
+                  <option value="todos" className="bg-[#1C1D23] text-white">Todos</option>
+                  <option value="confirmada" className="bg-[#1C1D23] text-white">Confirmadas</option>
+                  <option value="en_estadia" className="bg-[#1C1D23] text-white">En Estadía</option>
+                  <option value="check_out_realizado" className="bg-[#1C1D23] text-white">Check-out Realizado</option>
+                  <option value="cancelada" className="bg-[#1C1D23] text-white">Canceladas</option>
                 </select>
               </div>
             </div>
@@ -401,7 +404,7 @@ export function TemporariosHub({
                               <a
                                 href={buildWhatsAppLink(
                                   reserva.huesped_telefono,
-                                  `Hola ${reserva.huesped_nombre}, te contactamos de DeusX Inmobiliaria sobre tu reserva en ${reserva.direccion_inmueble}. Check-in: ${reserva.fecha_checkin}. Código de acceso: ${reserva.codigo_cerradura || "Se entrega en mano"}.`
+                                  `Hola ${reserva.huesped_nombre}, te contactamos de DeusX Inmobiliaria sobre tu reserva en ${reserva.direccion_inmueble}. Check-in: ${formatDate(reserva.fecha_checkin)}. Código de acceso: ${reserva.codigo_cerradura || "Se entrega en mano"}.`
                                 )}
                                 target="_blank"
                                 rel="noreferrer"
@@ -428,8 +431,8 @@ export function TemporariosHub({
                         </td>
 
                         <td className="py-3.5 px-4">
-                          <div className="font-mono text-slate-700 text-xs">
-                            {reserva.fecha_checkin} → {reserva.fecha_checkout}
+                          <div className="font-mono text-slate-200 text-xs">
+                            {formatDate(reserva.fecha_checkin)} → {formatDate(reserva.fecha_checkout)}
                           </div>
                           <span className="text-[11px] font-bold text-[#004d40]">
                             {reserva.noches} {reserva.noches === 1 ? "noche" : "noches"}
@@ -527,7 +530,7 @@ export function TemporariosHub({
                               key={res.id}
                               onClick={() => setSelectedReserva(res)}
                               className="col-span-4 bg-teal-100 border border-teal-300 rounded text-[#004d40] px-2 py-1 flex items-center justify-between text-[10px] font-bold cursor-pointer hover:bg-teal-200 transition-colors truncate"
-                              title={`${res.huesped_nombre} (${res.fecha_checkin} al ${res.fecha_checkout})`}
+                              title={`${res.huesped_nombre} (${formatDate(res.fecha_checkin)} al ${formatDate(res.fecha_checkout)})`}
                             >
                               <span className="truncate">{res.huesped_nombre}</span>
                               <span className="font-mono text-[9px]">({res.noches}n)</span>
@@ -764,8 +767,8 @@ function HousekeepingColumn({
                 Huésped: <span className="font-semibold text-slate-700">{r.huesped_nombre}</span>
               </div>
 
-              <div className="text-[10px] font-mono text-slate-500">
-                Check-out: {r.fecha_checkout}
+              <div className="text-[10px] font-mono text-slate-400">
+                Check-out: {formatDate(r.fecha_checkout)}
               </div>
 
               {nextAction && (
@@ -808,8 +811,8 @@ function DetalleVoucherModal({
 ---------------------------------------
 Huésped: ${reserva.huesped_nombre}
 Inmueble: ${reserva.direccion_inmueble} (${reserva.localidad})
-Check-in: ${reserva.fecha_checkin} (desde las 14:00 hs)
-Check-out: ${reserva.fecha_checkout} (hasta las 10:00 hs)
+Check-in: ${formatDate(reserva.fecha_checkin)} (desde las 14:00 hs)
+Check-out: ${formatDate(reserva.fecha_checkout)} (hasta las 10:00 hs)
 Noches: ${reserva.noches}
 Cerradura Electrónica: ${reserva.codigo_cerradura || "Entrega en mano"}
 ---------------------------------------
@@ -878,7 +881,7 @@ Total Estadía: ${reserva.moneda === "USD" ? `US$ ${reserva.total_estadia}` : `$
             <div className="p-3 bg-white border border-slate-200 rounded-lg">
               <span className="text-[10px] uppercase font-bold text-slate-400 block">Check-in</span>
               <span className="text-sm font-bold text-slate-800 block font-mono">
-                {reserva.fecha_checkin}
+                {formatDate(reserva.fecha_checkin)}
               </span>
               <span className="text-[10px] text-slate-400">14:00 hs</span>
             </div>
@@ -886,7 +889,7 @@ Total Estadía: ${reserva.moneda === "USD" ? `US$ ${reserva.total_estadia}` : `$
             <div className="p-3 bg-white border border-slate-200 rounded-lg">
               <span className="text-[10px] uppercase font-bold text-slate-400 block">Check-out</span>
               <span className="text-sm font-bold text-slate-800 block font-mono">
-                {reserva.fecha_checkout}
+                {formatDate(reserva.fecha_checkout)}
               </span>
               <span className="text-[10px] text-slate-400">10:00 hs ({reserva.noches} noches)</span>
             </div>

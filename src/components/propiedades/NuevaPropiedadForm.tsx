@@ -880,21 +880,21 @@ export function NuevaPropiedadForm() {
                 </div>
 
                 <div>
-                  <h5 className="text-[11px] font-bold text-slate-700 mb-1.5">
+                  <h5 className="text-[11px] font-bold text-slate-300 mb-1.5">
                     Titulares ({propietarios.length}):
                   </h5>
                   <div className="space-y-1.5">
                     {propietarios.map((p) => (
                       <div
                         key={p.id}
-                        className="text-xs p-2 bg-[#f0f9f8] rounded border border-[#b2dfdb] flex justify-between items-center"
+                        className="text-xs p-2 bg-[#141519] rounded border border-[#262832] flex justify-between items-center"
                       >
-                        <span className="font-semibold text-slate-800 truncate max-w-[130px]">
+                        <span className="font-semibold text-slate-200 truncate max-w-[130px]">
                           {p.nombre}
                         </span>
                         <div className="text-right font-mono text-[10px]">
-                          <span className="font-bold text-[#004d40] block">{p.porcentaje}% Titular</span>
-                          <span className="text-slate-500 block">Hon: {p.honorario_porcentual}%</span>
+                          <span className="font-bold text-[#34D399] block">{p.porcentaje}% Titular</span>
+                          <span className="text-slate-400 block">Hon: {p.honorario_porcentual}%</span>
                         </div>
                       </div>
                     ))}

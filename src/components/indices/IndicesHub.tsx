@@ -35,6 +35,68 @@ import {
 } from "@/modules/indices/actions";
 import { buildWhatsAppLink } from "@/lib/whatsapp/whatsappHelper";
 
+export function getIndiceColorProps(tipo: string) {
+  const upper = tipo?.toUpperCase() || "";
+  if (upper.includes("ICL")) {
+    return {
+      badge: "bg-amber-950/60 text-[#FBBF24] border border-amber-500/40",
+      text: "text-[#FBBF24]",
+      val: "text-[#FDE68A]",
+      border: "border-amber-500/35",
+      bgSubtle: "bg-amber-950/20",
+      name: "ICL (BCRA)"
+    };
+  }
+  if (upper.includes("IPC")) {
+    return {
+      badge: "bg-orange-950/60 text-[#FB923C] border border-orange-500/40",
+      text: "text-[#FB923C]",
+      val: "text-[#FED7AA]",
+      border: "border-orange-500/35",
+      bgSubtle: "bg-orange-950/20",
+      name: "IPC (INDEC)"
+    };
+  }
+  if (upper.includes("UVA")) {
+    return {
+      badge: "bg-purple-950/60 text-[#C084FC] border border-purple-500/40",
+      text: "text-[#C084FC]",
+      val: "text-[#E9D5FF]",
+      border: "border-purple-500/35",
+      bgSubtle: "bg-purple-950/20",
+      name: "UVA (BCRA)"
+    };
+  }
+  if (upper.includes("BLUE")) {
+    return {
+      badge: "bg-sky-950/60 text-[#38BDF8] border border-sky-500/40",
+      text: "text-[#38BDF8]",
+      val: "text-[#BAE6FD]",
+      border: "border-sky-500/35",
+      bgSubtle: "bg-sky-950/20",
+      name: "USD Blue"
+    };
+  }
+  if (upper.includes("OFICIAL")) {
+    return {
+      badge: "bg-emerald-950/60 text-[#34D399] border border-emerald-500/40",
+      text: "text-[#34D399]",
+      val: "text-[#A7F3D0]",
+      border: "border-emerald-500/35",
+      bgSubtle: "bg-emerald-950/20",
+      name: "USD Oficial"
+    };
+  }
+  return {
+    badge: "bg-slate-800 text-slate-300 border border-slate-700",
+    text: "text-slate-200",
+    val: "text-white",
+    border: "border-slate-700",
+    bgSubtle: "bg-slate-900/40",
+    name: tipo
+  };
+}
+
 interface IndicesHubProps {
   initialIndices: IndicePunto[];
   initialContratos: ContratoParaAjuste[];
@@ -186,67 +248,78 @@ export function IndicesHub({
 
       {/* KPI METRIC CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
-        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
+        {/* ICL: Dorado */}
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-amber-500/35 shadow-[0_0_12px_-3px_rgba(245,158,11,0.12)]">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#A7F3D0]">ICL (BCRA)</span>
-            <span className="text-[10px] font-bold text-[#34D399] bg-[#00382E] px-1.5 py-0.5 rounded border border-[#10B981]/40">
+            <span className="text-xs font-bold text-[#FBBF24]">ICL (BCRA)</span>
+            <span className="text-[10px] font-bold text-[#FDE68A] bg-amber-950/70 px-1.5 py-0.5 rounded border border-amber-500/40">
               +{kpis.iclVariacionInteranual}% i.a.
             </span>
           </div>
-          <div className="text-2xl font-black text-white mt-2 font-mono">
+          <div className="text-2xl font-black text-[#FBBF24] mt-2 font-mono">
             {kpis.iclUltimo.toFixed(2)}
           </div>
-          <div className="text-[11px] text-slate-300 mt-0.5">
+          <div className="text-[11px] text-amber-200/70 mt-0.5 font-medium">
             Índice Contratos de Locación
           </div>
         </div>
 
-        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#2DD4BF]/30 shadow-sm">
+        {/* IPC: Naranja */}
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-orange-500/35 shadow-[0_0_12px_-3px_rgba(249,115,22,0.12)]">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#99F6E4]">IPC (INDEC)</span>
-            <span className="text-[10px] font-bold text-[#2DD4BF] bg-[#00382E] px-1.5 py-0.5 rounded border border-[#2DD4BF]/40">
+            <span className="text-xs font-bold text-[#FB923C]">IPC (INDEC)</span>
+            <span className="text-[10px] font-bold text-[#FED7AA] bg-orange-950/70 px-1.5 py-0.5 rounded border border-orange-500/40">
               +{kpis.ipcVariacionMensual}% m/m
             </span>
           </div>
-          <div className="text-2xl font-black text-[#2DD4BF] mt-2 font-mono">
+          <div className="text-2xl font-black text-[#FB923C] mt-2 font-mono">
             {kpis.ipcUltimo.toFixed(1)}
           </div>
-          <div className="text-[11px] text-slate-300 mt-0.5">
+          <div className="text-[11px] text-orange-200/70 mt-0.5 font-medium">
             Inflación Minorista Oficial
           </div>
         </div>
 
-        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
+        {/* UVA: Morado */}
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-purple-500/35 shadow-[0_0_12px_-3px_rgba(168,85,247,0.12)]">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#A7F3D0]">UVA (BCRA)</span>
-            <div className="w-6 h-6 rounded-lg bg-[#00382E] border border-[#10B981]/40 flex items-center justify-center text-[#34D399]">
+            <span className="text-xs font-bold text-[#C084FC]">UVA (BCRA)</span>
+            <div className="w-6 h-6 rounded-lg bg-purple-950/70 border border-purple-500/40 flex items-center justify-center text-[#C084FC]">
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="text-2xl font-black text-white mt-2 font-mono">
+          <div className="text-2xl font-black text-[#C084FC] mt-2 font-mono">
             ${kpis.uvaUltimo.toFixed(2)}
           </div>
-          <div className="text-[11px] text-slate-300 mt-0.5">
+          <div className="text-[11px] text-purple-200/70 mt-0.5 font-medium">
             Unidad de Valor Adquisitivo
           </div>
         </div>
 
-        <div className="bg-[#1C1D23] p-4 rounded-xl border border-[#10B981]/30 shadow-sm">
+        {/* Dólar Oficial (Verde) / Blue (Azul) */}
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-sky-500/35 shadow-[0_0_12px_-3px_rgba(56,189,248,0.12)]">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#A7F3D0]">Dólar Oficial / Blue</span>
-            <div className="w-6 h-6 rounded-lg bg-[#00382E] border border-[#10B981]/40 flex items-center justify-center text-[#34D399]">
+            <div className="flex items-center gap-1.5 text-xs font-bold">
+              <span className="text-[#34D399]">USD Oficial</span>
+              <span className="text-slate-500">/</span>
+              <span className="text-[#38BDF8]">Blue</span>
+            </div>
+            <div className="w-6 h-6 rounded-lg bg-sky-950/70 border border-sky-500/40 flex items-center justify-center text-[#38BDF8]">
               <DollarSign className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="text-lg font-black text-white mt-2 font-mono flex items-baseline gap-1">
-            ${kpis.usdOficial} <span className="text-xs text-slate-400">/</span> ${kpis.usdBlue}
+          <div className="text-lg font-black mt-2 font-mono flex items-baseline gap-1.5">
+            <span className="text-[#34D399] font-bold">${kpis.usdOficial}</span>
+            <span className="text-xs text-slate-500">/</span>
+            <span className="text-[#38BDF8] font-bold">${kpis.usdBlue}</span>
           </div>
-          <div className="text-[11px] text-[#34D399] mt-0.5 font-medium">
+          <div className="text-[11px] text-sky-200/80 mt-0.5 font-medium">
             Brecha: {Math.round(((kpis.usdBlue - kpis.usdOficial) / kpis.usdOficial) * 100)}%
           </div>
         </div>
 
-        <div className="bg-[#1C1D23] p-4 rounded-xl border border-amber-500/30 shadow-sm col-span-2 md:col-span-1">
+        {/* Ajustes Requeridos */}
+        <div className="bg-[#1C1D23] p-4 rounded-xl border border-amber-500/35 shadow-sm col-span-2 md:col-span-1">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-amber-200">Ajustes Requeridos</span>
             <div className="w-6 h-6 rounded-lg bg-amber-950/60 border border-amber-700/50 flex items-center justify-center text-amber-300">
@@ -300,7 +373,7 @@ export function IndicesHub({
               </div>
 
               <div>
-                <label className="font-bold text-slate-600 block mb-1">
+                <label className="font-bold text-slate-300 block mb-1">
                   Índice de Contrato
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -312,8 +385,16 @@ export function IndicesHub({
                       className={cn(
                         "py-2 rounded-lg text-xs font-bold transition-all border",
                         calcIndice === ind
-                          ? "bg-[#004d40] text-white border-[#004d40] shadow-xs"
-                          : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                          ? ind === "ICL"
+                            ? "bg-amber-950/60 text-[#FBBF24] border-amber-500 shadow-sm"
+                            : ind === "IPC"
+                            ? "bg-orange-950/60 text-[#FB923C] border-orange-500 shadow-sm"
+                            : "bg-purple-950/60 text-[#C084FC] border-purple-500 shadow-sm"
+                          : ind === "ICL"
+                          ? "bg-[#141519] text-slate-400 border-[#262832] hover:bg-[#1E1F26] hover:text-[#FBBF24] hover:border-amber-500/30"
+                          : ind === "IPC"
+                          ? "bg-[#141519] text-slate-400 border-[#262832] hover:bg-[#1E1F26] hover:text-[#FB923C] hover:border-orange-500/30"
+                          : "bg-[#141519] text-slate-400 border-[#262832] hover:bg-[#1E1F26] hover:text-[#C084FC] hover:border-purple-500/30"
                       )}
                     >
                       {ind}
@@ -324,7 +405,7 @@ export function IndicesHub({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-slate-600 block mb-1">Fecha Inicial (Base)</label>
+                  <label className="font-bold text-slate-300 block mb-1">Fecha Inicial (Base)</label>
                   <input
                     type="date"
                     value={calcFechaIni}
@@ -334,7 +415,7 @@ export function IndicesHub({
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-600 block mb-1">Fecha de Ajuste</label>
+                  <label className="font-bold text-slate-300 block mb-1">Fecha de Ajuste</label>
                   <input
                     type="date"
                     value={calcFechaFin}
@@ -358,35 +439,56 @@ export function IndicesHub({
           {/* Panel Derecho: Resultado y Plantilla de Notificación */}
           <div className="md:col-span-7 space-y-4">
             {calcResult ? (
-              <div className="bg-white rounded-xl border border-teal-200 shadow-xs p-6 space-y-5">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className={cn(
+                "rounded-xl border shadow-xs p-6 space-y-5 bg-[#1C1D23]",
+                calcIndice === "ICL"
+                  ? "border-amber-500/40"
+                  : calcIndice === "IPC"
+                  ? "border-orange-500/40"
+                  : "border-purple-500/40"
+              )}>
+                <div className="flex items-center justify-between border-b border-[#262832] pb-4">
                   <div>
-                    <span className="text-[11px] font-bold text-slate-400 uppercase block">
+                    <span className={cn(
+                      "text-[11px] font-bold uppercase block tracking-wider",
+                      calcIndice === "ICL"
+                        ? "text-[#FBBF24]"
+                        : calcIndice === "IPC"
+                        ? "text-[#FB923C]"
+                        : "text-[#C084FC]"
+                    )}>
                       Resultado de Indexación ({calcIndice})
                     </span>
-                    <h3 className="text-2xl font-black text-slate-800 font-mono mt-1">
+                    <h3 className="text-2xl font-black text-white font-mono mt-1">
                       ${calcResult.nuevoMonto.toLocaleString("es-AR")}
-                      <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full ml-2 border border-emerald-200">
+                      <span className={cn(
+                        "text-xs font-bold px-2 py-0.5 rounded-full ml-2 border",
+                        calcIndice === "ICL"
+                          ? "text-[#FDE68A] bg-amber-950/70 border-amber-500/40"
+                          : calcIndice === "IPC"
+                          ? "text-[#FED7AA] bg-orange-950/70 border-orange-500/40"
+                          : "text-[#E9D5FF] bg-purple-950/70 border-purple-500/40"
+                      )}>
                         +{calcResult.porcentajeVariacion}%
                       </span>
                     </h3>
                   </div>
 
                   <div className="text-right">
-                    <span className="text-[11px] text-slate-400 block">Diferencia mensual</span>
-                    <span className="text-sm font-bold text-emerald-700 font-mono">
+                    <span className="text-[11px] text-slate-400 block font-medium">Diferencia mensual</span>
+                    <span className="text-sm font-bold text-[#34D399] font-mono">
                       +${(calcResult.nuevoMonto - calcMonto).toLocaleString("es-AR")}
                     </span>
                   </div>
                 </div>
 
                 {/* Parámetros Técnicos */}
-                <div className="grid grid-cols-3 gap-3 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                <div className="grid grid-cols-3 gap-3 text-xs bg-[#141519] p-3.5 rounded-xl border border-[#262832]">
                   <div>
                     <span className="text-[10px] uppercase font-bold text-slate-400 block">
                       Índice Inicial ({calcFechaIni})
                     </span>
-                    <span className="font-mono font-bold text-slate-700">
+                    <span className="font-mono font-bold text-slate-200">
                       {calcResult.valorIni}
                     </span>
                   </div>
@@ -395,7 +497,7 @@ export function IndicesHub({
                     <span className="text-[10px] uppercase font-bold text-slate-400 block">
                       Índice Final ({calcFechaFin})
                     </span>
-                    <span className="font-mono font-bold text-slate-700">
+                    <span className="font-mono font-bold text-slate-200">
                       {calcResult.valFin}
                     </span>
                   </div>
@@ -404,16 +506,37 @@ export function IndicesHub({
                     <span className="text-[10px] uppercase font-bold text-slate-400 block">
                       Coeficiente Multiplicador
                     </span>
-                    <span className="font-mono font-black text-[#004d40]">
+                    <span className={cn(
+                      "font-mono font-black",
+                      calcIndice === "ICL"
+                        ? "text-[#FBBF24]"
+                        : calcIndice === "IPC"
+                        ? "text-[#FB923C]"
+                        : "text-[#C084FC]"
+                    )}>
                       {calcResult.coeficiente.toFixed(6)}
                     </span>
                   </div>
                 </div>
 
                 {/* Notificación para enviar al inquilino / propietario */}
-                <div className="p-4 bg-teal-50/50 rounded-xl border border-teal-100 space-y-3">
+                <div className={cn(
+                  "p-4 rounded-xl border space-y-3",
+                  calcIndice === "ICL"
+                    ? "bg-amber-950/20 border-amber-500/30"
+                    : calcIndice === "IPC"
+                    ? "bg-orange-950/20 border-orange-500/30"
+                    : "bg-purple-950/20 border-purple-500/30"
+                )}>
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-extrabold text-[#004d40] uppercase tracking-wide">
+                    <span className={cn(
+                      "text-[11px] font-extrabold uppercase tracking-wide",
+                      calcIndice === "ICL"
+                        ? "text-[#FBBF24]"
+                        : calcIndice === "IPC"
+                        ? "text-[#FB923C]"
+                        : "text-[#C084FC]"
+                    )}>
                       Texto de Notificación de Actualización
                     </span>
                     <button
@@ -423,11 +546,18 @@ export function IndicesHub({
                         setCopiedNotification(true);
                         setTimeout(() => setCopiedNotification(false), 2000);
                       }}
-                      className="flex items-center gap-1 text-[11px] font-bold text-[#004d40] hover:text-[#002e26] bg-white px-2.5 py-1 rounded border border-teal-200 transition-colors"
+                      className={cn(
+                        "flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded border transition-colors",
+                        calcIndice === "ICL"
+                          ? "bg-[#141519] text-[#FBBF24] border-amber-500/40 hover:bg-amber-950/50"
+                          : calcIndice === "IPC"
+                          ? "bg-[#141519] text-[#FB923C] border-orange-500/40 hover:bg-orange-950/50"
+                          : "bg-[#141519] text-[#C084FC] border-purple-500/40 hover:bg-purple-950/50"
+                      )}
                     >
                       {copiedNotification ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-600" /> Copiado
+                          <Check className="w-3.5 h-3.5 text-emerald-400" /> Copiado
                         </>
                       ) : (
                         <>
@@ -437,7 +567,7 @@ export function IndicesHub({
                     </button>
                   </div>
 
-                  <p className="text-xs text-slate-700 bg-white p-3 rounded-lg border border-slate-200 leading-relaxed font-mono">
+                  <p className="text-xs text-slate-200 bg-[#141519] p-3 rounded-lg border border-[#262832] leading-relaxed font-mono">
                     "Estimado/a: Le notificamos la actualización de su canon locativo según índice {calcIndice} ({calcResult.valorIni} → {calcResult.valFin}). Su nuevo valor mensual a partir del período corriente es de ${calcResult.nuevoMonto.toLocaleString("es-AR")} (variación del {calcResult.porcentajeVariacion}%). Atentamente, DeusX Inmobiliaria."
                   </p>
                 </div>
@@ -512,7 +642,10 @@ export function IndicesHub({
                       </td>
 
                       <td className="py-3.5 px-4">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#E0F2F1] text-[#004d40] border border-[#80CBC4]">
+                        <span className={cn(
+                          "px-2.5 py-1 rounded text-xs font-bold border",
+                          getIndiceColorProps(c.tipo_ajuste).badge
+                        )}>
                           {c.tipo_ajuste} ({c.frecuencia_meses} meses)
                         </span>
                       </td>
@@ -604,23 +737,26 @@ export function IndicesHub({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-xs font-mono">
-                {indices.map((ind) => (
-                  <tr key={ind.id} className="hover:bg-slate-50">
-                    <td className="py-2.5 px-4">
-                      <span className="font-sans font-bold text-slate-800 px-2 py-0.5 rounded bg-slate-100">
-                        {ind.tipo_indice}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-4 text-slate-600">{ind.fecha}</td>
-                    <td className="py-2.5 px-4 font-bold text-slate-900">
-                      {ind.tipo_indice.includes("USD") || ind.tipo_indice === "UVA" ? "$" : ""}
-                      {ind.valor.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
-                    </td>
-                    <td className="py-2.5 px-4 font-sans text-slate-500 text-[11px]">
-                      {ind.fuente}
-                    </td>
-                  </tr>
-                ))}
+                {indices.map((ind) => {
+                  const colorProps = getIndiceColorProps(ind.tipo_indice);
+                  return (
+                    <tr key={ind.id} className="hover:bg-[#141519]/70 transition-colors">
+                      <td className="py-2.5 px-4">
+                        <span className={cn("font-sans font-bold px-2.5 py-1 rounded text-xs", colorProps.badge)}>
+                          {ind.tipo_indice}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-4 text-slate-300">{ind.fecha}</td>
+                      <td className={cn("py-2.5 px-4 font-bold text-sm font-mono", colorProps.val)}>
+                        {ind.tipo_indice.includes("USD") || ind.tipo_indice === "UVA" ? "$" : ""}
+                        {ind.valor.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="py-2.5 px-4 font-sans text-slate-400 text-[11px]">
+                        {ind.fuente}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -735,7 +871,10 @@ function ModalIndexarContrato({
               <span className="text-[10px] text-slate-400 uppercase font-sans font-bold block">
                 Índice Pactado
               </span>
-              <span className="font-bold text-[#004d40] text-sm">
+              <span className={cn(
+                "font-bold text-xs px-2.5 py-1 rounded border inline-block mt-1",
+                getIndiceColorProps(contrato.tipo_ajuste).badge
+              )}>
                 {contrato.tipo_ajuste} (cada {contrato.frecuencia_meses} meses)
               </span>
             </div>

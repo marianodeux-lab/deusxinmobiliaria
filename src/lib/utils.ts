@@ -29,17 +29,28 @@ export function formatCurrency(
 }
 
 /**
- * Formatea fechas a formato argentino DD/MM/AAAA
+ * Formatea fechas al formato estándar argentino DD/MM/AA (ej. 12/10/26)
  */
 export function formatDate(dateInput: string | Date | null | undefined): string {
   if (!dateInput) return "-";
+  
+  // Si viene en formato string YYYY-MM-DD simple, parsear directamente para evitar desfasaje de timezones UTC
+  if (typeof dateInput === "string") {
+    const clean = dateInput.trim();
+    const match = clean.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+      const [, year, month, day] = match;
+      return `${day}/${month}/${year.slice(2)}`;
+    }
+  }
+
   const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
   if (isNaN(date.getTime())) return "-";
 
   return new Intl.DateTimeFormat("es-AR", {
     day: "2-digit",
     month: "2-digit",
-    year: "numeric",
+    year: "2-digit",
     timeZone: "UTC",
   }).format(date);
 }
