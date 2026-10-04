@@ -27,6 +27,8 @@ import {
   Shield,
   Clock,
   Landmark,
+  HelpCircle,
+  ArrowRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -37,6 +39,7 @@ import {
   EmitirFacturaInput,
 } from "@/modules/caja/actions";
 import { buildWhatsAppLink } from "@/lib/whatsapp/whatsappHelper";
+import { GuiaIntegracionArcaModal } from "./GuiaIntegracionArcaModal";
 
 interface CajaHubProps {
   initialMovimientos: MovimientoCajaItem[];
@@ -60,6 +63,7 @@ export function CajaHub({
 
   const [selectedFactura, setSelectedFactura] = useState<FacturaAfipItem | null>(null);
   const [isEmitirOpen, setIsEmitirOpen] = useState(false);
+  const [showGuiaArca, setShowGuiaArca] = useState(false);
 
   // Filtrado de movimientos de caja
   const filteredMovimientos = useMemo(() => {
@@ -90,9 +94,14 @@ export function CajaHub({
             <div>
               <h1 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
                 Facturación AFIP / ARCA & Caja Diaria
-                <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-[#E0F2F1] text-[#004d40] border border-[#80CBC4]">
-                  Punto de Venta 0004
-                </span>
+                <button
+                  onClick={() => setShowGuiaArca(true)}
+                  className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-[#E0F2F1] text-[#004d40] border border-[#80CBC4] hover:bg-[#B2DFDB] transition-all flex items-center gap-1 cursor-pointer"
+                  title="Consultar Punto de Venta y guía ARCA"
+                >
+                  <span>Punto de Venta Web Services</span>
+                  <HelpCircle className="w-3.5 h-3.5 text-[#00796B]" />
+                </button>
               </h1>
               <p className="text-xs text-slate-500 font-medium">
                 Arqueo de tesorería diaria, cobros en mostrador, emisión de Facturas B/C/A electrónicas con CAE y código QR oficial.
@@ -101,7 +110,7 @@ export function CajaHub({
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Tabs Selector */}
           <div className="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200">
             <button
@@ -138,9 +147,18 @@ export function CajaHub({
               )}
             >
               <ShieldCheck className="w-3.5 h-3.5" />
-              Conexión AFIP
+              Conexión ARCA / AFIP
             </button>
           </div>
+
+          <button
+            onClick={() => setShowGuiaArca(true)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold border border-slate-300 shadow-2xs transition-all active:scale-95"
+            title="Guía detallada de integración con ARCA / AFIP"
+          >
+            <HelpCircle className="w-4 h-4 text-emerald-700" />
+            <span>Guía ARCA</span>
+          </button>
 
           <button
             onClick={() => setIsEmitirOpen(true)}
@@ -489,56 +507,88 @@ export function CajaHub({
       {/* VISTA 3: CONEXIÓN & ESTADO AFIP */}
       {activeTab === "afip_config" && (
         <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs p-6 space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
             <div>
               <h3 className="font-extrabold text-base text-slate-800 flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                Estado del Servidor de Facturación Electrónica (WSFE v1)
+                <span>Estado del Servidor de Facturación Electrónica (WSFE v1)</span>
               </h3>
               <p className="text-xs text-slate-500 mt-1">
-                Conexión segura de web services de AFIP / ARCA para autorización en tiempo real de comprobantes.
+                Conexión segura de web services de AFIP / ARCA para autorización en tiempo real de comprobantes fiscales.
               </p>
             </div>
-            <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Online / Autorizado
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-300 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                Configuración Pendiente
+              </span>
+              <button
+                onClick={() => setShowGuiaArca(true)}
+                className="px-3 py-1 text-xs font-bold text-[#004d40] bg-[#e0f2f1] hover:bg-[#b2dfdb] rounded-lg border border-[#80cbc4] flex items-center gap-1.5 transition-all"
+              >
+                <HelpCircle className="w-3.5 h-3.5 text-[#00796b]" />
+                <span>Ver Guía ARCA</span>
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                Datos Fiscales del Emisor
-              </span>
-              <div className="font-bold text-slate-800 text-sm">DEUSX INMOBILIARIA</div>
-              <div className="font-mono text-slate-600">CUIT: 30-71429812-4</div>
-              <div className="text-slate-500">Punto de Venta Oficial: 0004</div>
-              <div className="text-slate-500">Ingresos Brutos: 30-71429812-4</div>
-              <div className="text-slate-500">Inicio de Actividades: 01/01/2020</div>
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+              <div className="space-y-2">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                  Datos Fiscales del Emisor
+                </span>
+                <div className="font-bold text-slate-700 text-sm">Pendiente de Carga</div>
+                <div className="font-mono text-slate-500">CUIT: Sin configurar</div>
+                <div className="text-slate-500">Punto de Venta: A definir (ej: 0004 o 0005)</div>
+                <div className="text-slate-500">Ingresos Brutos: No configurado</div>
+              </div>
+              <a
+                href="/configuracion"
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-100 text-slate-800 font-bold border border-slate-300 rounded-lg text-xs transition-colors"
+              >
+                <span>Completar en Configuración</span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+              </a>
             </div>
 
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                Certificado Digital X.509
-              </span>
-              <div className="font-bold text-slate-800 text-sm">Certificado de Homologación</div>
-              <div className="font-mono text-xs text-emerald-700 font-bold">Válido hasta: 12/2027</div>
-              <div className="text-slate-500 text-[11px]">
-                Clave privada RSA 2048 bits vinculada con CUIT
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+              <div className="space-y-2">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                  Certificado Digital X.509
+                </span>
+                <div className="font-bold text-slate-700 text-sm">Sin Certificado Activo</div>
+                <div className="text-xs text-amber-700 font-semibold">Requiere archivos .crt y .key</div>
+                <div className="text-slate-500 text-[11px] leading-relaxed">
+                  Web Services requeridos: WSAA (Autenticación) + WSFEv1 (Facturación)
+                </div>
               </div>
-              <div className="text-slate-500 text-[11px]">
-                Web Services: WSAA (Autenticación) + WSFEv1 (Facturación)
-              </div>
+              <a
+                href="/configuracion"
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-[#004d40] hover:bg-[#00382e] text-white font-bold rounded-lg text-xs transition-colors shadow-xs"
+              >
+                <span>Cargar Certificado Digital</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
             </div>
 
-            <div className="p-4 bg-teal-50/60 rounded-xl border border-teal-200 space-y-2">
-              <span className="text-[10px] uppercase font-bold text-[#004d40] block">
-                Validez Oficial AFIP QR (RG 4291)
-              </span>
-              <div className="font-bold text-[#004d40] text-sm">Resolución General 4291/2018</div>
-              <p className="text-[11px] text-slate-600 leading-relaxed">
-                Todos los comprobantes emitidos incluyen el código QR con datos fiscales firmados en Base64 para escaneo obligatorio de ARCA/AFIP.
-              </p>
+            <div className="p-4 bg-teal-50/60 rounded-xl border border-teal-200 flex flex-col justify-between space-y-3">
+              <div className="space-y-2">
+                <span className="text-[10px] uppercase font-bold text-[#004d40] block tracking-wider">
+                  Validez Oficial AFIP QR (RG 4291)
+                </span>
+                <div className="font-bold text-[#004d40] text-sm">Resolución General 4291/2018</div>
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  Al cargar tu CUIT y certificados, todos los comprobantes emitidos obtendrán automáticamente el CAE oficial y el código QR fiscal firmado en Base64.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowGuiaArca(true)}
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-teal-50 text-[#004d40] font-bold border border-teal-300 rounded-lg text-xs transition-colors"
+              >
+                <HelpCircle className="w-3.5 h-3.5 text-[#00796b]" />
+                <span>¿Cómo dar de alta en ARCA?</span>
+              </button>
             </div>
           </div>
         </div>
@@ -563,6 +613,12 @@ export function CajaHub({
           }}
         />
       )}
+
+      {/* MODAL GUÍA DE INTEGRACIÓN ARCA / AFIP */}
+      <GuiaIntegracionArcaModal
+        isOpen={showGuiaArca}
+        onClose={() => setShowGuiaArca(false)}
+      />
     </div>
   );
 }
