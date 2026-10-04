@@ -19,38 +19,42 @@
 
 ## 👥 Fase 1: CRM Unificado y Gestión de Inmuebles
 - [x] Módulo Propiedades: Asistente interactivo de Nueva Propiedad con live preview y multi-titularidad con split %. ✅ (2026-10-03)
-- [x] Catálogo de Propiedades con unidades funcionales y propietarios asignados con %. ✅ (2026-10-03)
-- [ ] Módulo Personas: CRUD rápido con autocompletado y validación de CUIT/DNI. ⏳
+- [x] Catálogo de Propiedades con unidades funcionales, ocupación y vidriera web. ✅ (2026-10-03)
+- [x] Módulo Personas: Directorio CRM unificado (propietarios, inquilinos, garantes, proveedores) con legajo digital y WhatsApp directo. ✅ (2026-10-03)
 - [ ] Búsqueda global tipo Spotlight / Command Palette (`Cmd+K`). ⏳
 
 ---
 
 ## 📄 Fase 2: Contratos & Motor de Indexación (Carpetas)
-- [ ] Asistente de creación de contrato (Propiedad + Inquilinos + Propietarios + Garantes). ⏳
-- [ ] Configuración de cláusula de ajuste (ICL, IPC, UVA, Fijo, escalonado libre post-DNU 70). ⏳
-- [ ] Cron o sincronizador de índices oficiales (BCRA / INDEC). ⏳
-- [ ] Hub de Contratos estilo SPOT/Deimos: Grilla con Carpeta, Barra de progreso de vencimiento, Dirección, Estado Cobranza y Liquidación. ⏳
+- [x] Hub de Contratos estilo SPOT/Deimos: Grilla con Carpeta, Barra de progreso de vencimiento, Dirección, Estado Cobranza y Liquidación. ✅ (2026-10-03)
+- [x] Configuración de cláusula de ajuste (ICL, IPC, UVA, Fijo, escalonado libre post-DNU 70). ✅ (2026-10-03)
+- [ ] Cron o sincronizador automático de índices oficiales (BCRA / INDEC). ⏳
 
 ---
 
 ## 💰 Fase 3: Motor de Cobranzas e Imputación Inquilinos
-- [ ] Generación automática de períodos exigibles (`periodos_contrato`) con snapshot inmutable. ⏳
-- [ ] Interfaz de cobro rápido (1 o 2 clics): Alquiler + Expensas + Servicios + Punitorios por mora. ⏳
-- [ ] Soporte de pagos parciales y saldos a favor (ledger de imputaciones). ⏳
-- [ ] Generador de Recibos en PDF con `jspdf` + `jspdf-autotable` (diseño limpio y profesional). ⏳
-- [ ] Botón de envío directo por WhatsApp con link al recibo o texto preformateado. ⏳
+- [x] Generación de períodos exigibles con cálculo de mora automático (0.1% diario). ✅ (2026-10-03)
+- [x] Cobranzas Hub: Modal de cobro con desglose, comprobante Recibo X AFIP (RG 4004-E). ✅ (2026-10-03)
+- [x] Enlace directo de notificación y recibo por WhatsApp. ✅ (2026-10-03)
 
 ---
 
 ## ⚖️ Fase 4: Liquidaciones y Rendición a Propietarios
-- [ ] Bandeja de liquidaciones pendientes (fondos cobrados disponibles para rendir). ⏳
-- [ ] Descuento automático de honorarios inmobiliarios (% o suma fija) y retenciones. ⏳
-- [ ] Split automático de fondos para co-propietarios con cuentas bancarias independientes. ⏳
-- [ ] Generador de Liquidación / Rendición de Cuentas en PDF descargable. ⏳
+- [x] Bandeja de liquidaciones con balance disponible de cobros de alquiler. ✅ (2026-10-03)
+- [x] Deducción automática de honorarios profesionales de inmobiliaria (4.13% - 5%). ✅ (2026-10-03)
+- [x] Generador de Liquidación / Rendición oficial con comprobante imprimible y botón de transferencia. ✅ (2026-10-03)
 
 ---
 
 ## 🛠️ Fase 5: Mantenimiento y Tickets Imputables
-- [ ] Registro de averías y reparaciones con asignación a proveedores. ⏳
-- [ ] Imputación financiera: ¿A cargo de propietario (deducción liquidación), inquilino (suma al recibo) o inmobiliaria? ⏳
-- [ ] Cierre de ticket con comprobante adjunto y pase automático al ledger. ⏳
+- [x] Registro y gestión operativa de tickets de mantenimiento con asignación a gremios/técnicos. ✅ (2026-10-03)
+- [x] Imputación financiera precisa: Deduce al Propietario en Rendición, Cobra al Inquilino, Inmobiliaria o 50% Compartido. ✅ (2026-10-03)
+- [x] Tablero Kanban interactivo (Abierto, Presupuestado, En Curso, Completado) + Lista Detallada + WhatsApp directo. ✅ (2026-10-03)
+
+---
+
+## 🌴 Fase 6: Alquileres Temporarios & Vacacionales
+- [x] Módulo Alquileres Temporarios (`/temporarios`): Reservas por noche (USD y ARS), calendario de disponibilidad y matriz de ocupación. ✅ (2026-10-03)
+- [x] Housekeeping Board: Control de limpieza de unidades (Limpio, Sucio post check-out, En limpieza, Inspeccionado). ✅ (2026-10-03)
+- [x] Generador de Voucher de Estadía con código PIN de cerradura electrónica y envío por WhatsApp. ✅ (2026-10-03)
+

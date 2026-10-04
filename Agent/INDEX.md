@@ -29,6 +29,7 @@
 │   │   │   ├── propiedades/       # CRM de inmuebles, unidades funcionales y carteles
 │   │   │   ├── personas/          # CRM unificado de contactos (inquilinos/propietarios/garantes)
 │   │   │   ├── mantenimiento/     # Tickets de incidencias y gastos imputables
+│   │   │   ├── temporarios/       # Hub de alquileres temporarios, ocupación y vouchers
 │   │   │   ├── indices/           # Cotizaciones y series ICL / IPC / UVA / USD
 │   │   │   └── configuracion/     # Parámetros del tenant, talonarios y usuarios
 │   │   ├── api/                   # Route Handlers específicos (webhooks, cron jobs)
