@@ -9,8 +9,6 @@ import {
   TrendingUp, 
   Wallet, 
   AlertCircle,
-  FileCheck2,
-  CalendarCheck
 } from "lucide-react";
 
 export const metadata = {
@@ -30,11 +28,11 @@ export default async function ContratosPage() {
   const comisionEstimada = Math.round(montoTotalAlquileres * 0.08); // 8% honorario estándar
 
   return (
-    <div className="flex h-screen bg-[#080d16] text-slate-100 overflow-hidden font-sans">
-      {/* Sidebar Oscura con Acentos Neón */}
+    <div className="flex h-screen bg-[#18191E] text-slate-100 overflow-hidden font-sans">
+      {/* Sidebar Menú: Gris bien oscuro (#121316) */}
       <Sidebar />
 
-      {/* Área Principal de Trabajo */}
+      {/* Área Principal de Trabajo: Fondo Gris Oscuro (#18191E) */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Barra superior con cotizaciones e indicadores */}
         <TopBar />
@@ -42,11 +40,11 @@ export default async function ContratosPage() {
         {/* Contenido Principal */}
         <main className="flex-1 p-5 space-y-5 max-w-[1600px] w-full mx-auto">
           {/* Cabecera de Página */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-800">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#2A2C35]">
             <div>
               <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
                 <span>Hub de Contratos & Carpetas de Locación</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 font-mono">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#004D40]/80 text-[#34D399] border border-[#10B981]/50 font-mono">
                   LIVE
                 </span>
               </h1>
@@ -56,13 +54,13 @@ export default async function ContratosPage() {
             </div>
           </div>
 
-          {/* Métricas Operativas Clave con Fondos Degradados Oscuros Neón (Inspiradas en el Mockup UI) */}
+          {/* Tarjetas de Métricas con Degradados Verdes Esmeralda (Sin azul) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
             {/* KPI 1: Cobranzas Activas (Degradado Esmeralda Profundo) */}
-            <div className="bg-gradient-to-br from-[#00382e] via-[#004d40]/80 to-[#071d18] p-4 rounded-xl border border-emerald-500/30 shadow-lg relative overflow-hidden group">
+            <div className="bg-gradient-to-br from-[#00382E] via-[#004D40] to-[#06241D] p-4 rounded-xl border border-[#10B981]/40 shadow-xl relative overflow-hidden group">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-emerald-200">Cobranzas Mensuales</span>
-                <span className="p-1.5 rounded-lg bg-emerald-950/80 text-emerald-300 border border-emerald-700/60 shadow-xs">
+                <span className="text-xs font-bold text-[#A7F3D0]">Cobranzas Mensuales</span>
+                <span className="p-1.5 rounded-lg bg-[#002B23] text-[#34D399] border border-[#10B981]/40 shadow-xs">
                   <CircleDollarSign className="w-4 h-4" />
                 </span>
               </div>
@@ -70,20 +68,20 @@ export default async function ContratosPage() {
                 <span className="text-xl font-bold font-mono tabular-nums text-white">
                   {formatCurrency(montoTotalAlquileres || 4820000, "ARS")}
                 </span>
-                <span className="text-[11px] font-bold text-emerald-300 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-700/50">
+                <span className="text-[11px] font-bold text-[#34D399] bg-[#002B23] px-1.5 py-0.5 rounded border border-[#10B981]/40">
                   {porcentajeCobrado}%
                 </span>
               </div>
-              <div className="mt-1 text-[11px] text-emerald-200/80 font-medium">
+              <div className="mt-1 text-[11px] text-[#A7F3D0]/80 font-medium">
                 {contratosAlDia} de {totalContratos} carpetas al día
               </div>
             </div>
 
-            {/* KPI 2: Actualización ICL / IPC (Degradado Cyan Eléctrico) */}
-            <div className="bg-gradient-to-br from-[#072438] via-[#0c354e]/80 to-[#051522] p-4 rounded-xl border border-cyan-500/30 shadow-lg relative overflow-hidden group">
+            {/* KPI 2: Actualización ICL / IPC (Degradado Verde Esmeralda Radiante - Reemplazando Azul) */}
+            <div className="bg-gradient-to-br from-[#004D40] via-[#005E4E] to-[#0A332A] p-4 rounded-xl border border-[#10B981]/40 shadow-xl relative overflow-hidden group">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-cyan-200">Indexación ICL / IPC</span>
-                <span className="p-1.5 rounded-lg bg-cyan-950/80 text-cyan-300 border border-cyan-700/60 shadow-xs">
+                <span className="text-xs font-bold text-[#A7F3D0]">Indexación ICL / IPC</span>
+                <span className="p-1.5 rounded-lg bg-[#00382E] text-[#34D399] border border-[#10B981]/40 shadow-xs">
                   <TrendingUp className="w-4 h-4" />
                 </span>
               </div>
@@ -91,20 +89,20 @@ export default async function ContratosPage() {
                 <span className="text-xl font-bold font-mono tabular-nums text-white">
                   +124.5%
                 </span>
-                <span className="text-[11px] font-bold text-cyan-300 bg-cyan-950/80 px-1.5 py-0.5 rounded border border-cyan-700/50">
+                <span className="text-[11px] font-bold text-[#34D399] bg-[#00382E] px-1.5 py-0.5 rounded border border-[#10B981]/40">
                   BCRA
                 </span>
               </div>
-              <div className="mt-1 text-[11px] text-cyan-200/80 font-medium">
+              <div className="mt-1 text-[11px] text-[#A7F3D0]/80 font-medium">
                 3 contratos ajustan este mes
               </div>
             </div>
 
-            {/* KPI 3: Liquidaciones a Dueños (Degradado Ámbar Dorado) */}
-            <div className="bg-gradient-to-br from-[#2e1d08] via-[#3d270b]/80 to-[#1c1205] p-4 rounded-xl border border-amber-500/30 shadow-lg relative overflow-hidden group">
+            {/* KPI 3: Liquidaciones a Dueños (Degradado Esmeralda Petróleo con acento honorarios) */}
+            <div className="bg-gradient-to-br from-[#122A1E] via-[#004D40] to-[#0D1F17] p-4 rounded-xl border border-[#10B981]/35 shadow-xl relative overflow-hidden group">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-amber-200">Liquidaciones a Dueños</span>
-                <span className="p-1.5 rounded-lg bg-amber-950/80 text-amber-300 border border-amber-700/60 shadow-xs">
+                <span className="text-xs font-bold text-[#A7F3D0]">Liquidaciones a Dueños</span>
+                <span className="p-1.5 rounded-lg bg-[#002D22] text-[#34D399] border border-[#10B981]/40 shadow-xs">
                   <Wallet className="w-4 h-4" />
                 </span>
               </div>
@@ -112,17 +110,17 @@ export default async function ContratosPage() {
                 <span className="text-xl font-bold font-mono tabular-nums text-white">
                   {formatCurrency(comisionEstimada || 385000, "ARS")}
                 </span>
-                <span className="text-[11px] font-bold text-amber-300 bg-amber-950/80 px-1.5 py-0.5 rounded border border-amber-700/50">
+                <span className="text-[11px] font-bold text-amber-300 bg-[#1F2618] px-1.5 py-0.5 rounded border border-amber-600/40">
                   Honorarios
                 </span>
               </div>
-              <div className="mt-1 text-[11px] text-amber-200/80 font-medium">
+              <div className="mt-1 text-[11px] text-[#A7F3D0]/80 font-medium">
                 Retención de administración estimada (8%)
               </div>
             </div>
 
-            {/* KPI 4: Control de Mora & Alertas (Degradado Rosa / Rojo) */}
-            <div className="bg-gradient-to-br from-[#2e0912] via-[#3d0d1b]/80 to-[#1c050a] p-4 rounded-xl border border-rose-500/30 shadow-lg relative overflow-hidden group">
+            {/* KPI 4: Control de Mora & Alertas (Gris Carbón Oscuro con Acento Borgoña/Esmeralda) */}
+            <div className="bg-gradient-to-br from-[#26171B] via-[#1F1518] to-[#171214] p-4 rounded-xl border border-rose-500/30 shadow-xl relative overflow-hidden group">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-rose-200">Mora & Alertas</span>
                 <span className="p-1.5 rounded-lg bg-rose-950/80 text-rose-300 border border-rose-700/60 shadow-xs">

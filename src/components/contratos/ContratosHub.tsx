@@ -269,29 +269,29 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
 
   return (
     <div className="space-y-4">
-      {/* Barra de Herramientas y Filtros */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      {/* Barra de Herramientas y Filtros (Gris Oscuro #1F2026) */}
+      <div className="bg-[#1F2026] p-4 rounded-xl border border-[#2A2C35] shadow-lg flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         {/* Input de Búsqueda Reactiva */}
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-600 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#10B981] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Buscar por carpeta (#), dirección, inquilino o dueño..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:bg-white transition-all text-slate-800 placeholder:text-slate-600"
+            className="w-full pl-9 pr-4 py-2 text-xs bg-[#16171C] border border-[#2A2C35] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10B981] transition-all text-white placeholder:text-slate-500"
           />
         </div>
 
-        {/* Filtros Rápidos (Pills anti-fatiga) */}
+        {/* Filtros Rápidos (Verde Esmeralda Predominante) */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
           <button
             onClick={() => setFilterStatus("todos")}
             className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap",
+              "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap border",
               filterStatus === "todos"
-                ? "bg-slate-800 text-white font-semibold"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200/80"
+                ? "bg-[#004D40] text-white border-[#10B981]/50 shadow-xs"
+                : "bg-[#16171C] text-slate-400 border-[#2A2C35] hover:bg-[#252831] hover:text-white"
             )}
           >
             Todos ({MOCK_CONTRATOS.length})
@@ -300,10 +300,10 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
           <button
             onClick={() => setFilterStatus("vigentes")}
             className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap",
+              "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap border",
               filterStatus === "vigentes"
-                ? "bg-slate-800 text-white font-semibold"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200/80"
+                ? "bg-[#004D40] text-white border-[#10B981]/50 shadow-xs"
+                : "bg-[#16171C] text-slate-400 border-[#2A2C35] hover:bg-[#252831] hover:text-white"
             )}
           >
             Vigentes
@@ -312,10 +312,10 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
           <button
             onClick={() => setFilterStatus("por_vencer")}
             className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1.5",
+              "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap flex items-center gap-1.5 border",
               filterStatus === "por_vencer"
-                ? "bg-amber-800 text-white font-semibold"
-                : "bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100"
+                ? "bg-amber-900/80 text-amber-200 border-amber-500/60 shadow-xs"
+                : "bg-[#16171C] text-amber-400 border-[#2A2C35] hover:bg-amber-950/40"
             )}
           >
             <Clock className="w-3.5 h-3.5" />
@@ -325,24 +325,24 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
           <button
             onClick={() => setFilterStatus("mora")}
             className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1.5",
+              "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap flex items-center gap-1.5 border",
               filterStatus === "mora"
-                ? "bg-rose-800 text-white font-semibold"
-                : "bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100"
+                ? "bg-rose-900/80 text-rose-200 border-rose-500/60 shadow-xs"
+                : "bg-[#16171C] text-rose-400 border-[#2A2C35] hover:bg-rose-950/40"
             )}
           >
-            <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+            <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
             En Mora
           </button>
         </div>
       </div>
 
-      {/* Tabla Operativa Principal (Hub Contratos estilo SPOT pero moderna) */}
-      <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden">
+      {/* Tabla Operativa Principal (Gris Oscuro #1F2026) */}
+      <div className="bg-[#1F2026] rounded-xl border border-[#2A2C35] shadow-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-100/75 border-b border-slate-200 text-[11px] font-bold text-slate-600 tracking-wider uppercase">
+              <tr className="bg-[#16171C] border-b border-[#262831] text-[11px] font-bold text-slate-400 tracking-wider uppercase">
                 <th className="py-3 px-3 text-center min-w-[5.5rem] w-24">Carpeta</th>
                 <th className="py-3 px-4 w-44">Vence / Vigencia</th>
                 <th className="py-3 px-4">Inmueble / Dirección</th>
@@ -351,7 +351,7 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
                 <th className="py-3 px-3 text-right">Acción</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-xs">
+            <tbody className="divide-y divide-[#262831] text-xs">
               {filteredContratos.map((contrato) => {
                 const { percent, daysRemaining, status } = calculateContractProgress(
                   contrato.fecha_inicio,
@@ -361,13 +361,13 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
                 return (
                   <tr
                     key={contrato.id}
-                    className="hover:bg-slate-50/80 transition-colors group"
+                    className="hover:bg-[#252831] transition-colors group border-b border-[#262831]/70"
                   >
                     {/* 1. CARPETA */}
                     <td className="py-3.5 px-3 text-center align-top">
                       <div
                         title={`Carpeta Nº ${contrato.carpeta_numero}`}
-                        className="inline-flex items-center justify-center min-w-[2.25rem] px-2.5 py-1 rounded-lg bg-slate-900 text-slate-100 font-mono font-bold text-xs shadow-2xs whitespace-nowrap"
+                        className="inline-flex items-center justify-center min-w-[2.25rem] px-2.5 py-1 rounded-lg bg-[#121316] text-[#34D399] font-mono font-bold text-xs border border-[#10B981]/30 shadow-xs whitespace-nowrap"
                       >
                         {contrato.carpeta_numero.length > 8
                           ? `#${contrato.carpeta_numero.slice(-4)}`

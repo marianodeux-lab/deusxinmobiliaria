@@ -2,72 +2,81 @@
 
 @layer base {
   :root {
-    /* Paleta Dark Obsidian / Emerald Slate (Inspirada en el Mockup UI Oficial de DeusX) */
-    --background: #080d16; /* Obsidian Canvas Deep */
-    --foreground: #f8fafc; /* Nítido blanco slate */
+    /* =========================================================
+       PALETA GRIS OSCURO CARBÓN & VERDE ESMERALDA (Sin Azul)
+       - Menú / Sidebar: Gris bien oscuro (#121316)
+       - Canvas / Fondo de la app: Gris oscuro (#18191E)
+       - Tarjetas y Contenedores: Gris oscuro (#1F2026)
+       - Acento Predominante: Verde Esmeralda (#004D40, #10B981, #34D399)
+       ========================================================= */
+    --background: #18191e; /* Gris oscuro canvas */
+    --foreground: #f8fafc; /* Blanco nítido lectura */
     
-    --card: #0f172a;       /* Slate 900 Glass Card */
+    --card: #1f2026;       /* Gris oscuro tarjetas */
     --card-foreground: #f8fafc;
     
-    --popover: #0f172a;
+    --popover: #1f2026;
     --popover-foreground: #f8fafc;
     
-    /* Acentos de Marca */
-    --primary: #10b981;    /* Bright Emerald Mint (#10B981) */
-    --primary-foreground: #022c22;
+    /* Verde Esmeralda Predominante */
+    --primary: #10b981;    /* Esmeralda brillante / menta */
+    --primary-foreground: #ffffff;
     
-    --brand-red: #f43f5e;
-    --brand-red-foreground: #ffffff;
+    --brand-emerald-dark: #00382e;
+    --brand-emerald: #004d40;
+    --brand-emerald-light: #00796b;
+    --brand-mint: #10b981;
+    --brand-mint-neon: #34d399;
     
-    --secondary: #132238;  /* Elevated Navy Slate */
-    --secondary-foreground: #2dd4bf;
+    --secondary: #262831;  /* Gris secundario elevado */
+    --secondary-foreground: #34d399;
     
-    --muted: #0d1522;
+    --muted: #16171c;
     --muted-foreground: #94a3b8;
     
-    --accent: #004d40;     /* Deep Emerald Brand */
+    --accent: #004d40;     /* Verde esmeralda profundo */
     --accent-foreground: #34d399;
     
-    --border: #1e293b;     /* Slate 800 */
-    --input: #1e293b;
+    --border: #2a2c35;     /* Borde gris neutro grafito */
+    --input: #16171c;
     --ring: #10b981;
     --radius: 0.5rem;
     
-    /* Estados Semánticos Glow en Oscuro */
-    --status-active-bg: rgba(16, 185, 129, 0.15);
+    /* Estados Semánticos Glow Esmeralda & Neutros */
+    --status-active-bg: rgba(0, 77, 64, 0.45);
     --status-active-text: #34d399;
-    --status-active-border: rgba(16, 185, 129, 0.3);
+    --status-active-border: rgba(16, 185, 129, 0.4);
     
-    --status-warning-bg: rgba(245, 158, 11, 0.15);
+    --status-warning-bg: rgba(120, 53, 15, 0.35);
     --status-warning-text: #fbbf24;
-    --status-warning-border: rgba(245, 158, 11, 0.3);
+    --status-warning-border: rgba(245, 158, 11, 0.35);
     
-    --status-danger-bg: rgba(244, 63, 94, 0.15);
+    --status-danger-bg: rgba(136, 19, 55, 0.35);
     --status-danger-text: #fb7185;
-    --status-danger-border: rgba(244, 63, 94, 0.3);
+    --status-danger-border: rgba(244, 63, 94, 0.35);
     
-    --status-info-bg: rgba(6, 182, 212, 0.15);
-    --status-info-text: #38bdf8;
-    --status-info-border: rgba(6, 182, 212, 0.3);
+    --status-info-bg: rgba(0, 77, 64, 0.4);
+    --status-info-text: #34d399;
+    --status-info-border: rgba(16, 185, 129, 0.35);
   }
 
   .dark {
-    --background: #080d16;
+    --background: #18191e;
     --foreground: #f8fafc;
-    --card: #0f172a;
+    --card: #1f2026;
     --card-foreground: #f8fafc;
-    --popover: #0f172a;
+    --popover: #1f2026;
     --popover-foreground: #f8fafc;
     --primary: #10b981;
-    --primary-foreground: #022c22;
-    --secondary: #132238;
-    --secondary-foreground: #2dd4bf;
-    --muted: #0d1522;
+    --primary-foreground: #ffffff;
+    --secondary: #262831;
+    --secondary-foreground: #34d399;
+    --muted: #16171c;
     --muted-foreground: #94a3b8;
     --accent: #004d40;
     --accent-foreground: #34d399;
-    --border: #1e293b;
-    --input: #1e293b;
+    --border: #2a2c35;
+    --input: #16171c;
     --ring: #10b981;
   }
 }
@@ -78,74 +87,74 @@ body {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-/* Alineación de cifras contables sin baile numérico */
+/* Alineación de cifras contables */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
 
-/* Scrollbars limpias para tablas densas en modo oscuro */
+/* Scrollbars limpias en gris oscuro y verde esmeralda */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #080d16;
+  background: #121316;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #2a2c35;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2dd4bf;
+  background: #10b981;
 }
 
 /* =========================================================
-   ADAPTACIONES DE TEMA OSCURO PARA MÓDULOS ERP (Dentro de <main>)
-   Transforma automáticamente las vistas en la interfaz PropTech
-   de alto impacto simulada en la Landing Page
+   ADAPTACIONES DE GRIS OSCURO & VERDE ESMERALDA (Dentro de <main>)
+   Reemplaza completamente todo lo azul oscuro y claro por
+   Gris Oscuro Grafito y Verde Esmeralda predominante.
 ========================================================= */
 
 main {
   color: #f8fafc;
 }
 
-/* Contenedores de tarjeta blancos convertidos a Slate 900 oscuro */
+/* Contenedores de tarjeta: Gris Oscuro (#1F2026) */
 main .bg-white {
-  background-color: #0f172a !important;
+  background-color: #1f2026 !important;
   color: #f8fafc;
 }
 
-/* Bordes claros convertidos a Slate 800 */
+/* Bordes: Gris Grafito Neutro (#2A2C35) */
 main .border-slate-200, 
 main .border-slate-200\/90, 
 main .border-slate-200\/80,
 main .border-slate-200\/60,
 main .border-slate-100 {
-  border-color: #1e293b !important;
+  border-color: #2a2c35 !important;
 }
 
-/* Fondos secundarios y cabeceras de tablas */
+/* Fondos secundarios y cabeceras: Gris Oscuro Intermedio (#16171C) */
 main .bg-slate-50, 
 main .bg-slate-50\/80, 
 main .bg-slate-50\/70 {
-  background-color: #0b1320 !important;
+  background-color: #16171c !important;
 }
 
-/* Hover de filas de tablas */
+/* Hover de filas en tablas: Gris (#252831) */
 main .hover\:bg-slate-50\/80:hover, 
 main .hover\:bg-slate-50:hover, 
 main .hover\:bg-slate-100:hover {
-  background-color: #132238 !important;
+  background-color: #252831 !important;
 }
 
-/* Tipografías adaptadas para contraste en modo oscuro */
+/* Tipografías nítidas */
 main .text-slate-900,
 main .text-slate-800 {
   color: #f8fafc !important;
 }
 
 main .text-slate-700 {
-  color: #cbd5e1 !important;
+  color: #e2e8f0 !important;
 }
 
 main .text-slate-600,
@@ -157,11 +166,16 @@ main .text-slate-400 {
   color: #64748b !important;
 }
 
-/* Inputs, Selects y Textareas en modo oscuro */
+/* Inputs, Selects y Textareas en gris oscuro con focus esmeralda */
 main input, main select, main textarea {
-  background-color: #0b1320 !important;
-  border-color: #1e293b !important;
+  background-color: #16171c !important;
+  border-color: #2a2c35 !important;
   color: #f8fafc !important;
+}
+
+main input:focus, main select:focus, main textarea:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 1px #10b981 !important;
 }
 
 main input::placeholder {
@@ -170,13 +184,13 @@ main input::placeholder {
 
 /* Separadores en listas y tablas */
 main .divide-slate-100 > * + * {
-  border-color: #1e293b !important;
+  border-color: #262831 !important;
 }
 
 /* Cabeceras de tabla */
 main thead {
-  background-color: #080d16 !important;
-  border-bottom-color: #1e293b !important;
+  background-color: #16171c !important;
+  border-bottom-color: #262831 !important;
 }
 
 main th {
@@ -185,54 +199,50 @@ main th {
 
 /* Botones secundarios */
 main .bg-slate-100 {
-  background-color: #162438 !important;
+  background-color: #16171c !important;
   color: #94a3b8 !important;
-  border-color: #1e293b !important;
+  border-color: #2a2c35 !important;
 }
 
+/* Botones activos y destacados en Verde Esmeralda */
 main .bg-slate-800 {
   background-color: #004d40 !important;
   color: #ffffff !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
 }
 
 main .bg-slate-900 {
-  background-color: #0b1320 !important;
+  background-color: #121316 !important;
   color: #f8fafc !important;
-  border-color: #1e293b !important;
+  border-color: #2a2c35 !important;
 }
 
-/* Badges con Glow Translúcido Neón */
-main .bg-emerald-50 {
-  background-color: rgba(6, 78, 59, 0.4) !important;
+/* Badges: Verde Esmeralda Predominante (Eliminando todo azul) */
+main .bg-emerald-50,
+main .bg-blue-50,
+main .bg-teal-50,
+main .bg-\[\#E0F2F1\],
+main .bg-\[\#E0F7FA\] {
+  background-color: rgba(0, 77, 64, 0.45) !important;
   color: #34d399 !important;
-  border-color: rgba(16, 185, 129, 0.3) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+main .text-blue-600,
+main .text-blue-500,
+main .text-cyan-600,
+main .text-cyan-500 {
+  color: #34d399 !important;
 }
 
 main .bg-amber-50 {
-  background-color: rgba(120, 53, 15, 0.4) !important;
+  background-color: rgba(120, 53, 15, 0.35) !important;
   color: #fbbf24 !important;
-  border-color: rgba(245, 158, 11, 0.3) !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
 }
 
 main .bg-rose-50 {
-  background-color: rgba(136, 19, 55, 0.4) !important;
+  background-color: rgba(136, 19, 55, 0.35) !important;
   color: #fb7185 !important;
-  border-color: rgba(244, 63, 94, 0.3) !important;
-}
-
-main .bg-blue-50 {
-  background-color: rgba(12, 74, 110, 0.4) !important;
-  color: #38bdf8 !important;
-  border-color: rgba(56, 189, 248, 0.3) !important;
-}
-
-main .bg-teal-50 {
-  background-color: rgba(19, 78, 74, 0.4) !important;
-  color: #2dd4bf !important;
-  border-color: rgba(45, 212, 191, 0.3) !important;
-}
-
-main .bg-\[\#E0F2F1\] {
-  background-color: rgba(0, 77, 64, 0.4) !important;
-  color: #2dd4bf !important;
+  border-color: rgba(244, 63, 94, 0.35) !important;
 }

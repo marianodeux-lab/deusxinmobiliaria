@@ -80,9 +80,9 @@ export function Sidebar() {
   }, []);
 
   return (
-    <aside className="w-64 bg-[#0B1320] text-slate-300 flex flex-col shrink-0 h-screen sticky top-0 select-none border-r border-slate-800 shadow-2xl">
-      {/* Brand Header con Logo Oficial DeusX */}
-      <div className="h-16 border-b border-slate-800/80 flex items-center px-4 bg-[#070c14]">
+    <aside className="w-64 bg-[#121316] text-slate-300 flex flex-col shrink-0 h-screen sticky top-0 select-none border-r border-[#22242B] shadow-2xl">
+      {/* Brand Header con Logo Oficial DeusX (Fondo Gris Muy Oscuro) */}
+      <div className="h-16 border-b border-[#22242B] flex items-center px-4 bg-[#0D0E10]">
         <Link href="/" className="flex items-center gap-2.5 w-full group">
           <div className="flex items-center">
             <img
@@ -95,7 +95,7 @@ export function Sidebar() {
             <span className="text-[12px] font-extrabold text-white tracking-tight block">
               DeusX Inmobiliarias
             </span>
-            <span className="text-[9px] font-bold text-emerald-400 block font-mono">
+            <span className="text-[9px] font-bold text-[#10B981] block font-mono">
               ERP PropTech Argentina
             </span>
           </div>
@@ -103,33 +103,33 @@ export function Sidebar() {
       </div>
 
       {/* Acceso Rápido / Búsqueda Global */}
-      <div className="p-3 border-b border-slate-800/70">
-        <button className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-slate-400 bg-[#0F1A2A] hover:bg-[#132238] hover:text-white rounded-lg border border-slate-800 shadow-xs transition-colors">
+      <div className="p-3 border-b border-[#22242B]">
+        <button className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-slate-400 bg-[#18191E] hover:bg-[#1F2026] hover:text-white rounded-lg border border-[#2A2C35] shadow-xs transition-colors">
           <span className="flex items-center gap-2">
-            <Search className="w-3.5 h-3.5 text-emerald-400" />
+            <Search className="w-3.5 h-3.5 text-[#10B981]" />
             <span className="truncate">Buscar carpeta o DNI...</span>
           </span>
-          <kbd className="px-1.5 py-0.5 text-[10px] bg-slate-800 text-slate-400 border border-slate-700 rounded font-mono">
+          <kbd className="px-1.5 py-0.5 text-[10px] bg-[#121316] text-slate-400 border border-[#2A2C35] rounded font-mono">
             Ctrl+K
           </kbd>
         </button>
       </div>
 
-      {/* Botones de Alta Rápida: Nueva Propiedad & Nuevo Contrato */}
+      {/* Botones de Alta Rápida: Verde Esmeralda Predominante */}
       <div className="px-3 pt-3 space-y-1.5">
         <Link
           href="/propiedades/nueva"
-          className="flex items-center justify-center gap-2 w-full py-2 px-3 text-xs font-black text-slate-950 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 rounded-lg shadow-md transition-all active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 w-full py-2 px-3 text-xs font-black text-white bg-gradient-to-r from-[#004D40] via-[#00695C] to-[#10B981] hover:brightness-110 rounded-lg shadow-md transition-all active:scale-[0.98]"
         >
-          <Building className="w-4 h-4 text-slate-950" />
+          <Building className="w-4 h-4 text-white" />
           <span>+ Nueva Propiedad</span>
         </Link>
 
         <Link
           href="/contratos/nuevo"
-          className="flex items-center justify-center gap-2 w-full py-1.5 px-3 text-xs font-bold text-emerald-300 bg-[#0F1A2A] hover:bg-[#132238] border border-emerald-500/30 rounded-lg shadow-2xs transition-all active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 w-full py-1.5 px-3 text-xs font-bold text-[#34D399] bg-[#18191E] hover:bg-[#1F2026] border border-[#10B981]/40 rounded-lg shadow-2xs transition-all active:scale-[0.98]"
         >
-          <PlusCircle className="w-3.5 h-3.5 text-emerald-400" />
+          <PlusCircle className="w-3.5 h-3.5 text-[#10B981]" />
           <span>+ Nuevo Contrato</span>
         </Link>
       </div>
@@ -161,8 +161,8 @@ export function Sidebar() {
                       className={cn(
                         "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all group",
                         isActive
-                          ? "bg-gradient-to-r from-[#004d40] to-[#00382e] text-white font-bold shadow-md border-l-4 border-emerald-400"
-                          : "text-slate-400 hover:bg-[#0F1A2A] hover:text-white"
+                          ? "bg-gradient-to-r from-[#004D40] to-[#00332A] text-white font-bold shadow-md border-l-4 border-[#10B981]"
+                          : "text-slate-400 hover:bg-[#18191E] hover:text-white"
                       )}
                     >
                       <span className="flex items-center gap-2.5">
@@ -170,8 +170,8 @@ export function Sidebar() {
                           className={cn(
                             "w-4 h-4 transition-colors",
                             isActive
-                              ? "text-emerald-300"
-                              : "text-slate-500 group-hover:text-emerald-400"
+                              ? "text-[#34D399]"
+                              : "text-slate-500 group-hover:text-[#10B981]"
                           )}
                         />
                         <span>{item.label}</span>
@@ -182,10 +182,10 @@ export function Sidebar() {
                           className={cn(
                             "px-1.5 py-0.2 rounded-full text-[10px] font-mono tabular-nums font-bold border",
                             item.badgeVariant === "warning"
-                              ? "bg-amber-950/80 text-amber-300 border-amber-800/60"
+                              ? "bg-amber-950/70 text-amber-300 border-amber-800/60"
                               : item.badgeVariant === "danger"
-                              ? "bg-rose-950/80 text-rose-300 border-rose-800/60"
-                              : "bg-emerald-950/80 text-emerald-300 border-emerald-800/60"
+                              ? "bg-rose-950/70 text-rose-300 border-rose-800/60"
+                              : "bg-[#004D40]/80 text-[#34D399] border border-[#10B981]/50"
                           )}
                         >
                           {item.badge}
@@ -201,10 +201,10 @@ export function Sidebar() {
       </nav>
 
       {/* Footer Info / Estado del Sistema */}
-      <div className="p-3 border-t border-slate-800 bg-[#070c14]">
+      <div className="p-3 border-t border-[#22242B] bg-[#0D0E10]">
         <div className="flex items-center justify-between text-[11px] text-slate-400">
           <span className="flex items-center gap-1.5 font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
             <span>Supabase RLS Activo</span>
           </span>
           <span className="font-mono text-[10px] text-slate-500 font-semibold">v0.1.0</span>
