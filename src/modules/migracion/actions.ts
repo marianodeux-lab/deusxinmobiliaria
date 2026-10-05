@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface PreviewSpotResult {
@@ -200,38 +201,8 @@ export async function previsualizarArchivoSpotAction(fileContent: string): Promi
  */
 export async function importarDatosSpotAction(fileContent: string): Promise<ImportResult> {
   try {
-    const supabase = await createClient();
+    const { tenantId } = await requireAuthenticatedTenant();
     const adminSupabase = createAdminClient();
-
-    // 1. Obtener tenant del usuario actual
-    const { data: { user } } = await supabase.auth.getUser();
-    let tenantId: string | null = null;
-
-    if (user) {
-      const { data: tu } = await adminSupabase
-        .from("tenant_usuarios")
-        .select("tenant_id")
-        .eq("usuario_id", user.id)
-        .maybeSingle();
-      if (tu) tenantId = tu.tenant_id;
-    }
-
-    if (!tenantId) {
-      // Fallback al primer tenant
-      const { data: tenants } = await adminSupabase.from("tenants").select("id").limit(1);
-      if (tenants && tenants.length > 0) {
-        tenantId = tenants[0].id;
-      } else {
-        return {
-          success: false,
-          propietariosImportados: 0,
-          inquilinosImportados: 0,
-          propiedadesImportadas: 0,
-          contratosImportados: 0,
-          error: "No se encontró una inmobiliaria (tenant) activa para asociar los datos.",
-        };
-      }
-    }
 
     const lines = fileContent.split("\n");
     let propCount = 0;
@@ -460,29 +431,8 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
  */
 export async function limpiarDatosTenantAction(): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createClient();
+    const { tenantId } = await requireAuthenticatedTenant();
     const adminSupabase = createAdminClient();
-
-    const { data: { user } } = await supabase.auth.getUser();
-    let tenantId: string | null = null;
-
-    if (user) {
-      const { data: tu } = await adminSupabase
-        .from("tenant_usuarios")
-        .select("tenant_id")
-        .eq("usuario_id", user.id)
-        .maybeSingle();
-      if (tu) tenantId = tu.tenant_id;
-    }
-
-    if (!tenantId) {
-      const { data: tenants } = await adminSupabase.from("tenants").select("id").limit(1);
-      if (tenants && tenants.length > 0) tenantId = tenants[0].id;
-    }
-
-    if (!tenantId) {
-      return { success: false, error: "No se identificó el tenant a limpiar." };
-    }
 
     // 1. Borrar reservas temporarias
     await adminSupabase.from("reservas_temporarias").delete().eq("tenant_id", tenantId);

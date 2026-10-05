@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant, getOptionalAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface ResponsableComprobante {
@@ -142,14 +143,14 @@ const DEFAULT_CONFIG: TenantConfiguracionCompleta = {
 
 export async function getConfiguracionAction(): Promise<TenantConfiguracionCompleta> {
   try {
-    const admin = createAdminClient();
+    const auth = await getOptionalAuthenticatedTenant();
+    if (!auth?.tenantId) return DEFAULT_CONFIG;
 
-    // Obtener el tenant activo más reciente (el registrado por el usuario)
+    const admin = createAdminClient();
     const { data: tenant } = await admin
       .from("tenants")
       .select("*")
-      .order("creado_al", { ascending: false })
-      .limit(1)
+      .eq("id", auth.tenantId)
       .single();
 
     if (!tenant) return DEFAULT_CONFIG;
@@ -180,12 +181,17 @@ export async function saveConfiguracionAction(
   newConfig: Partial<TenantConfiguracionCompleta>
 ) {
   try {
+    const auth = await requireAuthenticatedTenant();
+    if (auth.tenantId !== tenantId) {
+      throw new Error("No autorizado para modificar esta configuración.");
+    }
+
     const admin = createAdminClient();
 
     const { data: current } = await admin
       .from("tenants")
       .select("configuracion")
-      .eq("id", tenantId)
+      .eq("id", auth.tenantId)
       .single();
 
     const merged = {

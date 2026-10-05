@@ -50,8 +50,7 @@ export default function RegistroPage() {
       setErrorMessage(result.error || "Error al crear la cuenta.");
       setIsLoading(false);
     } else {
-      alert("¡Inmobiliaria registrada con éxito! Tu panel ERP y Vidriera Online están listos.");
-      router.push("/");
+      router.push("/login?registrado=true");
     }
   };
 

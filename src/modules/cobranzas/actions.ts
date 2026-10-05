@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface PeriodoCobranzaItem {
@@ -100,6 +101,7 @@ export async function getPeriodosCobranzaAction(filtro?: {
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
     const hoy = new Date();
     const mes = filtro?.mes ?? hoy.getMonth() + 1;
@@ -152,6 +154,7 @@ export async function getPeriodosCobranzaAction(filtro?: {
           )
         )
       `)
+      .eq("tenant_id", tenantId)
       .eq("periodo_anio", anio)
       .eq("periodo_mes", mes)
       .order("fecha_vencimiento", { ascending: true });
@@ -351,6 +354,7 @@ export async function getPeriodosCobranzaAction(filtro?: {
  */
 export async function registrarCobranzaAction(input: RegistrarCobranzaInput) {
   try {
+    const { tenantId: userTenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
 
     // 1. Obtener contrato y tenant
@@ -358,10 +362,11 @@ export async function registrarCobranzaAction(input: RegistrarCobranzaInput) {
       .from("contratos")
       .select("tenant_id")
       .eq("id", input.contrato_id)
+      .eq("tenant_id", userTenantId)
       .single();
 
     if (cErr || !contrato) {
-      return { success: false, error: "Contrato no encontrado" };
+      return { success: false, error: "Contrato no encontrado o no pertenece a su inmobiliaria" };
     }
 
     const tenantId = contrato.tenant_id;

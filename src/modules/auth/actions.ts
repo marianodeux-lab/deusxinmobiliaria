@@ -77,6 +77,14 @@ export async function registroAction(formData: FormData): Promise<AuthResponse> 
     }
 
     const userId = authData.user.id;
+
+    // Auto-confirmar el email del usuario para evitar bloqueos de activación en producción
+    try {
+      await adminSupabase.auth.admin.updateUserById(userId, { email_confirm: true });
+    } catch (confErr) {
+      console.warn("No se pudo auto-confirmar email:", confErr);
+    }
+
     const slug = nombreInmobiliaria
       .toLowerCase()
       .trim()

@@ -38,7 +38,8 @@ export default function LoginPage() {
       setErrorMessage(result.error || "Error al iniciar sesión.");
       setIsLoading(false);
     } else {
-      router.push("/");
+      router.push("/contratos");
+      router.refresh();
     }
   };
 

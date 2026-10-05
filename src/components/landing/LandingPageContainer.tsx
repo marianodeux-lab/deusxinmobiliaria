@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { LandingModulesGrid } from "@/components/landing/LandingModulesGrid";
@@ -14,38 +15,43 @@ import { RegistroModal } from "@/components/landing/RegistroModal";
 import { LandingWhatsAppFloating } from "@/components/landing/LandingWhatsAppFloating";
 
 export function LandingPageContainer() {
+  const router = useRouter();
   const [isRegistroOpen, setIsRegistroOpen] = useState(false);
+
+  const handleOpenRegistro = () => {
+    router.push("/registro");
+  };
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#80CBC4] selection:text-[#004d40]">
       {/* Barra de navegación superior fija con logo y botón de acceso diario */}
-      <LandingNavbar onOpenRegistro={() => setIsRegistroOpen(true)} />
+      <LandingNavbar onOpenRegistro={handleOpenRegistro} />
 
       {/* Hero Principal de Ventas */}
-      <LandingHero onOpenRegistro={() => setIsRegistroOpen(true)} />
+      <LandingHero onOpenRegistro={handleOpenRegistro} />
 
       {/* Grid Interactivo de Módulos ERP */}
-      <LandingModulesGrid onOpenRegistro={() => setIsRegistroOpen(true)} />
+      <LandingModulesGrid onOpenRegistro={handleOpenRegistro} />
 
       {/* Calculadora Interactiva de ROI & Ahorro Operativo */}
-      <LandingRoiCalculator onOpenRegistro={() => setIsRegistroOpen(true)} />
+      <LandingRoiCalculator onOpenRegistro={handleOpenRegistro} />
 
       {/* Vidriera B2B de Proveedores para Inmobiliarias & Usuarios Activos */}
       <LandingB2BMarketplace
-        onOpenRegistro={() => setIsRegistroOpen(true)}
+        onOpenRegistro={handleOpenRegistro}
       />
 
       {/* Testimonios & Prueba Social de Inmobiliarias Matriculadas */}
       <LandingTestimonials />
 
       {/* Precios & Planes Comerciales */}
-      <LandingPricing onOpenRegistro={() => setIsRegistroOpen(true)} />
+      <LandingPricing onOpenRegistro={handleOpenRegistro} />
 
       {/* Preguntas Frecuentes Normativas & Operativas */}
       <LandingFaq />
 
       {/* Footer Integral con accesos y enlaces comerciales */}
-      <LandingFooter onOpenRegistro={() => setIsRegistroOpen(true)} />
+      <LandingFooter onOpenRegistro={handleOpenRegistro} />
 
       {/* Botón flotante de WhatsApp para tráfico de anuncios */}
       <LandingWhatsAppFloating />

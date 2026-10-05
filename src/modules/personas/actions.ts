@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface PersonaCRMItem {
@@ -59,12 +60,14 @@ export async function getPersonasCRMAction(): Promise<{
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
 
-    // 1. Obtener todas las personas
+    // 1. Obtener personas del tenant autenticado
     const { data: personas, error: pErr } = await admin
       .from("personas")
       .select("*")
+      .eq("tenant_id", tenantId)
       .order("nombre_completo", { ascending: true });
 
     if (pErr) {
@@ -224,16 +227,13 @@ export async function getPersonasCRMAction(): Promise<{
  */
 export async function crearPersonaAction(input: CrearPersonaInput) {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
-
-    // Obtener tenantId
-    const { data: tenant } = await admin.from("tenants").select("id").limit(1).single();
-    if (!tenant) throw new Error("Tenant no encontrado");
 
     const { data, error } = await admin
       .from("personas")
       .insert({
-        tenant_id: tenant.id,
+        tenant_id: tenantId,
         tipo_persona: input.tipo_persona,
         nombre_completo: input.nombre_completo.toUpperCase().trim(),
         documento_tipo: input.documento_tipo,
@@ -267,6 +267,7 @@ export async function crearPersonaAction(input: CrearPersonaInput) {
  */
 export async function actualizarPersonaAction(id: string, input: Partial<CrearPersonaInput>) {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
 
     const updatePayload: any = {};
@@ -284,7 +285,8 @@ export async function actualizarPersonaAction(id: string, input: Partial<CrearPe
     const { error } = await admin
       .from("personas")
       .update(updatePayload)
-      .eq("id", id);
+      .eq("id", id)
+      .eq("tenant_id", tenantId);
 
     if (error) throw error;
 

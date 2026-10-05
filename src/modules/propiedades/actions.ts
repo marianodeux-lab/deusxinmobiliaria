@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface PropiedadInput {
@@ -133,35 +134,7 @@ async function getActiveTenantId(supabase: any): Promise<string> {
     }
   }
 
-  // 2. Si es entorno local o demo, buscar o crear el tenant default 'DeusX Inmobiliarias'
-  const { data: existingTenant } = await supabase
-    .from("tenants")
-    .select("id")
-    .limit(1)
-    .single();
-
-  if (existingTenant?.id) {
-    return existingTenant.id;
-  }
-
-  // Si no existe ninguno, crear el primer tenant maestro
-  const { data: newTenant, error } = await supabase
-    .from("tenants")
-    .insert({
-      nombre_fantasia: "DeusX Inmobiliarias",
-      cuit: "30-71829401-9",
-      slug: "deus-propiedades",
-      whatsapp_consultas: "+54 9 223 512-3456",
-      color_marca: "#004d40",
-    })
-    .select("id")
-    .single();
-
-  if (error || !newTenant) {
-    throw new Error("No se pudo inicializar el tenant principal: " + error?.message);
-  }
-
-  return newTenant.id;
+  throw new Error("Acceso denegado: Usuario no autenticado o sin inmobiliaria asignada.");
 }
 
 /**
@@ -300,6 +273,7 @@ export async function getPropiedadesHubAction(): Promise<{
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
 
     const { data: propiedades, error } = await admin
@@ -353,6 +327,7 @@ export async function getPropiedadesHubAction(): Promise<{
           )
         )
       `)
+      .eq("tenant_id", tenantId)
       .order("creado_al", { ascending: false });
 
     if (error) {
@@ -497,11 +472,13 @@ export async function getPropiedadesHubAction(): Promise<{
  */
 export async function togglePublicarVidrieraAction(propiedad_id: string, publicar: boolean) {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
     await admin
       .from("propiedades")
       .update({ publicar_en_vidriera: publicar })
-      .eq("id", propiedad_id);
+      .eq("id", propiedad_id)
+      .eq("tenant_id", tenantId);
 
     revalidatePath("/propiedades");
     revalidatePath("/configuracion/vidriera");
@@ -516,11 +493,13 @@ export async function togglePublicarVidrieraAction(propiedad_id: string, publica
  */
 export async function toggleDestacadaWebAction(propiedad_id: string, destacada: boolean) {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
     await admin
       .from("propiedades")
       .update({ destacada_web: destacada })
-      .eq("id", propiedad_id);
+      .eq("id", propiedad_id)
+      .eq("tenant_id", tenantId);
 
     revalidatePath("/propiedades");
     revalidatePath("/configuracion/vidriera");

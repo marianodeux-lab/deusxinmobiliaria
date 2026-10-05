@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface LiquidacionPendienteItem {
@@ -108,6 +109,7 @@ export async function getLiquidacionesDashboardAction(filtro?: {
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
     const hoy = new Date();
     const mes = filtro?.mes ?? hoy.getMonth() + 1;
@@ -144,6 +146,7 @@ export async function getLiquidacionesDashboardAction(filtro?: {
           )
         )
       `)
+      .eq("tenant_id", tenantId)
       .eq("periodo_anio", anio)
       .eq("periodo_mes", mes)
       .eq("estado_cobranza", "cobrado")
@@ -246,6 +249,7 @@ export async function getLiquidacionesDashboardAction(filtro?: {
           )
         )
       `)
+      .eq("tenant_id", tenantId)
       .order("creado_al", { ascending: false });
 
     if (lErr) {
@@ -342,6 +346,7 @@ export async function getLiquidacionesDashboardAction(filtro?: {
  */
 export async function registrarLiquidacionAction(input: RegistrarLiquidacionInput) {
   try {
+    const { tenantId: userTenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
 
     // 1. Obtener contrato y tenant
@@ -349,10 +354,11 @@ export async function registrarLiquidacionAction(input: RegistrarLiquidacionInpu
       .from("contratos")
       .select("tenant_id")
       .eq("id", input.contrato_id)
+      .eq("tenant_id", userTenantId)
       .single();
 
     if (cErr || !contrato) {
-      return { success: false, error: "Contrato no encontrado" };
+      return { success: false, error: "Contrato no encontrado o no pertenece a su inmobiliaria" };
     }
 
     const tenantId = contrato.tenant_id;
@@ -403,7 +409,8 @@ export async function registrarLiquidacionAction(input: RegistrarLiquidacionInpu
         .update({
           estado_liquidacion: "liquidado",
         })
-        .eq("id", input.periodo_id);
+        .eq("id", input.periodo_id)
+        .eq("tenant_id", tenantId);
     }
 
     revalidatePath("/liquidaciones");
@@ -427,18 +434,21 @@ export async function registrarLiquidacionAction(input: RegistrarLiquidacionInpu
  */
 export async function anularLiquidacionAction(liquidacion_id: string, periodo_id?: string) {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
 
     await admin
       .from("liquidaciones")
       .update({ estado: "anulado" })
-      .eq("id", liquidacion_id);
+      .eq("id", liquidacion_id)
+      .eq("tenant_id", tenantId);
 
     if (periodo_id) {
       await admin
         .from("periodos_contrato")
         .update({ estado_liquidacion: "pendiente" })
-        .eq("id", periodo_id);
+        .eq("id", periodo_id)
+        .eq("tenant_id", tenantId);
     }
 
     revalidatePath("/liquidaciones");

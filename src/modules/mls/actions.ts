@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface MlsPropiedadItem {
@@ -252,13 +253,11 @@ export async function publicarMlsBusquedaAction(input: {
   contacto_telefono: string;
 }) {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
-    const { data: t } = await admin.from("tenants").select("id").limit(1).single();
-
-    if (!t) return { success: false, error: "Tenant no disponible" };
 
     const { error } = await admin.from("mls_busquedas_activas").insert({
-      tenant_id: t.id,
+      tenant_id: tenantId,
       tipo_operacion: input.tipo_operacion,
       tipo_inmueble: input.tipo_inmueble,
       localidad: input.localidad,

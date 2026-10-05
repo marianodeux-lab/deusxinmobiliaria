@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { 
   TrendingUp, 
   AlertCircle, 
@@ -12,8 +13,10 @@ import {
   Settings, 
   Globe,
   Sparkles,
+  LogOut,
 } from "lucide-react";
 import { OnboardingTourModal } from "./OnboardingTourModal";
+import { createClient } from "@/lib/supabase/client";
 
 interface MacroIndicatorProps {
   label: string;
@@ -80,6 +83,43 @@ function MacroIndicator({ label, value, date, variant }: MacroIndicatorProps) {
 }
 
 export function TopBar() {
+  const router = useRouter();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string>("Inmobiliaria");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  useEffect(() => {
+    try {
+      const supabase = createClient();
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+          setUserEmail(user.email || null);
+          const metaName = user.user_metadata?.nombre_completo;
+          if (metaName) {
+            setUserName(metaName);
+          } else if (user.email) {
+            setUserName(user.email.split("@")[0]);
+          }
+        }
+      });
+    } catch (e) {
+      console.error("Error loading user in TopBar:", e);
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      router.push("/login");
+      router.refresh();
+    } catch (e) {
+      console.error("Error during logout:", e);
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <>
       <header className="h-16 border-b border-[#0F1014] bg-[#030304]/98 backdrop-blur-md sticky top-0 z-30 px-4 flex items-center justify-between text-slate-200">
@@ -112,42 +152,55 @@ export function TopBar() {
           <Link
             href="/cobranzas"
             className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-950/40 text-amber-300 border border-amber-800/60 hover:bg-amber-900/50 transition-colors shrink-0"
-            title="3 Liquidaciones Pendientes a Dueños"
+            title="Liquidaciones Pendientes a Dueños"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-            <span>Liquidaciones:</span>
-            <strong className="tabular-nums font-mono">3</strong>
+            <span>Liquidaciones</span>
           </Link>
           
           <Link
             href="/contratos"
             className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-950/40 text-rose-300 border border-rose-800/60 hover:bg-rose-900/50 transition-colors shrink-0"
-            title="2 Vencimientos de Contratos en 90 días"
+            title="Contratos Vigentes"
           >
             <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
-            <span>Vencimientos:</span>
-            <strong className="tabular-nums font-mono">2</strong>
+            <span>Vencimientos</span>
           </Link>
           <div className="h-5 w-px bg-[#17181F] mx-0.5"></div>
         </div>
 
         {/* Perfil del Usuario & Acceso a Configuración */}
-        <Link
-          href="/configuracion"
-          className="flex items-center gap-2 pl-1 cursor-pointer hover:bg-[#08090C] px-2 py-1.5 rounded-lg transition-colors border border-transparent hover:border-[#17181F] group shrink-0"
-          title="Ver perfil y datos de Mariano / Configuración"
-        >
-          <div className="w-8 h-8 rounded-lg bg-[#000000] border border-[#10B981]/40 flex items-center justify-center shadow-xs shrink-0 group-hover:border-[#10B981] transition-colors">
-            <img src="/Recursos/icons/icon-192x192.png" alt="DX" className="w-5 h-5 object-contain" />
-          </div>
-          <div className="text-left hidden sm:block">
-            <p className="text-xs font-bold text-white leading-tight">Mariano</p>
-            <p className="text-[10px] text-[#10B981] leading-tight font-medium">Administrador</p>
-          </div>
-          <div className="p-1 rounded-md text-slate-400 group-hover:text-[#10B981] transition-colors ml-0.5">
-            <Settings className="w-4 h-4" />
-          </div>
-        </Link>
+        <div className="flex items-center gap-1">
+          <Link
+            href="/configuracion"
+            className="flex items-center gap-2 pl-1 cursor-pointer hover:bg-[#08090C] px-2 py-1.5 rounded-lg transition-colors border border-transparent hover:border-[#17181F] group shrink-0"
+            title={userEmail ? `Usuario: ${userEmail}` : "Configuración de Cuenta"}
+          >
+            <div className="w-8 h-8 rounded-lg bg-[#000000] border border-[#10B981]/40 flex items-center justify-center shadow-xs shrink-0 group-hover:border-[#10B981] transition-colors">
+              <img src="/Recursos/icons/icon-192x192.png" alt="DX" className="w-5 h-5 object-contain" />
+            </div>
+            <div className="text-left hidden sm:block max-w-[130px] truncate">
+              <p className="text-xs font-bold text-white leading-tight truncate">{userName}</p>
+              <p className="text-[10px] text-[#10B981] leading-tight font-medium truncate">
+                {userEmail || "Administrador"}
+              </p>
+            </div>
+            <div className="p-1 rounded-md text-slate-400 group-hover:text-[#10B981] transition-colors ml-0.5">
+              <Settings className="w-4 h-4" />
+            </div>
+          </Link>
+
+          {/* Botón Cerrar Sesión */}
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-950/20 border border-transparent hover:border-rose-900/40 transition-colors"
+            title="Cerrar sesión en este dispositivo"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden md:inline">{isLoggingOut ? "Saliendo..." : "Salir"}</span>
+          </button>
+        </div>
       </div>
     </header>
 

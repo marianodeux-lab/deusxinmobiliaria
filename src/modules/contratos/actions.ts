@@ -111,20 +111,8 @@ export async function getContratosHubAction(): Promise<any[]> {
     }
 
     if (!tenantId) {
-      // Si aún no inició sesión o en modo prueba inicial, consultamos el tenant activo vía adminClient
-      try {
-        const admin = createAdminClient();
-        const { data: t } = await admin.from("tenants").select("id").limit(1).single();
-        if (t?.id) {
-          tenantId = t.id;
-          queryClient = admin;
-        }
-      } catch (e) {
-        console.error("Error obteniendo tenant demo con admin:", e);
-      }
+      return [];
     }
-
-    if (!tenantId) return [];
 
     // 2. Consultar contratos del tenant con joins
     const { data: contratos, error } = await queryClient
