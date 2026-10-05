@@ -152,7 +152,7 @@ const SUPERADMIN_EMAILS = [
 
 /**
  * Server Action: Verificar si el usuario autenticado es el SuperAdmin oficial de la plataforma SaaS (marianodeux@gmail.com).
- * En entorno de desarrollo local (localhost), habilita el acceso para pruebas de gobierno SaaS.
+ * Estrictamente validado por identidad del usuario autenticado sin bypasses.
  */
 export async function isSuperAdminUserAction(): Promise<boolean> {
   try {
@@ -161,13 +161,23 @@ export async function isSuperAdminUserAction(): Promise<boolean> {
     if (user && user.email) {
       return SUPERADMIN_EMAILS.includes(user.email.toLowerCase().trim());
     }
-    // En desarrollo local en localhost, permitir acceso para configuración y testing
-    if (process.env.NODE_ENV === "development") {
-      return true;
-    }
     return false;
   } catch {
-    return process.env.NODE_ENV === "development";
+    return false;
   }
+}
+
+/**
+ * Guard de servidor para Server Actions de SuperAdmin.
+ * Lanza excepción inmediata si el usuario no es el SuperAdmin oficial.
+ */
+export async function requireSuperAdmin(): Promise<string> {
+  const isSuper = await isSuperAdminUserAction();
+  if (!isSuper) {
+    throw new Error("Acceso denegado: Operación reservada exclusivamente para el Administrador global de DeusX.");
+  }
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  return user!.id;
 }
 

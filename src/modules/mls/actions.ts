@@ -55,9 +55,10 @@ export async function getMlsDataAction(): Promise<{
   busquedas: MlsBusquedaItem[];
 }> {
   try {
+    await requireAuthenticatedTenant();
     const admin = createAdminClient();
 
-    // 1. Consultar propiedades de la red MLS
+    // 1. Consultar propiedades de la red MLS que explícitamente comparten red
     const { data: props, error: pErr } = await admin
       .from("propiedades")
       .select(`
@@ -89,7 +90,12 @@ export async function getMlsDataAction(): Promise<{
           matricula_profesional
         )
       `)
+      .eq("compartir_red_mls", true)
       .order("creado_al", { ascending: false });
+
+    if (pErr) {
+      console.error("Error al obtener propiedades MLS:", pErr);
+    }
 
     // 2. Mapear propiedades para Co-brokering
     const mappedProps: MlsPropiedadItem[] = (props || []).map((p: any) => {
@@ -99,29 +105,29 @@ export async function getMlsDataAction(): Promise<{
         | "venta"
         | "temporal";
 
-      const precio = Number(p.precio_web) || 350000;
-      const moneda = (p.moneda_web || "ARS") as "ARS" | "USD";
+      const precio = Number(p.precio_web) || 0;
+      const moneda = (p.moneda_web || "USD") as "ARS" | "USD";
 
       return {
         id: p.id,
-        titulo: p.titulo_web || `${p.tipo_inmueble || "Inmueble"} en ${p.localidad}`,
+        titulo: p.titulo_web || `${p.tipo_inmueble || "Inmueble"} en ${p.localidad || "Ubicación"}`,
         direccion: `${p.direccion_calle} ${p.direccion_numero || ""}`.trim(),
         localidad: p.localidad || "Buenos Aires",
         tipo_inmueble: p.tipo_inmueble || "departamento",
         operacion,
         precio,
         moneda,
-        ambientes: p.ambientes || 2,
-        dormitorios: p.dormitorios || 1,
+        ambientes: p.ambientes || 1,
+        dormitorios: p.dormitorios || 0,
         banios: p.banios || 1,
-        superficie: Number(p.superficie_total) || 55,
+        superficie: Number(p.superficie_total) || 0,
         cocheras: p.cocheras || 0,
         comision_compartida: Number(p.comision_compartida_porcentaje) || 50,
         inmobiliaria: {
-          id: tenant.id || "t-1",
+          id: tenant.id || "",
           nombre: tenant.nombre_fantasia || "Inmobiliaria Colega (Red DeusX)",
           whatsapp: tenant.whatsapp_consultas || "",
-          email: tenant.email_contacto || "contacto@inmobiliaria.com",
+          email: tenant.email_contacto || "",
           matricula: tenant.matricula_profesional || "Col. Martilleros",
         },
         fotos: ["/Recursos/DeusX.png"],
@@ -155,79 +161,14 @@ export async function getMlsDataAction(): Promise<{
           contacto: {
             inmobiliaria: b.tenants?.nombre_fantasia || "Inmobiliaria Colega",
             nombre: b.contacto_nombre,
-            telefono: b.contacto_telefono || "+54 9 11 5555-0199",
+            telefono: b.contacto_telefono || "",
             email: b.contacto_email,
           },
           creado_al: b.creado_al,
         }));
       }
     } catch {
-      // Si la tabla aún no se migró, mostramos ejemplos curados de la red
-    }
-
-    if (busquedas.length === 0) {
-      busquedas = [
-        {
-          id: "mls-b-1",
-          tipo_operacion: "alquiler",
-          tipo_inmueble: "departamento",
-          localidad: "9 de Julio",
-          zona_barrio: "Centro / Plaza Belgrano",
-          precio_maximo: 450000,
-          moneda: "ARS",
-          dormitorios_min: 2,
-          requiere_cochera: true,
-          descripcion:
-            "Familia reubicada por trabajo busca urgente 2 o 3 ambientes con cochera cubierta. Excelente solvencia y recibos de sueldo demostrables.",
-          contacto: {
-            inmobiliaria: "Inmobiliaria San Martín",
-            nombre: "Martillero Marcos Ramos",
-            telefono: "+54 9 11 4899-1234",
-            email: "m.ramos@sanmartininmo.com.ar",
-          },
-          creado_al: new Date().toISOString(),
-        },
-        {
-          id: "mls-b-2",
-          tipo_operacion: "venta",
-          tipo_inmueble: "casa",
-          localidad: "Capital Federal",
-          zona_barrio: "Caballito / Parque Chacabuco",
-          precio_maximo: 180000,
-          moneda: "USD",
-          dormitorios_min: 3,
-          requiere_cochera: true,
-          descripcion:
-            "Comprador en mano con dólares billete disponibles. Busca casa o PH con patio/terraza propia sin expensas. Cierre inmediato.",
-          contacto: {
-            inmobiliaria: "Propiedades Porteñas",
-            nombre: "Corredora Valeria Solís",
-            telefono: "+54 9 11 6788-2233",
-            email: "valeria@propiedadesportenas.com",
-          },
-          creado_al: new Date(Date.now() - 86400000).toISOString(),
-        },
-        {
-          id: "mls-b-3",
-          tipo_operacion: "alquiler",
-          tipo_inmueble: "local",
-          localidad: "Córdoba Capital",
-          zona_barrio: "Nueva Córdoba / Zona Comercial",
-          precio_maximo: 600000,
-          moneda: "ARS",
-          dormitorios_min: 0,
-          requiere_cochera: false,
-          descripcion:
-            "Franquicia gastronómica / cafetería busca local con frente a la calle de mínimo 70m2 y gas natural habilitado.",
-          contacto: {
-            inmobiliaria: "Bienes Raíces Del Centro",
-            nombre: "Martillero Gonzalo Díaz",
-            telefono: "+54 9 351 554-4333",
-            email: "contacto@bienesdelcentro.com",
-          },
-          creado_al: new Date(Date.now() - 172800000).toISOString(),
-        },
-      ];
+      // Tabla vacía o sin registros
     }
 
     return {

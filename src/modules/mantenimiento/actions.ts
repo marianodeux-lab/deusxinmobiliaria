@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface TicketMantenimientoItem {
@@ -61,9 +62,10 @@ export async function getTicketsMantenimientoAction(): Promise<{
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
-    // 1. Obtener todos los tickets
+    // 1. Obtener todos los tickets del tenant activo
     const { data: ticketsData, error: ticketsError } = await supabase
       .from("tickets_mantenimiento")
       .select(`
@@ -86,6 +88,7 @@ export async function getTicketsMantenimientoAction(): Promise<{
         contratos:contrato_id (id, carpeta_numero),
         proveedor:proveedor_id (id, nombre_completo, telefono)
       `)
+      .eq("tenant_id", tenantId)
       .order("creado_al", { ascending: false });
 
     if (ticketsError) {
@@ -108,20 +111,22 @@ export async function getTicketsMantenimientoAction(): Promise<{
       };
     }
 
-    // 2. Auxiliares para selectores en modal de creación
+    // 2. Auxiliares para selectores en modal de creación (aislados por tenant)
     const { data: propsData } = await supabase
       .from("propiedades")
       .select("id, direccion_calle, direccion_numero, localidad")
+      .eq("tenant_id", tenantId)
       .order("direccion_calle");
 
     const propiedadesList = (propsData || []).map((p) => ({
       id: p.id,
-      direccion: `${p.direccion_calle} ${p.direccion_numero || ""} (${p.localidad || "9 de Julio"})`.trim(),
+      direccion: `${p.direccion_calle} ${p.direccion_numero || ""} (${p.localidad || "Ciudad"})`.trim(),
     }));
 
     const { data: personasData } = await supabase
       .from("personas")
       .select("id, nombre_completo, telefono")
+      .eq("tenant_id", tenantId)
       .order("nombre_completo");
 
     const proveedoresList = (personasData || []).map((p) => ({
@@ -133,6 +138,7 @@ export async function getTicketsMantenimientoAction(): Promise<{
     const { data: contratosData } = await supabase
       .from("contratos")
       .select("id, carpeta_numero, propiedad_id")
+      .eq("tenant_id", tenantId)
       .order("carpeta_numero");
 
     const contratosList = (contratosData || []).map((c) => ({
@@ -256,6 +262,7 @@ export async function cambiarEstadoTicketAction(
   nuevoEstado: "abierto" | "presupuestado" | "en_curso" | "completado" | "cancelado"
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
     const { error } = await supabase
@@ -264,7 +271,8 @@ export async function cambiarEstadoTicketAction(
         estado: nuevoEstado,
         actualizado_al: new Date().toISOString(),
       })
-      .eq("id", ticketId);
+      .eq("id", ticketId)
+      .eq("tenant_id", tenantId);
 
     if (error) {
       console.error("Error al actualizar estado del ticket:", error);
@@ -285,22 +293,24 @@ export async function crearTicketAction(
   input: CrearTicketInput
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
-    // Obtener tenant_id desde la propiedad
+    // Obtener propiedad y verificar que pertenezca al tenant del usuario
     const { data: propData, error: propErr } = await supabase
       .from("propiedades")
       .select("tenant_id")
       .eq("id", input.propiedad_id)
+      .eq("tenant_id", tenantId)
       .single();
 
     if (propErr || !propData) {
-      return { success: false, error: "Propiedad no encontrada para asociar tenant" };
+      return { success: false, error: "Propiedad no encontrada o no pertenece a su inmobiliaria" };
     }
 
     const { error } = await supabase.from("tickets_mantenimiento").insert([
       {
-        tenant_id: propData.tenant_id,
+        tenant_id: tenantId,
         propiedad_id: input.propiedad_id,
         contrato_id: input.contrato_id || null,
         proveedor_id: input.proveedor_id || null,
@@ -333,6 +343,7 @@ export async function actualizarTicketAction(
   data: Partial<CrearTicketInput>
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
     const updatePayload: any = {
@@ -349,7 +360,8 @@ export async function actualizarTicketAction(
     const { error } = await supabase
       .from("tickets_mantenimiento")
       .update(updatePayload)
-      .eq("id", ticketId);
+      .eq("id", ticketId)
+      .eq("tenant_id", tenantId);
 
     if (error) {
       console.error("Error al actualizar ticket:", error);

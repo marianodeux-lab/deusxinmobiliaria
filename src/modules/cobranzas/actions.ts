@@ -397,7 +397,8 @@ export async function registrarCobranzaAction(input: RegistrarCobranzaInput) {
           monto_expensas_ordinarias: input.monto_expensas,
           monto_servicios_tasas: input.monto_servicios,
         })
-        .eq("id", periodoId);
+        .eq("id", periodoId)
+        .eq("tenant_id", tenantId);
     } else {
       const { data: nuevoPeriodo, error: pErr } = await admin
         .from("periodos_contrato")
@@ -455,6 +456,7 @@ export async function registrarCobranzaAction(input: RegistrarCobranzaInput) {
 
     if (cobErr) {
       console.error("Error al registrar cobranza en ledger:", cobErr);
+      return { success: false, error: "Error al registrar cobranza: " + cobErr.message };
     } else if (nuevaCobranza && periodoId) {
       // 5. Imputar cobro al período
       await admin.from("cobranza_imputaciones").insert({
@@ -492,6 +494,7 @@ export async function getHistorialRecibosAction(limit = 50): Promise<{
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const admin = createAdminClient();
 
     const { data, error } = await admin
@@ -521,6 +524,7 @@ export async function getHistorialRecibosAction(limit = 50): Promise<{
           )
         )
       `)
+      .eq("tenant_id", tenantId)
       .order("creado_al", { ascending: false })
       .limit(limit);
 

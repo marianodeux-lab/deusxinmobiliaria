@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface ReservaTemporariaItem {
@@ -77,12 +78,14 @@ export async function getTemporariosHubAction(): Promise<{
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
-    // 1. Obtener propiedades disponibles
+    // 1. Obtener propiedades disponibles del tenant
     const { data: propsData, error: propsErr } = await supabase
       .from("propiedades")
       .select("id, direccion_calle, direccion_numero, localidad, destino")
+      .eq("tenant_id", tenantId)
       .order("direccion_calle");
 
     if (propsErr) {
@@ -93,13 +96,13 @@ export async function getTemporariosHubAction(): Promise<{
     const todasPropiedades: PropiedadTemporalOption[] = (propsData || []).map((p) => ({
       id: p.id,
       direccion: `${p.direccion_calle} ${p.direccion_numero || ""}`.trim(),
-      localidad: p.localidad || "9 de Julio",
+      localidad: p.localidad || "Ciudad",
       destino: p.destino,
     }));
 
     const propiedadesTemporales = todasPropiedades.filter((p) => p.destino === "temporal");
 
-    // 2. Obtener contratos que representen reservas temporarias
+    // 2. Obtener contratos que representen reservas temporarias del tenant
     const { data: reservasData, error: reservasErr } = await supabase
       .from("contratos")
       .select(`
@@ -114,6 +117,7 @@ export async function getTemporariosHubAction(): Promise<{
         notas,
         propiedades:propiedad_id (id, direccion_calle, direccion_numero, localidad)
       `)
+      .eq("tenant_id", tenantId)
       .order("fecha_inicio", { ascending: true });
 
     if (reservasErr) {
@@ -159,7 +163,7 @@ export async function getTemporariosHubAction(): Promise<{
           carpeta_numero: c.carpeta_numero,
           propiedad_id: c.propiedad_id,
           direccion_inmueble: dir,
-          localidad: prop?.localidad || "9 de Julio",
+          localidad: prop?.localidad || "Ciudad",
           fecha_checkin: c.fecha_inicio,
           fecha_checkout: c.fecha_fin,
           noches: diffDays,
@@ -206,11 +210,13 @@ export async function getTemporariosHubAction(): Promise<{
       .filter((i) => i.estado_reserva !== "cancelada")
       .reduce((acc, curr) => acc + curr.noches, 0);
 
-    const baseNochesDisponibles = Math.max(1, (propiedadesTemporales.length || 3) * 30);
-    const tasaOcupacion = Math.min(100, Math.round((totalNochesMes / baseNochesDisponibles) * 100));
+    const baseNochesDisponibles = Math.max(1, propiedadesTemporales.length * 30);
+    const tasaOcupacion = propiedadesTemporales.length > 0 
+      ? Math.min(100, Math.round((totalNochesMes / baseNochesDisponibles) * 100))
+      : 0;
 
     const kpis: TemporariosKpis = {
-      totalPropiedadesTemporales: propiedadesTemporales.length || 3,
+      totalPropiedadesTemporales: propiedadesTemporales.length,
       reservasActivasMes: items.filter((i) => i.estado_reserva !== "cancelada").length,
       huespedesEnEstadia: enEstadiaCount,
       ingresosMesUSD: ingresosUSD,
@@ -252,17 +258,19 @@ export async function crearReservaTemporariaAction(
   input: CrearReservaTemporariaInput
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
-    // Obtener propiedad y tenant
+    // Obtener propiedad y verificar que pertenezca al tenant autenticado
     const { data: prop, error: propErr } = await supabase
       .from("propiedades")
       .select("tenant_id")
       .eq("id", input.propiedad_id)
+      .eq("tenant_id", tenantId)
       .single();
 
     if (propErr || !prop) {
-      return { success: false, error: "Propiedad no encontrada" };
+      return { success: false, error: "Propiedad no encontrada o no autorizada" };
     }
 
     // Calcular noches
@@ -294,7 +302,7 @@ export async function crearReservaTemporariaAction(
 
     const { error: insertErr } = await supabase.from("contratos").insert([
       {
-        tenant_id: prop.tenant_id,
+        tenant_id: tenantId,
         carpeta_numero: carpetaNumero,
         propiedad_id: input.propiedad_id,
         estado: "vigente",
@@ -330,12 +338,14 @@ export async function actualizarEstadoReservaAction(
   nuevoEstado: "confirmada" | "en_estadia" | "check_out_realizado" | "cancelada"
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
     const { data: contrato, error: fetchErr } = await supabase
       .from("contratos")
       .select("notas, estado")
       .eq("id", reservaId)
+      .eq("tenant_id", tenantId)
       .single();
 
     if (fetchErr || !contrato) return { success: false, error: "Reserva no encontrada" };
@@ -359,7 +369,8 @@ export async function actualizarEstadoReservaAction(
         estado: nuevoEstado === "cancelada" ? "rescindido" : "vigente",
         actualizado_al: new Date().toISOString(),
       })
-      .eq("id", reservaId);
+      .eq("id", reservaId)
+      .eq("tenant_id", tenantId);
 
     if (updateErr) return { success: false, error: updateErr.message };
 
@@ -378,12 +389,14 @@ export async function actualizarLimpiezaReservaAction(
   nuevoEstadoLimpieza: "limpio" | "en_limpieza" | "sucio_check_out" | "inspeccionado"
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
     const { data: contrato, error: fetchErr } = await supabase
       .from("contratos")
       .select("notas")
       .eq("id", reservaId)
+      .eq("tenant_id", tenantId)
       .single();
 
     if (fetchErr || !contrato) return { success: false, error: "Reserva no encontrada" };
@@ -403,7 +416,8 @@ export async function actualizarLimpiezaReservaAction(
         notas: JSON.stringify(meta),
         actualizado_al: new Date().toISOString(),
       })
-      .eq("id", reservaId);
+      .eq("id", reservaId)
+      .eq("tenant_id", tenantId);
 
     if (updateErr) return { success: false, error: updateErr.message };
 

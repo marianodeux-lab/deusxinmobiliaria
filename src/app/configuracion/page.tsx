@@ -9,6 +9,8 @@ export const metadata = {
   description: "Configuración de emisores de comprobantes, AFIP WSFE, links de servicios y memos masivos.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ConfiguracionPage() {
   const configData = await getConfiguracionAction();
 

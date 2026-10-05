@@ -10,6 +10,8 @@ export const metadata = {
     "Directorio integral de propietarios, inquilinos, garantes y proveedores de servicios.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function PersonasPage() {
   const { items, kpis } = await getPersonasCRMAction();
 

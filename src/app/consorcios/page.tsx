@@ -10,6 +10,8 @@ export const metadata = {
     "Gestión de consorcios de edificios, liquidación mensual de expensas ordinarias y extraordinarias, y avisos de cobro.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ConsorciosPage() {
   const { consorcios, expensas, kpis } = await getConsorciosHubAction();
 

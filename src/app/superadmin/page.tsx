@@ -11,6 +11,8 @@ export const metadata = {
   description: "Gobierno de suscripciones, licencias multi-tenant y métricas SaaS globales.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function SuperAdminPage() {
   const isSuperAdmin = await isSuperAdminUserAction();
   if (!isSuperAdmin) {

@@ -10,6 +10,8 @@ export const metadata = {
     "Catálogo e inventario de propiedades, contratos vigentes, estado de ocupación y vidriera web pública.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function PropiedadesPage() {
   const { items, kpis } = await getPropiedadesHubAction();
 

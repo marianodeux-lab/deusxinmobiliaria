@@ -10,6 +10,8 @@ export const metadata = {
     "Gestión integral de reservas temporarias, calendario de ocupación, check-in/out y housekeeping.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function TemporariosPage() {
   const { items, kpis, propiedadesTemporales, todasPropiedades } =
     await getTemporariosHubAction();

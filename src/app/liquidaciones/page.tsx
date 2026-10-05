@@ -10,6 +10,8 @@ export const metadata = {
     "Liquidación de alquileres percibidos, retención de honorarios de administración inmobiliaria y emisión de constancias oficiales de rendición.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function LiquidacionesPage() {
   const dashboardRes = await getLiquidacionesDashboardAction({ mes: 10, anio: 2026 });
 

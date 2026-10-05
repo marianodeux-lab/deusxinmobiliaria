@@ -10,6 +10,8 @@ export const metadata = {
     "Control de tesorería, arqueo de caja diaria, facturación electrónica con CAE y comprobantes fiscales con código QR oficial.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function CajaPage() {
   const { movimientos, facturas, kpis } = await getCajaHubAction();
 

@@ -9,6 +9,8 @@ export const metadata = {
   description: "Red colaborativa de inmobiliarias: inventario compartido al 50% de comisión y matching de demandas insatisfechas.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function RedMlsPage() {
   const { propiedades, busquedas } = await getMlsDataAction();
 

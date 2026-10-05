@@ -2,6 +2,7 @@ import React from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { NuevoContratoForm } from "@/components/contratos/NuevoContratoForm";
+export const dynamic = "force-dynamic";
 
 export default function NuevoContratoPage() {
   return (

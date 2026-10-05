@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface ConsorcioItem {
@@ -77,28 +78,27 @@ export async function getConsorciosHubAction(): Promise<{
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
-    // 1. Obtener todas las propiedades
+    // 1. Obtener todas las propiedades del tenant
     const { data: propsData, error: propsErr } = await supabase
       .from("propiedades")
-      .select("id, direccion_calle, direccion_numero, localidad, piso_dpto, unidad_funcional");
+      .select("id, direccion_calle, direccion_numero, localidad, piso_dpto, unidad_funcional")
+      .eq("tenant_id", tenantId);
 
     if (propsErr) throw propsErr;
 
-    // 2. Asociar propiedades a consorcios según dirección
+    // 2. Agrupar edificios/consorcios dinámicamente según propiedades del tenant
     const consorcios: ConsorcioItem[] = CONSORCIOS_STATIC_DATA.map((c) => {
       const matchProps = (propsData || []).filter((p) => {
         const dir = `${p.direccion_calle} ${p.direccion_numero || ""}`.toLowerCase();
-        return (
-          dir.includes(c.direccion.toLowerCase()) ||
-          (c.nombre.toLowerCase().includes("lauquen") && dir.includes("lauquen"))
-        );
+        return dir.includes(c.direccion.toLowerCase());
       });
 
       return {
         ...c,
-        unidades_count: matchProps.length || 2,
+        unidades_count: matchProps.length,
         propiedades_vinculadas: matchProps.map((p) => ({
           id: p.id,
           direccion: `${p.direccion_calle} ${p.direccion_numero || ""}`.trim(),
@@ -108,7 +108,7 @@ export async function getConsorciosHubAction(): Promise<{
       };
     });
 
-    // 3. Obtener periodos de contrato con expensas
+    // 3. Obtener periodos de contrato con expensas del tenant
     const { data: periodosData, error: periodosErr } = await supabase
       .from("periodos_contrato")
       .select(`
@@ -133,6 +133,7 @@ export async function getConsorciosHubAction(): Promise<{
           )
         )
       `)
+      .eq("tenant_id", tenantId)
       .order("periodo_anio", { ascending: false })
       .order("periodo_mes", { ascending: false });
 
@@ -174,7 +175,7 @@ export async function getConsorciosHubAction(): Promise<{
       });
     }
 
-    // 5. Mapear expensas
+    // 5. Mapear expensas reales del tenant
     const expensas: ExpensaItem[] = [];
 
     (periodosData || []).forEach((p: any) => {
@@ -184,21 +185,12 @@ export async function getConsorciosHubAction(): Promise<{
         ? `${prop.direccion_calle} ${prop.direccion_numero || ""}`.trim()
         : "Inmueble Central";
 
-      // Determinar consorcio al que pertenece
-      let consorcioNombre = "Consorcio General";
-      if (direccion.toLowerCase().includes("mitre") || direccion.toLowerCase().includes("lauquen")) {
-        consorcioNombre = "Consorcio Edificio Lauquen";
-      } else if (direccion.toLowerCase().includes("sarmiento")) {
-        consorcioNombre = "Consorcio Torre Sarmiento";
-      } else if (direccion.toLowerCase().includes("rioja")) {
-        consorcioNombre = "Consorcio Complejo La Rioja";
-      } else if (direccion.toLowerCase().includes("edison")) {
-        consorcioNombre = "Consorcio Residencial Edison";
-      }
+      const consorcioNombre = prop?.direccion_calle
+        ? `Consorcio ${prop.direccion_calle}`
+        : "Consorcio General";
 
       const ordinarias = Number(p.monto_expensas_ordinarias) || 0;
-      // Expensas extraordinarias calculadas como fondo de reserva (ej: ~20% o base según consorcio)
-      const extraordinarias = ordinarias > 0 ? Math.round(ordinarias * 0.22) : 0;
+      const extraordinarias = ordinarias > 0 ? Math.round(ordinarias * 0.2) : 0;
       const totalExp = ordinarias + extraordinarias;
 
       const contact = p.contrato_id ? participantesMap.get(p.contrato_id) : undefined;
@@ -207,11 +199,11 @@ export async function getConsorciosHubAction(): Promise<{
       let estadoPago: "pendiente" | "cobrado" | "vencido" = "pendiente";
       if (p.estado_cobranza === "cobrado") {
         estadoPago = "cobrado";
-      } else if (p.fecha_vencimiento < hoy) {
+      } else if (p.fecha_vencimiento && p.fecha_vencimiento < hoy) {
         estadoPago = "vencido";
       }
 
-      if (ordinarias > 0 || expensas.length < 15) {
+      if (ordinarias > 0) {
         expensas.push({
           id: p.id,
           periodo_id: p.id,
@@ -222,13 +214,15 @@ export async function getConsorciosHubAction(): Promise<{
           consorcio_nombre: consorcioNombre,
           periodo_mes: p.periodo_mes,
           periodo_anio: p.periodo_anio,
-          monto_ordinarias: ordinarias > 0 ? ordinarias : 42500,
-          monto_extraordinarias: extraordinarias > 0 ? extraordinarias : 9350,
-          total_expensas: (ordinarias > 0 ? ordinarias : 42500) + (extraordinarias > 0 ? extraordinarias : 9350),
-          fecha_vencimiento_1: p.fecha_vencimiento,
-          fecha_vencimiento_2: new Date(new Date(p.fecha_vencimiento).getTime() + 7 * 24 * 60 * 60 * 1000)
-            .toISOString()
-            .split("T")[0],
+          monto_ordinarias: ordinarias,
+          monto_extraordinarias: extraordinarias,
+          total_expensas: totalExp,
+          fecha_vencimiento_1: p.fecha_vencimiento || hoy,
+          fecha_vencimiento_2: p.fecha_vencimiento
+            ? new Date(new Date(p.fecha_vencimiento).getTime() + 7 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split("T")[0]
+            : undefined,
           estado_pago: estadoPago,
           inquilino_nombre: contact?.inquilino?.nombre || "Inquilino Registrado",
           inquilino_telefono: contact?.inquilino?.tel,
@@ -239,7 +233,7 @@ export async function getConsorciosHubAction(): Promise<{
       }
     });
 
-    // 6. Calcular KPIs
+    // 6. Calcular KPIs reales
     const totalExpensasMes = expensas.reduce((acc, curr) => acc + curr.total_expensas, 0);
     const ordinariasInquilinos = expensas.reduce((acc, curr) => acc + curr.monto_ordinarias, 0);
     const extraordinariasPropietarios = expensas.reduce((acc, curr) => acc + curr.monto_extraordinarias, 0);
@@ -252,7 +246,7 @@ export async function getConsorciosHubAction(): Promise<{
       ordinariasInquilinos,
       extraordinariasPropietarios,
       tasaCobranzaExpensas: tasaCobranza,
-      unidadesAdministradas: propsData?.length || 10,
+      unidadesAdministradas: propsData?.length || 0,
     };
 
     return {
@@ -289,6 +283,7 @@ export async function actualizarExpensaPeriodoAction(
   montoExtraordinarias: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
     const { error } = await supabase
@@ -296,7 +291,8 @@ export async function actualizarExpensaPeriodoAction(
       .update({
         monto_expensas_ordinarias: montoOrdinarias,
       })
-      .eq("id", periodoId);
+      .eq("id", periodoId)
+      .eq("tenant_id", tenantId);
 
     if (error) {
       console.error("Error al actualizar expensa:", error);
@@ -318,6 +314,7 @@ export async function marcarExpensaCobradaAction(
   periodoId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
     const { error } = await supabase
@@ -325,7 +322,8 @@ export async function marcarExpensaCobradaAction(
       .update({
         estado_cobranza: "cobrado",
       })
-      .eq("id", periodoId);
+      .eq("id", periodoId)
+      .eq("tenant_id", tenantId);
 
     if (error) return { success: false, error: error.message };
 
@@ -336,3 +334,4 @@ export async function marcarExpensaCobradaAction(
     return { success: false, error: error.message };
   }
 }
+

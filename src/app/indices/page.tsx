@@ -10,6 +10,8 @@ export const metadata = {
     "Cálculo de ajustes de contratos de locación con series oficiales BCRA e INDEC (ICL, IPC, UVA, Dólar).",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function IndicesPage() {
   const { indicesList, contratosAjustables, kpis } = await getIndicesHubAction();
 

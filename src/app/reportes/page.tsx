@@ -10,6 +10,8 @@ export const metadata = {
     "Balances contables mensuales, certificados impositivos para propietarios y exportación a Excel / CSV.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ReportesPage() {
   const { anioSeleccionado, resumenMensual, resumenPropietarios, kpis } =
     await getReportesHubAction(2026);

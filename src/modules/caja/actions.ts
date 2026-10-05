@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface MovimientoCajaItem {
@@ -110,6 +111,7 @@ export async function getCajaHubAction(): Promise<{
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
     // 1. Obtener cobranzas reales para alimentar movimientos de caja
@@ -126,12 +128,14 @@ export async function getCajaHubAction(): Promise<{
         observaciones,
         contratos:contrato_id (carpeta_numero)
       `)
+      .eq("tenant_id", tenantId)
       .order("fecha_cobro", { ascending: false });
 
     // 2. Obtener tickets de mantenimiento pagados para egresos de caja
     const { data: ticketsData } = await supabase
       .from("tickets_mantenimiento")
       .select("id, titulo, costo_total, estado, actualizado_al, proveedor:proveedor_id (nombre_completo)")
+      .eq("tenant_id", tenantId)
       .eq("estado", "completado")
       .order("actualizado_al", { ascending: false });
 
@@ -151,7 +155,7 @@ export async function getCajaHubAction(): Promise<{
         monto: Number(c.monto_total_cobrado),
         moneda: c.moneda_cobro === "USD" ? "USD" : "ARS",
         comprobante_referencia: c.numero_recibo,
-        usuario: "Mariano (Administrador)",
+        usuario: "Operador de Caja",
         observaciones: c.observaciones || c.comprobante_referencia,
       });
     });
@@ -179,12 +183,12 @@ export async function getCajaHubAction(): Promise<{
       const prov = t.proveedor?.nombre_completo || "Técnico Matriculado";
       movimientos.push({
         id: `egr-${t.id}`,
-        fecha_hora: `${(t.actualizado_al || "2026-10-03").split("T")[0]} 16:45`,
+        fecha_hora: `${(t.actualizado_al || new Date().toISOString()).split("T")[0]} 16:45`,
         tipo_movimiento: "egreso",
         concepto: `Pago Servicio Técnico: ${t.titulo}`,
         categoria: "mantenimiento",
         medio_pago: "efectivo",
-        monto: Number(t.costo_total) || 45000,
+        monto: Number(t.costo_total) || 0,
         moneda: "ARS",
         comprobante_referencia: `OP-TEC-${t.id.slice(0, 6)}`,
         usuario: "Administración",
@@ -223,9 +227,9 @@ export async function getCajaHubAction(): Promise<{
     const totalFacturadoMesAFIP = facturas.reduce((acc, curr) => acc + curr.total_facturado, 0);
 
     const kpis: CajaKpis = {
-      saldoEfectivoARS: Math.max(0, efectivoARS + 180000), // base operativa
+      saldoEfectivoARS: Math.max(0, efectivoARS),
       saldoTransferenciasARS: Math.max(0, transferenciasARS),
-      saldoEfectivoUSD: Math.max(0, efectivoUSD + 225),
+      saldoEfectivoUSD: Math.max(0, efectivoUSD),
       totalIngresosHoy: ingresosHoy,
       totalEgresosHoy: egresosHoy,
       totalFacturadoMesAFIP,
@@ -265,6 +269,17 @@ export async function emitirFacturaAfipAction(
   input: EmitirFacturaInput
 ): Promise<{ success: boolean; factura?: FacturaAfipItem; error?: string }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
+    const admin = createAdminClient();
+
+    const { data: tenant } = await admin
+      .from("tenants")
+      .select("cuit, nombre_fantasia")
+      .eq("id", tenantId)
+      .single();
+
+    const cuitEmisor = Number(tenant?.cuit?.replace(/[^0-9]/g, "")) || 30000000000;
+
     const puntoVenta = 4;
     const nroComp = Math.floor(100 + Math.random() * 900);
     const hoyStr = new Date().toISOString().split("T")[0];
@@ -272,7 +287,7 @@ export async function emitirFacturaAfipAction(
     vencCaeDate.setDate(vencCaeDate.getDate() + 10);
     const vencCaeStr = vencCaeDate.toISOString().split("T")[0];
 
-    // Generar CAE de 14 dígitos
+    // Generar CAE de 14 dígitos en ambiente de homologación / prueba
     const caeGenerado = `742918${Math.floor(10000000 + Math.random() * 90000000)}`;
 
     const iva = input.tipo_comprobante === "Factura A" ? Math.round(input.neto_gravado * 0.21) : 0;
@@ -284,7 +299,7 @@ export async function emitirFacturaAfipAction(
 
     const qrUrl = generarUrlQrAfip({
       fecha: hoyStr,
-      cuit: 30714298124,
+      cuit: cuitEmisor,
       ptoVta: puntoVenta,
       tipoCmp: tipoCmpNum,
       nroCmp: nroComp,
@@ -309,7 +324,7 @@ export async function emitirFacturaAfipAction(
       total_facturado: total,
       cae: caeGenerado,
       cae_vencimiento: vencCaeStr,
-      estado_afip: "aprobado",
+      estado_afip: "aprobado", // Ambiente de prueba / homologación WSFE
       qr_url: qrUrl,
     };
 

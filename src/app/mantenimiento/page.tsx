@@ -10,6 +10,8 @@ export const metadata = {
     "Gestión integral de incidencias técnicas, reparaciones, gremios y liquidación financiera.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function MantenimientoPage() {
   const { items, kpis, propiedadesList, proveedoresList, contratosList } =
     await getTicketsMantenimientoAction();

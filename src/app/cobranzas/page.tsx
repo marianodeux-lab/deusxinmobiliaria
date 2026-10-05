@@ -13,6 +13,8 @@ export const metadata = {
     "Gestión integral de cobranzas de alquileres, emisión de Recibos X (RG AFIP 4004-E), control de mora y avisos automáticos por WhatsApp.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function CobranzasPage() {
   const [periodosRes, historialRes] = await Promise.all([
     getPeriodosCobranzaAction({ mes: 10, anio: 2026 }),

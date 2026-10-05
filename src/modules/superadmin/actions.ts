@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { requireSuperAdmin } from "@/modules/auth/actions";
 
 export interface TenantAdminItem {
   id: string;
@@ -34,6 +35,7 @@ export interface SuperAdminMetrics {
 }
 
 export async function getSuperAdminDataAction(): Promise<SuperAdminMetrics> {
+  await requireSuperAdmin();
   try {
     const admin = createAdminClient();
 
@@ -127,6 +129,7 @@ export async function getSuperAdminDataAction(): Promise<SuperAdminMetrics> {
 }
 
 export async function toggleTenantEstadoAction(tenantId: string, nuevoEstado: string) {
+  await requireSuperAdmin();
   try {
     const admin = createAdminClient();
 
@@ -146,6 +149,7 @@ export async function toggleTenantEstadoAction(tenantId: string, nuevoEstado: st
 }
 
 export async function updateTenantPlanAction(tenantId: string, nuevoPlan: string) {
+  await requireSuperAdmin();
   try {
     const admin = createAdminClient();
     const precio = nuevoPlan === "enterprise" ? 120000 : nuevoPlan === "pro" ? 75000 : 45000;

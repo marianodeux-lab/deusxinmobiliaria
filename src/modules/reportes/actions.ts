@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 
 export interface ReporteMesFila {
   periodo_mes: number;
@@ -60,9 +61,10 @@ export async function getReportesHubAction(anio: number = 2026): Promise<{
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
-    // 1. Obtener periodos de contrato del año seleccionado
+    // 1. Obtener periodos de contrato del año seleccionado filtrados por tenant
     const { data: periodosData, error: periodosErr } = await supabase
       .from("periodos_contrato")
       .select(`
@@ -82,28 +84,42 @@ export async function getReportesHubAction(anio: number = 2026): Promise<{
           propiedades:propiedad_id (direccion_calle, direccion_numero, localidad)
         )
       `)
+      .eq("tenant_id", tenantId)
       .eq("periodo_anio", anio)
       .order("periodo_mes", { ascending: true });
 
     if (periodosErr) throw periodosErr;
 
-    // 2. Obtener cobranzas reales
+    // 2. Obtener cobranzas reales del tenant
     const { data: cobranzasData } = await supabase
       .from("cobranzas")
-      .select("id, monto_total_cobrado, fecha_cobro");
+      .select("id, monto_total_cobrado, fecha_cobro")
+      .eq("tenant_id", tenantId);
 
-    // 3. Obtener participantes para agrupar por propietario
-    const { data: participantesData } = await supabase
-      .from("contrato_participantes")
-      .select(`
-        contrato_id,
-        rol,
-        personas:persona_id (id, nombre_completo, documento_numero)
-      `)
-      .eq("rol", "propietario");
+    // 3. Obtener participantes de contratos del tenant para agrupar por propietario
+    const { data: tenantContratos } = await supabase
+      .from("contratos")
+      .select("id")
+      .eq("tenant_id", tenantId);
+
+    const tenantContratoIds = (tenantContratos || []).map((c) => c.id);
+
+    let participantesData: any[] = [];
+    if (tenantContratoIds.length > 0) {
+      const { data: pData } = await supabase
+        .from("contrato_participantes")
+        .select(`
+          contrato_id,
+          rol,
+          personas:persona_id (id, nombre_completo, documento_numero)
+        `)
+        .eq("rol", "propietario")
+        .in("contrato_id", tenantContratoIds);
+      participantesData = pData || [];
+    }
 
     const contratoToPropietarioMap = new Map<string, { id: string; nombre: string; cuit: string }>();
-    (participantesData || []).forEach((p: any) => {
+    participantesData.forEach((p: any) => {
       if (p.personas) {
         contratoToPropietarioMap.set(p.contrato_id, {
           id: p.personas.id,

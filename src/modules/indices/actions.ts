@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface IndicePunto {
@@ -49,6 +50,7 @@ export async function getIndicesHubAction(): Promise<{
   error?: string;
 }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
     // 1. Obtener todos los índices ordenados por fecha
@@ -74,19 +76,19 @@ export async function getIndicesHubAction(): Promise<{
     const usdOficialSeries = indicesList.filter((i) => i.tipo_indice === "USD_OFICIAL");
     const usdBlueSeries = indicesList.filter((i) => i.tipo_indice === "USD_BLUE");
 
-    const iclUltimo = iclSeries[0]?.valor || 26.94;
-    const iclAnterior = iclSeries[iclSeries.length - 1]?.valor || 15.42;
-    const iclVarInteranual = Math.round(((iclUltimo - iclAnterior) / iclAnterior) * 100);
+    const iclUltimo = iclSeries[0]?.valor || 0;
+    const iclAnterior = iclSeries[iclSeries.length - 1]?.valor || (iclUltimo || 1);
+    const iclVarInteranual = iclAnterior > 0 ? Math.round(((iclUltimo - iclAnterior) / iclAnterior) * 100) : 0;
 
-    const ipcUltimo = ipcSeries[0]?.valor || 3762.3;
-    const ipcMesAnterior = ipcSeries[1]?.valor || 3667.0;
-    const ipcVarMensual = Number((((ipcUltimo - ipcMesAnterior) / ipcMesAnterior) * 100).toFixed(1));
+    const ipcUltimo = ipcSeries[0]?.valor || 0;
+    const ipcMesAnterior = ipcSeries[1]?.valor || (ipcUltimo || 1);
+    const ipcVarMensual = ipcMesAnterior > 0 ? Number((((ipcUltimo - ipcMesAnterior) / ipcMesAnterior) * 100).toFixed(1)) : 0;
 
-    const uvaUltimo = uvaSeries[0]?.valor || 1640.4;
-    const usdOficial = usdOficialSeries[0]?.valor || 1380;
-    const usdBlue = usdBlueSeries[0]?.valor || 1515;
+    const uvaUltimo = uvaSeries[0]?.valor || 0;
+    const usdOficial = usdOficialSeries[0]?.valor || 0;
+    const usdBlue = usdBlueSeries[0]?.valor || 0;
 
-    // 3. Obtener contratos vigentes para evaluar indexación
+    // 3. Obtener contratos vigentes del tenant para evaluar indexación
     const { data: contratosData, error: contratosErr } = await supabase
       .from("contratos")
       .select(`
@@ -100,6 +102,7 @@ export async function getIndicesHubAction(): Promise<{
         estado,
         propiedades:propiedad_id (direccion_calle, direccion_numero, localidad)
       `)
+      .eq("tenant_id", tenantId)
       .eq("estado", "vigente")
       .order("carpeta_numero");
 
@@ -243,8 +246,32 @@ export async function calcularAjusteAction(
       .limit(1)
       .single();
 
-    const valIni = puntoIni ? Number(puntoIni.valor) : 18.25;
-    const valFin = puntoFin ? Number(puntoFin.valor) : 26.94;
+    if (!puntoIni || !puntoFin) {
+      return {
+        success: false,
+        coeficiente: 1,
+        nuevoMonto: montoBase,
+        porcentajeVariacion: 0,
+        valorIndiceInicial: 0,
+        valorIndiceFinal: 0,
+        error: `No se encontraron datos oficiales del índice ${tipoIndice} para las fechas seleccionadas (${fechaInicio} a ${fechaFin}). Por favor verifique o cargue los índices en el sistema.`,
+      };
+    }
+
+    const valIni = Number(puntoIni.valor);
+    const valFin = Number(puntoFin.valor);
+
+    if (valIni <= 0) {
+      return {
+        success: false,
+        coeficiente: 1,
+        nuevoMonto: montoBase,
+        porcentajeVariacion: 0,
+        valorIndiceInicial: 0,
+        valorIndiceFinal: 0,
+        error: `El valor inicial del índice ${tipoIndice} debe ser mayor a cero.`,
+      };
+    }
 
     const coef = valFin / valIni;
     const nuevoMonto = Math.round(montoBase * coef);
@@ -282,11 +309,12 @@ export async function aplicarAjusteAContratoAction(
   coeficiente: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const { tenantId } = await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
     const hoyStr = new Date().toISOString().split("T")[0];
 
-    // 1. Actualizar contrato con nuevo valor locativo
+    // 1. Actualizar contrato con nuevo valor locativo, validando pertenencia al tenant
     const { error: contratoErr } = await supabase
       .from("contratos")
       .update({
@@ -295,7 +323,8 @@ export async function aplicarAjusteAContratoAction(
         valor_indice_base: valorIndice,
         actualizado_al: new Date().toISOString(),
       })
-      .eq("id", contratoId);
+      .eq("id", contratoId)
+      .eq("tenant_id", tenantId);
 
     if (contratoErr) throw contratoErr;
 
@@ -304,6 +333,7 @@ export async function aplicarAjusteAContratoAction(
       .from("periodos_contrato")
       .select("id, periodo_mes, periodo_anio, monto_alquiler")
       .eq("contrato_id", contratoId)
+      .eq("tenant_id", tenantId)
       .eq("estado_cobranza", "pendiente")
       .order("periodo_anio", { ascending: true })
       .order("periodo_mes", { ascending: true })
@@ -319,7 +349,8 @@ export async function aplicarAjusteAContratoAction(
           indice_aplicado_valor: valorIndice,
           coeficiente_ajuste: coeficiente,
         })
-        .eq("id", ultimoPeriodo.id);
+        .eq("id", ultimoPeriodo.id)
+        .eq("tenant_id", tenantId);
     }
 
     revalidatePath("/indices");
@@ -341,6 +372,7 @@ export async function guardarIndiceManualAction(
   fuente?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    await requireAuthenticatedTenant();
     const supabase = createAdminClient();
 
     const { error } = await supabase.from("indices_economicos").upsert(
@@ -363,3 +395,4 @@ export async function guardarIndiceManualAction(
     return { success: false, error: error.message };
   }
 }
+
