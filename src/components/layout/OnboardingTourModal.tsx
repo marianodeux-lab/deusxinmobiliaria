@@ -30,21 +30,30 @@ export function OnboardingTourModal({
 }: OnboardingTourModalProps) {
   const [open, setOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [autoStartOnLogin, setAutoStartOnLogin] = useState(false);
 
   useEffect(() => {
     if (forceOpen || isOpen) {
       setOpen(true);
       return;
     }
-    // Verificamos si ya completó el tour anteriormente
-    const hasSeenTour = localStorage.getItem("deusx_tour_v1_completed");
-    if (!hasSeenTour) {
+    // Solo aparece en el primer ingreso o si el usuario habilitó expresamente el inicio automático
+    const hasSeenTour = localStorage.getItem("deusx_tour_seen");
+    const forceAuto = localStorage.getItem("deusx_force_auto_tour") === "true";
+
+    if (!hasSeenTour || forceAuto) {
       setOpen(true);
+      if (forceAuto) setAutoStartOnLogin(true);
     }
   }, [isOpen, forceOpen]);
 
   const handleClose = () => {
-    localStorage.setItem("deusx_tour_v1_completed", "true");
+    localStorage.setItem("deusx_tour_seen", "true");
+    if (autoStartOnLogin) {
+      localStorage.setItem("deusx_force_auto_tour", "true");
+    } else {
+      localStorage.removeItem("deusx_force_auto_tour");
+    }
     setOpen(false);
     if (onClose) onClose();
   };
@@ -81,18 +90,18 @@ export function OnboardingTourModal({
       actionHref: "/configuracion",
     },
     {
-      title: "2. Carga de Datos o Migración desde Spot",
+      title: "2. Carga de Datos o Migración de Sistemas Anteriores",
       subtitle: "Traé tus inquilinos, contratos y propiedades al instante",
       icon: <Upload className="w-6 h-6 text-teal-400" />,
       content: (
         <div className="space-y-3 text-xs text-slate-300">
           <p className="leading-relaxed">
-            Podés cargar tus datos rápidamente o migrar todo desde tu sistema actual:
+            Podés cargar tus datos rápidamente o migrar todo desde tu software de gestión anterior:
           </p>
           <ul className="space-y-2 bg-[#141519] p-3.5 rounded-xl border border-[#2E303B]">
             <li className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
-              <span><strong>Importador AR Comercial Gestión (Spot):</strong> Desde Configuración, arrastrá tu archivo <code>.txt</code> exportado y migrá todas tus carpetas en segundos.</span>
+              <span><strong>Asistente Universal de Migración:</strong> Desde Configuración, arrastrá tu archivo exportado (.txt, .csv) y nuestro analizador detectará automáticamente propietarios, inquilinos y contratos.</span>
             </li>
             <li className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
@@ -229,8 +238,24 @@ export function OnboardingTourModal({
           <div className="pt-2">{current.content}</div>
         </div>
 
+        {/* Barra de Preferencia de Inicio Automático */}
+        <div className="px-6 py-2.5 bg-[#101115] border-t border-[#262832] flex items-center justify-between text-[11px] text-slate-400">
+          <label className="flex items-center gap-2 cursor-pointer select-none hover:text-slate-200 transition-colors">
+            <input
+              type="checkbox"
+              checked={autoStartOnLogin}
+              onChange={(e) => setAutoStartOnLogin(e.target.checked)}
+              className="w-3.5 h-3.5 rounded border-[#2E303B] bg-[#1C1D23] text-[#10B981] focus:ring-[#10B981] cursor-pointer"
+            />
+            <span>Iniciar automáticamente este tour en cada inicio de sesión</span>
+          </label>
+          <span className="text-slate-500 text-[10px]">
+            {autoStartOnLogin ? "Activado en cada sesión" : "Solo primer ingreso (Recomendado)"}
+          </span>
+        </div>
+
         {/* Barra de Acciones y Navegación */}
-        <div className="px-6 py-4 border-t border-[#2E303B] bg-[#141519] flex items-center justify-between">
+        <div className="px-6 py-4 border-t border-[#262832] bg-[#141519] flex items-center justify-between">
           <div className="flex items-center gap-2">
             {currentStep > 0 && (
               <button

@@ -140,16 +140,16 @@ export function ConfiguracionHub({ initialConfig }: ConfiguracionHubProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowImportadorSpot(true)}
-            className="px-4 py-2 text-xs font-bold text-[#004d40] bg-[#e0f2f1] hover:bg-[#b2dfdb] border border-[#80cbc4] rounded-xl shadow-xs transition-all flex items-center gap-2 active:scale-95"
+            className="px-4 py-2 text-xs font-bold text-[#004d40] bg-[#e0f2f1] hover:bg-[#b2dfdb] border border-[#80cbc4] rounded-xl shadow-xs transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
           >
             <Upload className="w-4 h-4 text-[#00796b]" />
-            <span>Importar AR Comercial / Spot</span>
+            <span>Migración & Carga de Datos</span>
           </button>
 
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="px-5 py-2 text-xs font-bold text-white bg-[#004d40] hover:bg-[#00332c] rounded-xl shadow-md transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50"
+            className="px-5 py-2 text-xs font-bold text-white bg-[#004d40] hover:bg-[#00332c] rounded-xl shadow-md transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             {savedSuccess ? (
               <>
@@ -173,18 +173,18 @@ export function ConfiguracionHub({ initialConfig }: ConfiguracionHubProps) {
             <Info className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-teal-950">Entorno de Producción & Carga de Datos del Cliente</h3>
+            <h3 className="text-xs font-bold text-teal-950">Entorno de Producción & Carga de Datos de tu Inmobiliaria</h3>
             <p className="text-[11px] text-teal-900/90 mt-0.5 max-w-2xl leading-relaxed">
-              Esta instancia contiene datos de ejemplo para explorar el ERP. Cuando estés listo para ingresar tus datos reales de <strong>https://arcomercialgestion.com/</strong>, podés importar el archivo .txt o vaciar la base de datos de demostración con 1 solo clic para comenzar limpio.
+              Esta instancia contiene datos de ejemplo para evaluar el ERP. Cuando estés listo para ingresar tus datos reales, podés importar el archivo de exportación (.txt, .csv) de cualquier sistema anterior con análisis inteligente de compatibilidad o vaciar la base de demostración con 1 solo clic.
             </p>
           </div>
         </div>
         <button
           onClick={() => setShowImportadorSpot(true)}
-          className="px-4 py-2 text-xs font-bold text-teal-950 bg-white hover:bg-teal-50 border border-teal-300 rounded-xl shadow-xs transition-all shrink-0 flex items-center gap-1.5"
+          className="px-4 py-2 text-xs font-bold text-teal-950 bg-white hover:bg-teal-50 border border-teal-300 rounded-xl shadow-xs transition-all shrink-0 flex items-center gap-1.5 cursor-pointer"
         >
           <Upload className="w-3.5 h-3.5 text-teal-700" />
-          <span>Asistente de Importación & Limpieza</span>
+          <span>Asistente de Migración & Limpieza</span>
         </button>
       </div>
 

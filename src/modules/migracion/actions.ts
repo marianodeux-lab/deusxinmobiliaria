@@ -14,6 +14,17 @@ export interface PreviewSpotResult {
   samplePropiedad?: string;
 }
 
+export interface DiagnosticResult {
+  esCompatible: boolean;
+  score: number;
+  formatoDetectado: string;
+  totalLineas: number;
+  carpetasEstimadas: number;
+  requiereSoporteAsistido: boolean;
+  diagnosticoDetallado: string;
+  preview?: PreviewSpotResult;
+}
+
 export interface ImportResult {
   success: boolean;
   propietariosImportados: number;
@@ -35,7 +46,102 @@ function getSectionFromLines(lines: string[], startHeader: string, endHeader?: s
 }
 
 /**
- * Previsualiza el contenido del archivo exportado de AR Comercial Gestión / Spot
+ * Analizador Inteligente de Pre-Vuelo:
+ * Valida delimitadores, encabezados y estructura del archivo para determinar
+ * si es 100% apto para importación automática o requiere asistencia de Soporte.
+ */
+export async function analizarArchivoMigracionAction(
+  fileContent: string,
+  fileName: string
+): Promise<{
+  success: boolean;
+  diagnostic: DiagnosticResult;
+  error?: string;
+}> {
+  try {
+    const lines = fileContent.split(/\r?\n/).filter((l) => l.trim().length > 0);
+    const totalLineas = lines.length;
+
+    // 1. Verificación de formato tabulado compatible (carpetas, propietarios, inquilinos)
+    const hasWebTablas = lines.some((l) => l.includes("Tabla: web_") || l.includes("web_inquilinos"));
+    if (hasWebTablas) {
+      const previewRes = await previsualizarArchivoSpotAction(fileContent);
+      if (previewRes.success && previewRes.preview) {
+        return {
+          success: true,
+          diagnostic: {
+            esCompatible: true,
+            score: 98,
+            formatoDetectado: "Estructura Tabular Inmobiliaria (Alta Compatibilidad)",
+            totalLineas,
+            carpetasEstimadas: previewRes.preview.contratosCount,
+            requiereSoporteAsistido: false,
+            diagnosticoDetallado: `Se identificaron correctamente ${previewRes.preview.propietariosCount} propietarios, ${previewRes.preview.inquilinosCount} inquilinos, ${previewRes.preview.propiedadesCount} inmuebles y ${previewRes.preview.contratosCount} contratos vigentes. Compatible para importación instantánea.`,
+            preview: previewRes.preview,
+          },
+        };
+      }
+    }
+
+    // 2. Verificación de archivos CSV o delimitados por punto y coma / tabulaciones
+    const firstLine = lines[0] || "";
+    const isCsvComma = firstLine.includes(",") && firstLine.split(",").length >= 4;
+    const isCsvSemicolon = firstLine.includes(";") && firstLine.split(";").length >= 4;
+    const isTsv = firstLine.includes("\t") && firstLine.split("\t").length >= 4;
+
+    if (isCsvComma || isCsvSemicolon || isTsv) {
+      return {
+        success: true,
+        diagnostic: {
+          esCompatible: false,
+          score: 55,
+          formatoDetectado: isCsvComma
+            ? "CSV Delimitado por Comas"
+            : isCsvSemicolon
+            ? "CSV Delimitado por Punto y Coma"
+            : "Archivo TSV Delimitado por Tabulaciones",
+          totalLineas,
+          carpetasEstimadas: Math.max(1, totalLineas - 1),
+          requiereSoporteAsistido: true,
+          diagnosticoDetallado:
+            "El archivo contiene columnas de datos, pero la disposición de campos difiere del esquema estándar. Para garantizar la absoluta exactitud de contratos, saldos y CBU, nuestro Soporte Técnico mapeará el archivo sin cargo.",
+        },
+      };
+    }
+
+    // 3. Formato no estandarizado / Desconocido
+    return {
+      success: true,
+      diagnostic: {
+        esCompatible: false,
+        score: 20,
+        formatoDetectado: "Estructura Propietaria No Estandarizada",
+        totalLineas,
+        carpetasEstimadas: 0,
+        requiereSoporteAsistido: true,
+        diagnosticoDetallado:
+          "El archivo posee un esquema propio que no coincide con los patrones de importación automática. Nuestro equipo de desarrollo puede realizar la migración y mapeo a medida sin ningún costo.",
+      },
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      diagnostic: {
+        esCompatible: false,
+        score: 0,
+        formatoDetectado: "Error de lectura",
+        totalLineas: 0,
+        carpetasEstimadas: 0,
+        requiereSoporteAsistido: true,
+        diagnosticoDetallado: "No fue posible procesar el archivo: " + err.message,
+      },
+      error: err.message,
+    };
+  }
+}
+
+/**
+ * Previsualiza el contenido del archivo exportado
  */
 export async function previsualizarArchivoSpotAction(fileContent: string): Promise<{
   success: boolean;

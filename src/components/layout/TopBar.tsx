@@ -80,8 +80,6 @@ function MacroIndicator({ label, value, date, variant }: MacroIndicatorProps) {
 }
 
 export function TopBar() {
-  const [showTour, setShowTour] = useState(false);
-
   return (
     <>
       <header className="h-16 border-b border-[#0F1014] bg-[#030304]/98 backdrop-blur-md sticky top-0 z-30 px-4 flex items-center justify-between text-slate-200">
@@ -133,16 +131,6 @@ export function TopBar() {
           <div className="h-5 w-px bg-[#17181F] mx-0.5"></div>
         </div>
 
-        {/* Botón Tour Inicial & Perfil del Usuario */}
-        <button
-          onClick={() => setShowTour(true)}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold rounded-lg bg-[#004D40]/60 text-[#34D399] border border-[#10B981]/40 hover:bg-[#00382E] transition-all shrink-0 cursor-pointer"
-          title="Guía de Primeros Pasos / Tour del ERP"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-[#34D399]" />
-          <span className="hidden md:inline">Tour Inicial</span>
-        </button>
-
         {/* Perfil del Usuario & Acceso a Configuración */}
         <Link
           href="/configuracion"
@@ -163,11 +151,7 @@ export function TopBar() {
       </div>
     </header>
 
-    <OnboardingTourModal
-      isOpen={showTour}
-      forceOpen={showTour}
-      onClose={() => setShowTour(false)}
-    />
+    <OnboardingTourModal />
   </>
   );
 }
