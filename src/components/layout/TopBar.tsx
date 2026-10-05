@@ -94,12 +94,9 @@ export function TopBar() {
       supabase.auth.getUser().then(({ data: { user } }) => {
         if (user) {
           setUserEmail(user.email || null);
+          const agency = user.user_metadata?.nombre_inmobiliaria || user.user_metadata?.inmobiliaria;
           const metaName = user.user_metadata?.nombre_completo;
-          if (metaName) {
-            setUserName(metaName);
-          } else if (user.email) {
-            setUserName(user.email.split("@")[0]);
-          }
+          setUserName(agency || metaName || "Inmobiliaria");
         }
       });
     } catch (e) {
