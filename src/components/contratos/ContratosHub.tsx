@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Search,
   Filter,
@@ -19,6 +19,7 @@ import {
   FileText,
   MessageCircle,
   TrendingUp,
+  FolderKanban,
 } from "lucide-react";
 import { formatCurrency, formatDate, calculateContractProgress, cn } from "@/lib/utils";
 import { generarReciboPdf } from "@/lib/pdf/reciboGenerator";
@@ -64,177 +65,7 @@ export interface ContratoItem {
   };
 }
 
-const MOCK_CONTRATOS: ContratoItem[] = [
-  {
-    id: "c-1",
-    carpeta_numero: "3",
-    direccion: {
-      calle: "Sarmiento",
-      numero: "2751",
-      piso_dpto: "Dpto 3B",
-      localidad: "Mar del Plata",
-    },
-    fecha_inicio: "2025-03-01",
-    fecha_fin: "2028-02-29",
-    moneda: "ARS",
-    monto_alquiler_actual: 420000,
-    tipo_ajuste: "ICL",
-    frecuencia_ajuste_meses: 4,
-    inquilino: {
-      nombre: "MENCIA RODRIGUEZ, PEDRO JOSE",
-      documento: "DNI 32.415.890",
-      telefono: "223-5123456",
-      estado_pago_mes: "al_dia",
-    },
-    propietario: {
-      nombre: "STIGLICH, MARIA PAULA",
-      documento: "CUIT 27-28495123-4",
-      cbu_alias: "PAULA.PROPIEDADES",
-      porcentaje: 100,
-      estado_liquidacion_mes: "liquidado",
-    },
-  },
-  {
-    id: "c-2",
-    carpeta_numero: "4",
-    direccion: {
-      calle: "Mitre",
-      numero: "1419",
-      piso_dpto: "Edificio Lauquen, 5B",
-      uf: "UF 077-045141-8",
-      localidad: "Mar del Plata",
-    },
-    fecha_inicio: "2025-06-01",
-    fecha_fin: "2028-05-31",
-    moneda: "ARS",
-    monto_alquiler_actual: 550000,
-    tipo_ajuste: "IPC",
-    frecuencia_ajuste_meses: 3,
-    inquilino: {
-      nombre: "LOPEZ MARTIN, MARIA LUCIA",
-      documento: "DNI 36.789.012",
-      telefono: "223-4876543",
-      estado_pago_mes: "pendiente",
-    },
-    propietario: {
-      nombre: "FUREGA, LUIS ALBERTO",
-      documento: "CUIT 20-17849302-8",
-      cbu_alias: "LUIS.FUREGA.BNA",
-      porcentaje: 100,
-      estado_liquidacion_mes: "pendiente",
-    },
-  },
-  {
-    id: "c-3",
-    carpeta_numero: "5",
-    direccion: {
-      calle: "La Rioja",
-      numero: "885",
-      piso_dpto: "1° PB",
-      uf: "UF 077-31948",
-      localidad: "Mar del Plata",
-    },
-    fecha_inicio: "2025-03-01",
-    fecha_fin: "2028-02-29",
-    moneda: "ARS",
-    monto_alquiler_actual: 380000,
-    tipo_ajuste: "ICL",
-    frecuencia_ajuste_meses: 4,
-    inquilino: {
-      nombre: "FERRER, VILMA LUCRECIA",
-      documento: "DNI 18.234.567",
-      estado_pago_mes: "al_dia",
-    },
-    propietario: {
-      nombre: "DI MARCO, CARLOS (50%) Y HNO.",
-      documento: "CUIT 20-22114433-2",
-      porcentaje: 50,
-      estado_liquidacion_mes: "pendiente",
-    },
-  },
-  {
-    id: "c-4",
-    carpeta_numero: "6",
-    direccion: {
-      calle: "Edison",
-      numero: "441",
-      piso_dpto: "Dpto 6",
-      localidad: "Mar del Plata",
-    },
-    fecha_inicio: "2024-04-01",
-    fecha_fin: "2027-03-31",
-    moneda: "ARS",
-    monto_alquiler_actual: 310000,
-    tipo_ajuste: "IPC",
-    frecuencia_ajuste_meses: 3,
-    inquilino: {
-      nombre: "BRANCE, SOFIA",
-      documento: "DNI 40.112.334",
-      estado_pago_mes: "mora",
-      dias_mora: 8,
-    },
-    propietario: {
-      nombre: "BRANCE, HECTOR HORACIO",
-      documento: "CUIT 20-14223344-9",
-      porcentaje: 100,
-      estado_liquidacion_mes: "pendiente",
-    },
-  },
-  {
-    id: "c-5",
-    carpeta_numero: "8",
-    direccion: {
-      calle: "Hidalgo",
-      numero: "352",
-      piso_dpto: "Dpto 6B",
-      localidad: "Mar del Plata",
-    },
-    fecha_inicio: "2024-08-01",
-    fecha_fin: "2027-07-31",
-    moneda: "USD",
-    monto_alquiler_actual: 650,
-    tipo_ajuste: "FIJO",
-    frecuencia_ajuste_meses: 12,
-    inquilino: {
-      nombre: "SUSA, VALERIA",
-      documento: "DNI 34.567.890",
-      estado_pago_mes: "al_dia",
-    },
-    propietario: {
-      nombre: "STIGLICH, MARIA PAULA",
-      documento: "CUIT 27-28495123-4",
-      porcentaje: 100,
-      estado_liquidacion_mes: "liquidado",
-    },
-  },
-  {
-    id: "c-6",
-    carpeta_numero: "9",
-    direccion: {
-      calle: "Cavallari",
-      numero: "Dpto 3A",
-      uf: "UF 0770471656",
-      localidad: "9 de Julio",
-    },
-    fecha_inicio: "2024-12-01",
-    fecha_fin: "2027-11-30",
-    moneda: "ARS",
-    monto_alquiler_actual: 490000,
-    tipo_ajuste: "ICL",
-    frecuencia_ajuste_meses: 6,
-    inquilino: {
-      nombre: "MARTI, LORENA MARINA",
-      documento: "DNI 29.876.543",
-      estado_pago_mes: "pendiente",
-    },
-    propietario: {
-      nombre: "FUREGA, LUIS ALBERTO",
-      documento: "CUIT 20-17849302-8",
-      porcentaje: 100,
-      estado_liquidacion_mes: "pendiente",
-    },
-  },
-];
+
 
 export function ContratosHub({ initialContratos }: { initialContratos?: ContratoItem[] }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -242,9 +73,13 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
   const [selectedContratoForCobro, setSelectedContratoForCobro] = useState<ContratoItem | null>(null);
   const [menuAbiertoId, setMenuAbiertoId] = useState<string | null>(null);
 
-  const [contratosList, setContratosList] = useState<ContratoItem[]>(
-    initialContratos && initialContratos.length > 0 ? initialContratos : MOCK_CONTRATOS
-  );
+  const [contratosList, setContratosList] = useState<ContratoItem[]>(initialContratos || []);
+
+  useEffect(() => {
+    if (initialContratos) {
+      setContratosList(initialContratos);
+    }
+  }, [initialContratos]);
 
   // Filtrado reactivo de alta velocidad
   const filteredContratos = useMemo(() => {
@@ -266,9 +101,13 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
         const { daysRemaining } = calculateContractProgress(c.fecha_inicio, c.fecha_fin);
         return daysRemaining > 0 && daysRemaining <= 180;
       }
+      if (filterStatus === "vigentes") {
+        const { daysRemaining } = calculateContractProgress(c.fecha_inicio, c.fecha_fin);
+        return daysRemaining > 0;
+      }
       return true;
     });
-  }, [searchTerm, filterStatus]);
+  }, [searchTerm, filterStatus, contratosList]);
 
   const handleDescargarContratoPdf = (c: ContratoItem) => {
     generarContratoPdf({
@@ -327,7 +166,7 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
                 : "bg-[#16171C] text-slate-400 border-[#2A2C35] hover:bg-[#252831] hover:text-white"
             )}
           >
-            Todos ({MOCK_CONTRATOS.length})
+            Todos ({contratosList.length})
           </button>
 
           <button
@@ -385,7 +224,36 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
               </tr>
             </thead>
             <tbody className="divide-y divide-[#262831] text-xs">
-              {filteredContratos.map((contrato) => {
+              {filteredContratos.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-16 px-4 text-center">
+                    <div className="flex flex-col items-center justify-center max-w-md mx-auto space-y-3">
+                      <div className="p-3.5 bg-[#121316] rounded-2xl border border-[#2E303B] text-slate-500 shadow-inner">
+                        <FolderKanban className="w-8 h-8 text-emerald-400/80" />
+                      </div>
+                      <div className="text-sm font-bold text-white">No hay contratos registrados aún</div>
+                      <p className="text-xs text-slate-400 leading-relaxed">
+                        Tu cartera de alquileres está en blanco. Podés crear un nuevo contrato manualmente o importar toda tu cartera de inquilinos y propietarios mediante el asistente de migración.
+                      </p>
+                      <div className="flex items-center justify-center gap-3 pt-2">
+                        <a
+                          href="/contratos/nuevo"
+                          className="px-3.5 py-1.5 rounded-lg bg-[#004D40] text-[#34D399] border border-[#10B981]/50 text-xs font-bold hover:bg-[#005E4E] transition-all"
+                        >
+                          + Nuevo Contrato
+                        </a>
+                        <a
+                          href="/migracion"
+                          className="px-3.5 py-1.5 rounded-lg bg-[#1A1C23] text-slate-300 border border-[#2E303B] text-xs font-semibold hover:bg-[#252831] hover:text-white transition-all"
+                        >
+                          Importar Cartera (Excel/CSV)
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                filteredContratos.map((contrato) => {
                 const { percent, daysRemaining, status } = calculateContractProgress(
                   contrato.fecha_inicio,
                   contrato.fecha_fin
@@ -551,9 +419,9 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
                       <div className="flex items-center justify-end gap-1">
                         <a
                           href={buildWhatsAppLink(
-                            contrato.inquilino.telefono || "5492317415612",
+                            contrato.inquilino.telefono || "",
                             contrato.inquilino.estado_pago_mes === "al_dia"
-                              ? `Hola ${contrato.inquilino.nombre}, le escribimos de DeusX Inmobiliaria respecto al contrato de ${contrato.direccion.calle} ${contrato.direccion.numero} (Carpeta #${contrato.carpeta_numero}). Le confirmamos que su estado de cuenta se encuentra al día. ¡Muchas gracias!`
+                              ? `Hola ${contrato.inquilino.nombre}, le escribimos de la administración respecto al contrato de ${contrato.direccion.calle} ${contrato.direccion.numero} (Carpeta #${contrato.carpeta_numero}). Le confirmamos que su estado de cuenta se encuentra al día. ¡Muchas gracias!`
                               : crearMensajeAvisoVencimiento({
                                   inquilinoNombre: contrato.inquilino.nombre,
                                   carpetaNumero: String(contrato.carpeta_numero),
@@ -635,7 +503,8 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
                     </td>
                   </tr>
                 );
-              })}
+              })
+              )}
             </tbody>
           </table>
         </div>
@@ -728,12 +597,12 @@ function CobroDrawerModal({ contrato, onClose, onSuccess }: CobroDrawerProps) {
         fechaEmision: fecha,
         carpetaNumero: contrato.carpeta_numero,
         inmobiliaria: {
-          nombre: "Deus Inmobiliaria",
-          cuit: "20-33445566-9",
-          domicilio: "Arturo Frondizi 1181",
-          localidad: "9 de Julio",
-          telefono: "02317-415612",
-          matricula: "T° IV F° 124 Col. Martilleros Mercedes",
+          nombre: "Mi Inmobiliaria",
+          cuit: "30-00000000-0",
+          domicilio: "Domicilio Comercial",
+          localidad: "Ciudad",
+          telefono: "",
+          matricula: "Col. Martilleros",
           condicionIva: "Monotributo",
         },
         inquilino: {
@@ -807,7 +676,7 @@ function CobroDrawerModal({ contrato, onClose, onSuccess }: CobroDrawerProps) {
             <div className="flex flex-col gap-2 pt-2 max-w-sm mx-auto">
               <a
                 href={buildWhatsAppLink(
-                  contrato.inquilino.telefono || "5492317415612",
+                  contrato.inquilino.telefono || "",
                   crearMensajeReciboAlquiler({
                     inquilinoNombre: contrato.inquilino.nombre,
                     carpetaNumero: String(contrato.carpeta_numero),
@@ -827,7 +696,7 @@ function CobroDrawerModal({ contrato, onClose, onSuccess }: CobroDrawerProps) {
 
               <a
                 href={buildWhatsAppLink(
-                  contrato.propietario.telefono || "5492317415612",
+                  contrato.propietario.telefono || "",
                   crearMensajeLiquidacionPropietario({
                     propietarioNombre: contrato.propietario.nombre,
                     carpetaNumero: String(contrato.carpeta_numero),

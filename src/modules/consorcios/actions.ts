@@ -64,56 +64,7 @@ export interface CargarExpensaInput {
 }
 
 // Lista canónica de Consorcios y Edificios
-const CONSORCIOS_STATIC_DATA: Omit<ConsorcioItem, "unidades_count" | "propiedades_vinculadas">[] = [
-  {
-    id: "c-lauquen",
-    nombre: "Consorcio Edificio Lauquen",
-    direccion: "Mitre 1419",
-    localidad: "9 de Julio",
-    cuit: "30-71458921-3",
-    administrador: "Estudio Banchero & Asoc.",
-    telefono_admin: "+5492317425890",
-    email_admin: "consorcios@banchero.com.ar",
-    cbu_alias: "EDIFICIO.LAUQUEN",
-    banco: "Banco Provincia",
-  },
-  {
-    id: "c-sarmiento",
-    nombre: "Consorcio Torre Sarmiento",
-    direccion: "Sarmiento 2751",
-    localidad: "Capital Federal",
-    cuit: "30-68945120-7",
-    administrador: "Administración Central CABA",
-    telefono_admin: "+5491147895522",
-    email_admin: "administracion@torresarmiento.com.ar",
-    cbu_alias: "SARMIENTO.2751",
-    banco: "Banco Galicia",
-  },
-  {
-    id: "c-larioja",
-    nombre: "Consorcio Complejo La Rioja",
-    direccion: "La Rioja 885",
-    localidad: "9 de Julio",
-    cuit: "30-71889201-9",
-    administrador: "Dr. Horacio Gómez",
-    telefono_admin: "+5492317411234",
-    email_admin: "hgomez@consorcios9dj.com.ar",
-    cbu_alias: "LA.RIOJA.885",
-    banco: "Banco Nación",
-  },
-  {
-    id: "c-edison",
-    nombre: "Consorcio Residencial Edison",
-    direccion: "Edison 441",
-    localidad: "9 de Julio",
-    cuit: "30-70984512-1",
-    administrador: "Inmobiliaria & Gestiones",
-    telefono_admin: "+5492317456789",
-    email_admin: "administracion@edison441.com",
-    cbu_alias: "EDISON.CONSORCIO",
-    banco: "Banco Santander",
-  },
-];
+const CONSORCIOS_STATIC_DATA: Omit<ConsorcioItem, "unidades_count" | "propiedades_vinculadas">[] = [];
 
 /**
  * Obtiene el listado de consorcios, liquidaciones de expensas del mes y métricas

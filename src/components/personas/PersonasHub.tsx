@@ -775,7 +775,7 @@ function NuevaPersonaModal({
               <label className="text-[10px] font-semibold text-slate-600 block mb-1">Teléfono (con código de área):</label>
               <input
                 type="text"
-                placeholder="Ej: 5492317415612"
+                placeholder="Ej: 5491123456789"
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
                 className="w-full text-xs p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white font-mono"

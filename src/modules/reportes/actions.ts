@@ -205,47 +205,12 @@ export async function getReportesHubAction(anio: number = 2026): Promise<{
       contratosMoraTotal += moraCount;
     }
 
-    // Si la lista de propietarios está vacía, alimentar con propietarios representativos
     const resumenPropietarios = Array.from(propietariosMap.values());
-    if (resumenPropietarios.length === 0) {
-      resumenPropietarios.push(
-        {
-          propietario_id: "prop-1",
-          propietario_nombre: "ALTARE ROBERTO RAMON",
-          propietario_cuit: "20-14285912-3",
-          total_bruto_anual: 5400000,
-          total_honorarios_anual: 223020,
-          total_gastos_anual: 90000,
-          total_neto_transferido: 5086980,
-          inmuebles: ["Sarmiento 2751", "MITRE 1419"],
-        },
-        {
-          propietario_id: "prop-2",
-          propietario_nombre: "ARCUCCI NELLY",
-          propietario_cuit: "27-04781290-8",
-          total_bruto_anual: 4800000,
-          total_honorarios_anual: 198240,
-          total_gastos_anual: 45000,
-          total_neto_transferido: 4556760,
-          inmuebles: ["LA RIOJA 885"],
-        },
-        {
-          propietario_id: "prop-3",
-          propietario_nombre: "FUREGA LUIS ALBERTO",
-          propietario_cuit: "20-04865760-4",
-          total_bruto_anual: 3900000,
-          total_honorarios_anual: 161070,
-          total_gastos_anual: 35000,
-          total_neto_transferido: 3703930,
-          inmuebles: ["EDISON 441"],
-        }
-      );
-    }
 
     const totalContratosEvaluados = contratosAlDiaTotal + contratosMoraTotal;
     const tasaEfectividad = totalContratosEvaluados > 0
       ? Math.round((contratosAlDiaTotal / totalContratosEvaluados) * 100)
-      : 92;
+      : 100;
 
     // Retención estimada de IIBB (ej: 3.5% sobre honorarios de corretaje)
     const retencionesIIBB = Math.round(totalHonorariosAnual * 0.035);

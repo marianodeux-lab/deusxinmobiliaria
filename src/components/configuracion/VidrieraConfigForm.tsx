@@ -38,13 +38,13 @@ export function VidrieraConfigForm() {
   const [customDomain, setCustomDomain] = useState("www.deuspropiedades.com.ar");
   
   // Datos comerciales públicos
-  const [nombreFantasia, setNombreFantasia] = useState("Deus Inmobiliaria");
-  const [slogan, setSlogan] = useState("Gestión Integral & Propiedades Seleccionadas");
-  const [matricula, setMatricula] = useState("Colegio de Martilleros Mat. N° 3412");
-  const [whatsapp, setWhatsapp] = useState("+54 9 223 512-3456");
-  const [telefonoFijo, setTelefonoFijo] = useState("(0223) 495-8822");
-  const [emailPublico, setEmailPublico] = useState("contacto@deuspropiedades.com.ar");
-  const [direccionPublica, setDireccionPublica] = useState("Mitre 1419, PB Local 2, Mar del Plata");
+  const [nombreFantasia, setNombreFantasia] = useState("Mi Inmobiliaria");
+  const [slogan, setSlogan] = useState("Gestión Inmobiliaria Profesional");
+  const [matricula, setMatricula] = useState("Colegio de Martilleros");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [telefonoFijo, setTelefonoFijo] = useState("");
+  const [emailPublico, setEmailPublico] = useState("");
+  const [direccionPublica, setDireccionPublica] = useState("");
   const [colorAcento, setColorAcento] = useState("#004d40");
 
   // Opciones de catálogo

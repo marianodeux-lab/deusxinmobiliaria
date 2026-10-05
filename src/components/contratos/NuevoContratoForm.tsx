@@ -33,55 +33,31 @@ interface InmuebleOpcion {
 
 const INMUEBLES_DISPONIBLES: InmuebleOpcion[] = [
   {
-    id: "prop-1",
-    direccion: "Arturo Frondizi",
-    piso_dpto: "Dpto 2",
-    uf: "UF 014",
-    localidad: "9 de Julio",
-    propietarios: [{ id: "p-1", nombre: "STIGLICH, MARIA PAULA", porcentaje: 100 }],
-  },
-  {
-    id: "prop-2",
-    direccion: "Mitre 1419",
-    piso_dpto: "5° B",
-    uf: "UF 077-045141-8",
-    localidad: "Mar del Plata",
-    propietarios: [{ id: "p-2", nombre: "FUREGA, LUIS ALBERTO", porcentaje: 100 }],
-  },
-  {
-    id: "prop-3",
-    direccion: "La Rioja 885",
-    piso_dpto: "1° PB",
-    uf: "UF 077-31948",
-    localidad: "Mar del Plata",
-    propietarios: [
-      { id: "p-3", nombre: "DI MARCO, CARLOS", porcentaje: 50 },
-      { id: "p-4", nombre: "DI MARCO, PABLO", porcentaje: 50 },
-    ],
+    id: "prop-demo-1",
+    direccion: "Av. San Martín 123",
+    piso_dpto: "2° B",
+    uf: "UF 01",
+    localidad: "Ciudad",
+    propietarios: [{ id: "p-demo-1", nombre: "Propietario Ejemplo", porcentaje: 100 }],
   },
 ];
 
 const INQUILINOS_MOCK = [
-  { id: "inq-1", nombre: "LOPEZ MARTIN, MARIA LUCIA", dni: "36.789.012", tel: "223-4876543" },
-  { id: "inq-2", nombre: "MENCIA RODRIGUEZ, PEDRO JOSE", dni: "32.415.890", tel: "223-5123456" },
-  { id: "inq-3", nombre: "BRANCE, SOFIA", dni: "40.112.334", tel: "223-6987123" },
-  { id: "inq-4", nombre: "GARCIA, MATIAS NICOLAS", dni: "38.991.223", tel: "223-4112233" },
+  { id: "inq-demo-1", nombre: "Inquilino Ejemplo", dni: "30.000.000", tel: "" },
 ];
 
 const GARANTES_MOCK = [
-  { id: "gar-1", nombre: "LOPEZ, ROBERTO RAMON (Garante Propietario)", dni: "14.223.456" },
-  { id: "gar-2", nombre: "GARCIA, EDUARDO HECTOR (Recibo de Sueldo)", dni: "17.889.012" },
-  { id: "gar-3", nombre: "FIANZA PREMIER S.A. (Caución Comercial)", dni: "30-71829304-5" },
+  { id: "gar-demo-1", nombre: "Garante Ejemplo (Fianza)", dni: "20.000.000" },
 ];
 
 export function NuevoContratoForm() {
   const router = useRouter();
 
   // Estados del Contrato
-  const [carpetaNumero, setCarpetaNumero] = useState("10");
-  const [selectedInmuebleId, setSelectedInmuebleId] = useState("prop-1");
-  const [selectedInquilinoId, setSelectedInquilinoId] = useState("inq-1");
-  const [selectedGaranteId, setSelectedGaranteId] = useState("gar-1");
+  const [carpetaNumero, setCarpetaNumero] = useState("");
+  const [selectedInmuebleId, setSelectedInmuebleId] = useState("prop-demo-1");
+  const [selectedInquilinoId, setSelectedInquilinoId] = useState("inq-demo-1");
+  const [selectedGaranteId, setSelectedGaranteId] = useState("gar-demo-1");
 
   // Duración
   const [fechaInicio, setFechaInicio] = useState("2026-11-01");

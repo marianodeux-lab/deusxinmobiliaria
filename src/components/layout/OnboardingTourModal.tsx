@@ -30,29 +30,28 @@ export function OnboardingTourModal({
 }: OnboardingTourModalProps) {
   const [open, setOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [autoStartOnLogin, setAutoStartOnLogin] = useState(false);
+  const [showOnStartup, setShowOnStartup] = useState(true);
 
   useEffect(() => {
     if (forceOpen || isOpen) {
       setOpen(true);
       return;
     }
-    // Solo aparece en el primer ingreso o si el usuario habilitó expresamente el inicio automático
-    const hasSeenTour = localStorage.getItem("deusx_tour_seen");
-    const forceAuto = localStorage.getItem("deusx_force_auto_tour") === "true";
-
-    if (!hasSeenTour || forceAuto) {
+    // Aparece siempre por defecto salvo que el usuario lo haya destildado expresamente
+    const isHidden = localStorage.getItem("deusx_hide_tour") === "true";
+    if (!isHidden) {
       setOpen(true);
-      if (forceAuto) setAutoStartOnLogin(true);
+      setShowOnStartup(true);
     }
   }, [isOpen, forceOpen]);
 
   const handleClose = () => {
-    localStorage.setItem("deusx_tour_seen", "true");
-    if (autoStartOnLogin) {
-      localStorage.setItem("deusx_force_auto_tour", "true");
+    if (!showOnStartup) {
+      // El usuario destildó la casilla: no volver a mostrar
+      localStorage.setItem("deusx_hide_tour", "true");
     } else {
-      localStorage.removeItem("deusx_force_auto_tour");
+      // El usuario mantuvo tildado: volverá a aparecer en el próximo ingreso
+      localStorage.removeItem("deusx_hide_tour");
     }
     setOpen(false);
     if (onClose) onClose();
@@ -243,14 +242,14 @@ export function OnboardingTourModal({
           <label className="flex items-center gap-2 cursor-pointer select-none hover:text-slate-200 transition-colors">
             <input
               type="checkbox"
-              checked={autoStartOnLogin}
-              onChange={(e) => setAutoStartOnLogin(e.target.checked)}
+              checked={showOnStartup}
+              onChange={(e) => setShowOnStartup(e.target.checked)}
               className="w-3.5 h-3.5 rounded border-[#2E303B] bg-[#1C1D23] text-[#10B981] focus:ring-[#10B981] cursor-pointer"
             />
-            <span>Iniciar automáticamente este tour en cada inicio de sesión</span>
+            <span>Mostrar esta guía interactiva en cada ingreso</span>
           </label>
           <span className="text-slate-500 text-[10px]">
-            {autoStartOnLogin ? "Activado en cada sesión" : "Solo primer ingreso (Recomendado)"}
+            {showOnStartup ? "Marcado por defecto (Destildar para no volver a ver)" : "No se volverá a mostrar en los próximos ingresos"}
           </span>
         </div>
 

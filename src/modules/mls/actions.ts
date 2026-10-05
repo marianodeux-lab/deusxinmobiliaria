@@ -120,9 +120,9 @@ export async function getMlsDataAction(): Promise<{
         inmobiliaria: {
           id: tenant.id || "t-1",
           nombre: tenant.nombre_fantasia || "Inmobiliaria Colega (Red DeusX)",
-          whatsapp: tenant.whatsapp_consultas || "+54 9 2317 415612",
-          email: tenant.email_contacto || "colegas@deusx.com.ar",
-          matricula: tenant.matricula_profesional || "T° IV F° 124 Col. Martilleros",
+          whatsapp: tenant.whatsapp_consultas || "",
+          email: tenant.email_contacto || "contacto@inmobiliaria.com",
+          matricula: tenant.matricula_profesional || "Col. Martilleros",
         },
         fotos: ["/Recursos/DeusX.png"],
       };
@@ -182,7 +182,7 @@ export async function getMlsDataAction(): Promise<{
           contacto: {
             inmobiliaria: "Inmobiliaria San Martín",
             nombre: "Martillero Marcos Ramos",
-            telefono: "+54 9 2317 489912",
+            telefono: "+54 9 11 4899-1234",
             email: "m.ramos@sanmartininmo.com.ar",
           },
           creado_al: new Date().toISOString(),
@@ -211,8 +211,8 @@ export async function getMlsDataAction(): Promise<{
           id: "mls-b-3",
           tipo_operacion: "alquiler",
           tipo_inmueble: "local",
-          localidad: "9 de Julio",
-          zona_barrio: "Av. Mitre / Zona Comercial",
+          localidad: "Córdoba Capital",
+          zona_barrio: "Nueva Córdoba / Zona Comercial",
           precio_maximo: 600000,
           moneda: "ARS",
           dormitorios_min: 0,
@@ -222,7 +222,7 @@ export async function getMlsDataAction(): Promise<{
           contacto: {
             inmobiliaria: "Bienes Raíces Del Centro",
             nombre: "Martillero Gonzalo Díaz",
-            telefono: "+54 9 2317 554433",
+            telefono: "+54 9 351 554-4333",
             email: "contacto@bienesdelcentro.com",
           },
           creado_al: new Date(Date.now() - 172800000).toISOString(),

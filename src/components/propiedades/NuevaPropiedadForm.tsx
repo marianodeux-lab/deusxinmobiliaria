@@ -39,12 +39,7 @@ interface PropietarioAsignado {
   honorario_porcentual: number;
 }
 
-const PROPIETARIOS_MOCK = [
-  { id: "p-1", nombre: "STIGLICH, MARIA PAULA", cuit: "27-28495123-4", cbu_alias: "PAULA.PROPIEDADES" },
-  { id: "p-2", nombre: "FUREGA, LUIS ALBERTO", cuit: "20-17849302-8", cbu_alias: "LUIS.FUREGA.BNA" },
-  { id: "p-3", nombre: "DI MARCO, CARLOS", cuit: "20-22114433-2", cbu_alias: "CARLOS.DIMARCO" },
-  { id: "p-4", nombre: "DI MARCO, PABLO", cuit: "20-24556677-1", cbu_alias: "PABLO.DIMARCO" },
-];
+const PROPIETARIOS_MOCK: Array<{ id: string; nombre: string; cuit: string; cbu_alias: string }> = [];
 
 export function NuevaPropiedadForm() {
   const router = useRouter();
@@ -76,25 +71,16 @@ export function NuevaPropiedadForm() {
     publicar_en_vidriera: true,
     operacion_web: "alquiler" as "alquiler" | "venta" | "temporal",
     moneda_web: "ARS" as "ARS" | "USD",
-    precio_web: "420000",
+    precio_web: "",
     mostrar_precio_web: true,
     destacada_web: false,
-    titulo_web: "Moderno Departamento Luminoso",
-    descripcion_web: "Excelente unidad al contrafrente abierto, muy luminoso. Living comedor espacioso con cocina integrada, dormitorio con placard y baño completo.",
+    titulo_web: "",
+    descripcion_web: "",
     imagen_web: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
   });
 
   // Lista de co-propietarios con split porcentual y honorario de administración (estilo SPOT)
-  const [propietarios, setPropietarios] = useState<PropietarioAsignado[]>([
-    {
-      id: "p-1",
-      nombre: "STIGLICH, MARIA PAULA",
-      cuit: "27-28495123-4",
-      cbu_alias: "PAULA.PROPIEDADES",
-      porcentaje: 100,
-      honorario_porcentual: 8,
-    },
-  ]);
+  const [propietarios, setPropietarios] = useState<PropietarioAsignado[]>([]);
 
   const [selectedPersonaId, setSelectedPersonaId] = useState("");
   const [isSaving, setIsSaving] = useState(false);

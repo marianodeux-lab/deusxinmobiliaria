@@ -110,7 +110,8 @@ export function ImportadorSpotModal({ isOpen, onClose }: ImportadorSpotModalProp
     }
   };
 
-  const supportWhatsAppLink = `https://wa.me/5492317415612?text=${encodeURIComponent(
+  const supportPhone = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || "5491122334455";
+  const supportWhatsAppLink = `https://wa.me/${supportPhone}?text=${encodeURIComponent(
     `Hola Soporte DeusX, tengo un archivo de exportación de mi sistema anterior ("${fileName || "archivo"}", ${
       diagnostic?.totalLineas || 0
     } líneas) y solicito asistencia para mapearlo e importarlo a mi cuenta.`

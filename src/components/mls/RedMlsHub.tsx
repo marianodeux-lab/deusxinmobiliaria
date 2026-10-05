@@ -51,8 +51,8 @@ export function RedMlsHub({ initialPropiedades, initialBusquedas }: RedMlsHubPro
     dormitorios_min: 2,
     requiere_cochera: true,
     descripcion: "",
-    contacto_nombre: "Juan Martín Deus",
-    contacto_telefono: "+54 9 2317 415612",
+    contacto_nombre: "",
+    contacto_telefono: "",
   });
 
   // Filtrado de propiedades compartidas

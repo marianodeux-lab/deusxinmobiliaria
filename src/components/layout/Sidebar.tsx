@@ -42,9 +42,9 @@ const NAVIGATION: NavSection[] = [
   {
     title: "ALQUILERES & OPERACIONES",
     items: [
-      { label: "Contratos (Carpetas)", href: "/contratos", icon: FolderKanban, badge: 12, badgeVariant: "teal" },
+      { label: "Contratos (Carpetas)", href: "/contratos", icon: FolderKanban },
       { label: "Cobranzas (Inquilinos)", href: "/cobranzas", icon: Receipt },
-      { label: "Liquidaciones (Dueños)", href: "/liquidaciones", icon: Wallet, badge: 3, badgeVariant: "warning" },
+      { label: "Liquidaciones (Dueños)", href: "/liquidaciones", icon: Wallet },
       { label: "Alquileres Temporarios", href: "/temporarios", icon: CalendarDays },
     ],
   },
@@ -54,7 +54,7 @@ const NAVIGATION: NavSection[] = [
       { label: "Propiedades e Inmuebles", href: "/propiedades", icon: Building },
       { label: "Red MLS DeusX", href: "/mls", icon: Handshake, badge: "B2B", badgeVariant: "teal" },
       { label: "CRM Personas", href: "/personas", icon: Users },
-      { label: "Mantenimiento & Tickets", href: "/mantenimiento", icon: Wrench, badge: 1, badgeVariant: "danger" },
+      { label: "Mantenimiento & Tickets", href: "/mantenimiento", icon: Wrench },
       { label: "Consorcios & Expensas", href: "/consorcios", icon: Building2 },
     ],
   },

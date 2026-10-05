@@ -672,13 +672,13 @@ Verificación QR AFIP: ${factura.qr_url}`;
             <div className="grid grid-cols-2 gap-6 pt-2">
               <div>
                 <h4 className="font-black text-sm text-slate-900 tracking-tight">
-                  DEUSX INMOBILIARIA
+                  ADMINISTRACIÓN INMOBILIARIA
                 </h4>
                 <p className="text-[11px] text-slate-600 mt-1">
                   Corretaje Inmobiliario & Administración
                 </p>
                 <p className="text-[10px] text-slate-500">
-                  Mitre 1419, 9 de Julio, Buenos Aires
+                  Domicilio Comercial
                 </p>
                 <p className="text-[10px] text-slate-500 font-mono">
                   IVA Responsable Inscripto

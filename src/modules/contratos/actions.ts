@@ -206,9 +206,9 @@ export async function getContratosHubAction(): Promise<any[]> {
           estado_pago_mes: estadoPago,
         },
         propietario: {
-          nombre: duenoPart?.personas?.nombre_completo || "STIGLICH, MARIA PAULA",
-          documento: duenoPart?.personas?.documento_numero ? `CUIT ${duenoPart.personas.documento_numero}` : "CUIT 27-22589036-1",
-          cbu_alias: duenoPart?.personas?.cbu_alias || "PAULA.PROPIEDADES",
+          nombre: duenoPart?.personas?.nombre_completo || "Propietario Asignado",
+          documento: duenoPart?.personas?.documento_numero ? `CUIT ${duenoPart.personas.documento_numero}` : "CUIT S/D",
+          cbu_alias: duenoPart?.personas?.cbu_alias || "",
           porcentaje: duenoPart?.porcentaje_participacion ?? 100,
           estado_liquidacion_mes: estadoLiq,
         },

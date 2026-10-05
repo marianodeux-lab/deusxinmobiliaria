@@ -147,11 +147,11 @@ export async function logoutAction() {
 
 const SUPERADMIN_EMAILS = [
   "marianodeux@gmail.com",
-  "deusinmobiliaria9@gmail.com",
+  ...(process.env.SUPERADMIN_EMAIL ? [process.env.SUPERADMIN_EMAIL.toLowerCase().trim()] : []),
 ];
 
 /**
- * Server Action: Verificar si el usuario autenticado es el SuperAdmin (marianodeux@gmail.com o deusinmobiliaria9@gmail.com)
+ * Server Action: Verificar si el usuario autenticado es el SuperAdmin oficial de la plataforma SaaS (marianodeux@gmail.com).
  * En entorno de desarrollo local (localhost), habilita el acceso para pruebas de gobierno SaaS.
  */
 export async function isSuperAdminUserAction(): Promise<boolean> {

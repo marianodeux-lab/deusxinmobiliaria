@@ -26,8 +26,9 @@ export default async function ContratosPage() {
   const montoTotalAlquileres = contratos.reduce((acc, c) => acc + (c.monto_alquiler_actual || 0), 0);
   const contratosAlDia = contratos.filter((c) => c.inquilino?.estado_pago_mes === "al_dia").length;
   const contratosMora = contratos.filter((c) => c.inquilino?.estado_pago_mes === "mora").length;
-  const porcentajeCobrado = totalContratos > 0 ? Math.round((contratosAlDia / totalContratos) * 100) : 100;
+  const porcentajeCobrado = totalContratos > 0 ? Math.round((contratosAlDia / totalContratos) * 100) : 0;
   const comisionEstimada = Math.round(montoTotalAlquileres * 0.08); // 8% honorario estándar
+  const contratosConAjuste = contratos.filter((c) => c.frecuencia_ajuste_meses).length;
 
   return (
     <div className="flex h-screen bg-[#141519] text-slate-100 overflow-hidden font-sans">
@@ -68,7 +69,7 @@ export default async function ContratosPage() {
               </div>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="text-xl font-bold font-mono tabular-nums text-white">
-                  {formatCurrency(montoTotalAlquileres || 4820000, "ARS")}
+                  {formatCurrency(montoTotalAlquileres, "ARS")}
                 </span>
                 <span className="text-[11px] font-bold text-[#34D399] bg-[#002B23] px-1.5 py-0.5 rounded border border-[#10B981]/40">
                   {porcentajeCobrado}%
@@ -96,7 +97,7 @@ export default async function ContratosPage() {
                 </span>
               </div>
               <div className="mt-1 text-[11px] text-[#A7F3D0]/80 font-medium">
-                3 contratos ajustan este mes
+                {contratosConAjuste} {contratosConAjuste === 1 ? "contrato con ajuste" : "contratos con ajuste"}
               </div>
             </div>
 
@@ -110,7 +111,7 @@ export default async function ContratosPage() {
               </div>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="text-xl font-bold font-mono tabular-nums text-white">
-                  {formatCurrency(comisionEstimada || 385000, "ARS")}
+                  {formatCurrency(comisionEstimada, "ARS")}
                 </span>
                 <span className="text-[11px] font-bold text-amber-300 bg-[#1F2618] px-1.5 py-0.5 rounded border border-amber-600/40">
                   Honorarios

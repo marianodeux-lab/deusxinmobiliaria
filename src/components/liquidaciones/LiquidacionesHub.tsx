@@ -145,12 +145,12 @@ export function LiquidacionesHub({
       fechaLiquidacion: l.fecha_liquidacion,
       carpetaNumero: l.carpeta_numero,
       inmobiliaria: {
-        nombre: "Deus Inmobiliaria",
-        cuit: "20-33445566-9",
-        domicilio: "Arturo Frondizi 1181",
-        localidad: "9 de Julio",
-        telefono: "02317-415612",
-        matricula: "T° IV F° 124 Col. Martilleros Mercedes",
+        nombre: "Mi Inmobiliaria",
+        cuit: "30-00000000-0",
+        domicilio: "Domicilio Comercial",
+        localidad: "Ciudad",
+        telefono: "",
+        matricula: "Col. Martilleros",
         condicionIva: "Monotributo",
       },
       propietario: {
@@ -523,7 +523,7 @@ export function LiquidacionesHub({
                           {/* WhatsApp al Dueño */}
                           <a
                             href={buildWhatsAppLink(
-                              p.propietario.telefono || "5492317470747",
+                              p.propietario.telefono || "",
                               crearMensajeLiquidacionPropietario({
                                 propietarioNombre: p.propietario.nombre,
                                 carpetaNumero: p.carpeta_numero,
@@ -629,7 +629,7 @@ export function LiquidacionesHub({
 
                           <a
                             href={buildWhatsAppLink(
-                              l.propietario.telefono || "5492317470747",
+                              l.propietario.telefono || "",
                               `Hola ${l.propietario.nombre}, le confirmamos que se ha procesado su Rendición de Alquiler Nº ${l.numero_liquidacion} por ${formatCurrency(l.monto_neto_liquidado, "ARS")}. Constancia disponible en administración.`
                             )}
                             target="_blank"
@@ -744,12 +744,12 @@ function LiquidacionDrawerModal({
         fechaLiquidacion: new Date().toLocaleDateString("es-AR"),
         carpetaNumero: item.carpeta_numero,
         inmobiliaria: {
-          nombre: "Deus Inmobiliaria",
-          cuit: "20-33445566-9",
-          domicilio: "Arturo Frondizi 1181",
-          localidad: "9 de Julio",
-          telefono: "02317-415612",
-          matricula: "T° IV F° 124 Col. Martilleros Mercedes",
+          nombre: "Mi Inmobiliaria",
+          cuit: "30-00000000-0",
+          domicilio: "Domicilio Comercial",
+          localidad: "Ciudad",
+          telefono: "",
+          matricula: "Col. Martilleros",
           condicionIva: "Monotributo",
         },
         propietario: {
@@ -856,7 +856,7 @@ function LiquidacionDrawerModal({
             <div className="pt-2 max-w-sm mx-auto">
               <a
                 href={buildWhatsAppLink(
-                  item.propietario.telefono || "5492317470747",
+                  item.propietario.telefono || "",
                   crearMensajeLiquidacionPropietario({
                     propietarioNombre: item.propietario.nombre,
                     carpetaNumero: item.carpeta_numero,
@@ -988,7 +988,7 @@ function LiquidacionDrawerModal({
                   <CreditCard className="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" />
                   <input
                     type="text"
-                    placeholder="Ej: mariastiglich.galicia"
+                    placeholder="Ej: titular.galicia"
                     value={cbuDestino}
                     onChange={(e) => setCbuDestino(e.target.value)}
                     className="w-full pl-9 pr-3 py-1.5 text-xs font-mono font-medium border border-slate-200 rounded-lg bg-white"

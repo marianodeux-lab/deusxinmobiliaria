@@ -152,12 +152,12 @@ export function CobranzasHub({
       fechaEmision: item.recibo_emitido?.fecha || item.fecha_vencimiento,
       carpetaNumero: item.carpeta_numero,
       inmobiliaria: {
-        nombre: "Deus Inmobiliaria",
-        cuit: "20-33445566-9",
-        domicilio: "Arturo Frondizi 1181",
-        localidad: "9 de Julio",
-        telefono: "02317-415612",
-        matricula: "T° IV F° 124 Col. Martilleros Mercedes",
+        nombre: "Mi Inmobiliaria",
+        cuit: "30-00000000-0",
+        domicilio: "Domicilio Comercial",
+        localidad: "Ciudad",
+        telefono: "",
+        matricula: "Col. Martilleros",
         condicionIva: "Monotributo",
       },
       inquilino: {
@@ -660,7 +660,7 @@ export function CobranzasHub({
                             {/* Botón de WhatsApp según estado */}
                             <a
                               href={buildWhatsAppLink(
-                                item.inquilino.telefono || "5492317415612",
+                                item.inquilino.telefono || "",
                                 item.estado_cobranza === "cobrado"
                                   ? crearMensajeReciboAlquiler({
                                       inquilinoNombre: item.inquilino.nombre,
@@ -863,12 +863,12 @@ function CobranzaDrawerModal({ item, onClose, onSuccess }: CobranzaDrawerModalPr
         fechaEmision: new Date().toLocaleDateString("es-AR"),
         carpetaNumero: item.carpeta_numero,
         inmobiliaria: {
-          nombre: "Deus Inmobiliaria",
-          cuit: "20-33445566-9",
-          domicilio: "Arturo Frondizi 1181",
-          localidad: "9 de Julio",
-          telefono: "02317-415612",
-          matricula: "T° IV F° 124 Col. Martilleros Mercedes",
+          nombre: "Mi Inmobiliaria",
+          cuit: "30-00000000-0",
+          domicilio: "Domicilio Comercial",
+          localidad: "Ciudad",
+          telefono: "",
+          matricula: "Col. Martilleros",
           condicionIva: "Monotributo",
         },
         inquilino: {
@@ -947,7 +947,7 @@ function CobranzaDrawerModal({ item, onClose, onSuccess }: CobranzaDrawerModalPr
             <div className="flex flex-col gap-2 pt-2 max-w-sm mx-auto">
               <a
                 href={buildWhatsAppLink(
-                  item.inquilino.telefono || "5492317415612",
+                  item.inquilino.telefono || "",
                   crearMensajeReciboAlquiler({
                     inquilinoNombre: item.inquilino.nombre,
                     carpetaNumero: item.carpeta_numero,
@@ -967,7 +967,7 @@ function CobranzaDrawerModal({ item, onClose, onSuccess }: CobranzaDrawerModalPr
 
               <a
                 href={buildWhatsAppLink(
-                  item.propietario.telefono || "5492317415612",
+                  item.propietario.telefono || "",
                   crearMensajeLiquidacionPropietario({
                     propietarioNombre: item.propietario.nombre,
                     carpetaNumero: item.carpeta_numero,
