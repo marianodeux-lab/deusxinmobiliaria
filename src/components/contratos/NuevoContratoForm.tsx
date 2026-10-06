@@ -74,6 +74,19 @@ export function NuevoContratoForm() {
   const [tipoAjuste, setTipoAjuste] = useState<"ICL" | "IPC" | "UVA" | "FIJO">("ICL");
   const [frecuenciaAjusteMeses, setFrecuenciaAjusteMeses] = useState(3); // Trimestral
 
+  // Depósito en Garantía (Seteable por el usuario)
+  const [depositoMeses, setDepositoMeses] = useState<number>(1);
+  const [depositoMoneda, setDepositoMoneda] = useState<"ARS" | "USD">("USD");
+  const [depositoMonto, setDepositoMonto] = useState<number>(450);
+  const [depositoModalidad, setDepositoModalidad] = useState<string>("Efectivo Billetes en Custodia");
+
+  // Garante / Fianza (Seteable por el usuario)
+  const [tipoGarantia, setTipoGarantia] = useState<"seguro_caucion" | "garantia_propietaria" | "fianza_personal" | "aval_bancario">("seguro_caucion");
+  const [garanteNombreCustom, setGaranteNombreCustom] = useState<string>("Finaer Seguros de Caución");
+  const [garanteDniCuitCustom, setGaranteDniCuitCustom] = useState<string>("30-71458921-9");
+  const [garanteTelefonoCustom, setGaranteTelefonoCustom] = useState<string>("011-5263-0000");
+  const [garanteDetalleCustom, setGaranteDetalleCustom] = useState<string>("Póliza Electrónica N° 489201");
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Inmueble seleccionado
@@ -266,22 +279,73 @@ export function NuevoContratoForm() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Garantía / Garante Principal
+                  Tipo de Garantía / Fianza *
                 </label>
                 <select
-                  value={selectedGaranteId}
-                  onChange={(e) => setSelectedGaranteId(e.target.value)}
-                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-[#26a69a] outline-none"
+                  value={tipoGarantia}
+                  onChange={(e) => setTipoGarantia(e.target.value as any)}
+                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-[#26a69a] outline-none font-semibold text-slate-800"
                 >
-                  {GARANTES_MOCK.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.nombre}
-                    </option>
-                  ))}
+                  <option value="seguro_caucion">Seguro de Caución (Finaer / Premium / Aval)</option>
+                  <option value="garantia_propietaria">Garantía Propietaria (Inmueble CABA / PBA)</option>
+                  <option value="fianza_personal">Fianza Personal (Recibos de Sueldo / Codeudor)</option>
+                  <option value="aval_bancario">Aval Bancario Comercial</option>
                 </select>
-                {garanteSeleccionado && (
-                  <p className="text-[11px] text-slate-500 mt-1">Identificador: {garanteSeleccionado.dni}</p>
-                )}
+              </div>
+            </div>
+
+            {/* Datos específicos del Garante o Aseguradora */}
+            <div className="p-3.5 bg-slate-50 rounded-lg border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                  Nombre Garante / Compañía Aseguradora:
+                </label>
+                <input
+                  type="text"
+                  value={garanteNombreCustom}
+                  onChange={(e) => setGaranteNombreCustom(e.target.value)}
+                  className="w-full p-2 bg-white border border-slate-300 rounded-md text-xs font-medium"
+                  placeholder="Ej: Finaer Seguros / Carlos Pérez"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                  DNI / CUIT del Garante / Cía:
+                </label>
+                <input
+                  type="text"
+                  value={garanteDniCuitCustom}
+                  onChange={(e) => setGaranteDniCuitCustom(e.target.value)}
+                  className="w-full p-2 bg-white border border-slate-300 rounded-md text-xs font-mono"
+                  placeholder="30-XXXXXXXX-X o 20-XXXXXXXX-X"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                  Teléfono / Contacto Garante:
+                </label>
+                <input
+                  type="text"
+                  value={garanteTelefonoCustom}
+                  onChange={(e) => setGaranteTelefonoCustom(e.target.value)}
+                  className="w-full p-2 bg-white border border-slate-300 rounded-md text-xs"
+                  placeholder="11-XXXX-XXXX"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                  Detalle Póliza / Matrícula Inmueble Garante:
+                </label>
+                <input
+                  type="text"
+                  value={garanteDetalleCustom}
+                  onChange={(e) => setGaranteDetalleCustom(e.target.value)}
+                  className="w-full p-2 bg-white border border-slate-300 rounded-md text-xs font-mono"
+                  placeholder="Póliza N°... o Matrícula RPI..."
+                />
               </div>
             </div>
           </div>
@@ -459,6 +523,85 @@ export function NuevoContratoForm() {
               </div>
             </div>
           </div>
+
+          {/* Tarjeta 5: Depósito en Garantía & Entrega de Llaves */}
+          <div className="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center gap-2 border-b border-slate-100 pb-2.5">
+              <ShieldCheck className="w-4 h-4 text-[#004d40]" />
+              <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                5. Depósito en Garantía & Estado de Entrega
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Cantidad de Meses de Depósito:
+                </label>
+                <select
+                  value={depositoMeses}
+                  onChange={(e) => setDepositoMeses(Number(e.target.value))}
+                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5 font-bold"
+                >
+                  <option value={1}>1 Mes de Depósito</option>
+                  <option value={2}>2 Meses de Depósito</option>
+                  <option value={0}>Sin Depósito en Efectivo</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Moneda del Depósito:
+                </label>
+                <select
+                  value={depositoMoneda}
+                  onChange={(e) => setDepositoMoneda(e.target.value as any)}
+                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5 font-bold text-emerald-950"
+                >
+                  <option value="USD">Dólares Billetes (USD) - Recomendado Post DNU</option>
+                  <option value="ARS">Pesos Argentinos (ARS)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Monto Total Integrado ({depositoMoneda}):
+                </label>
+                <input
+                  type="number"
+                  value={depositoMonto}
+                  onChange={(e) => setDepositoMonto(Number(e.target.value))}
+                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2.5 font-mono font-bold text-emerald-700"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1 text-xs">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                  Modalidad de Custodia:
+                </label>
+                <select
+                  value={depositoModalidad}
+                  onChange={(e) => setDepositoModalidad(e.target.value)}
+                  className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2"
+                >
+                  <option value="Efectivo Billetes en Custodia Inmobiliaria">Efectivo Billetes en Custodia Inmobiliaria</option>
+                  <option value="Transferencia Bancaria en Cuenta Custodia">Transferencia Bancaria en Cuenta Custodia</option>
+                  <option value="Pagaré en Garantía Restituible">Pagaré en Garantía Restituible</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                  Condición de Restitución al Cierre:
+                </label>
+                <div className="p-2 bg-emerald-50/60 border border-emerald-200/80 rounded-lg text-[11px] text-emerald-900 leading-tight">
+                  Se liquidará mediante <strong>Acta de Restitución y Finiquito</strong> contra entrega de llaves y libre deuda de servicios.
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Columna Derecha: Resumen Ejecutivo & Cronograma de Ajustes */}
@@ -487,6 +630,13 @@ export function NuevoContratoForm() {
               </div>
 
               <div className="flex justify-between">
+                <span className="text-slate-400">Garantía:</span>
+                <span className="font-semibold text-emerald-700 text-right truncate max-w-[160px]">
+                  {garanteNombreCustom || "Finaer"}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
                 <span className="text-slate-400">Vigencia:</span>
                 <span className="font-mono text-slate-200 font-semibold">
                   {formatDate(fechaInicio)} al {formatDate(fechaFinCalculada)}
@@ -497,6 +647,13 @@ export function NuevoContratoForm() {
                 <span className="text-slate-400">Canon Inicial:</span>
                 <span className="font-mono font-bold text-white">
                   {formatCurrency(valorAlquilerInicial, moneda)}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-slate-400">Depósito en Garantía:</span>
+                <span className="font-mono font-bold text-emerald-700">
+                  {formatCurrency(depositoMonto, depositoMoneda)} ({depositoMeses} mes)
                 </span>
               </div>
 

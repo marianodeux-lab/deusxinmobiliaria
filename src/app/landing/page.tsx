@@ -18,7 +18,11 @@ import {
   Layers,
   ChevronRight,
   Handshake,
-  DollarSign
+  DollarSign,
+  Scale,
+  Key,
+  BookOpen,
+  Image as ImageIcon,
 } from "lucide-react";
 
 export const metadata = {
@@ -46,6 +50,10 @@ export default function LandingPage() {
             <a href="#vidriera" className="hover:text-[#80CBC4] transition-colors">Vidriera NIC.ar</a>
             <a href="#mls" className="hover:text-[#80CBC4] transition-colors">Red MLS</a>
             <a href="#precios" className="hover:text-[#80CBC4] transition-colors">Planes & Precios</a>
+            <Link href="/manual" className="text-[#80CBC4] hover:underline flex items-center gap-1">
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Manual de Uso</span>
+            </Link>
             <a href="#faq" className="hover:text-[#80CBC4] transition-colors">Preguntas Frecuentes</a>
           </nav>
 
@@ -105,15 +113,19 @@ export default function LandingPage() {
           <div className="pt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-[#80CBC4]" />
-              <span>Sin instalación (100% en la Nube)</span>
+              <span>Contratos DNU 70 & Editor Colmart</span>
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-[#80CBC4]" />
-              <span>Ajustado al DNU 70/2023</span>
+              <span>Actas de Cierre & Devolución de Depósito</span>
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-[#80CBC4]" />
-              <span>Migración asistida desde SPOT y Excel</span>
+              <span>Vidriera con 15 Fotos WebP</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-[#80CBC4]" />
+              <span>Hasta 5 Operadores por Licencia</span>
             </div>
           </div>
         </div>
@@ -159,37 +171,70 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-14">
-            {/* Card 1 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-14">
+            {/* Card 1: Contratos DNU 70 & Editor Colmart */}
+            <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 hover:border-[#80CBC4]/50 transition-all space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-[#004d40] border border-[#80CBC4]/40 flex items-center justify-center text-[#80CBC4]">
+                <Scale className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-bold text-white">Contratos DNU 70 & Editor Colmart</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Instrumento legal articulado de 12 cláusulas homologadas por colegios de martilleros. Editor en vivo para retocar acuerdos y depósito en garantía seteable (ARS o USD) antes de descargar el PDF.
+              </p>
+            </div>
+
+            {/* Card 2: Cierre de Alquiler & Restitución */}
+            <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 hover:border-[#80CBC4]/50 transition-all space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-[#004d40] border border-[#80CBC4]/40 flex items-center justify-center text-[#80CBC4]">
+                <Key className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-bold text-white">Cierre de Alquiler & Depósito</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Acta de Restitución y Entrega de Llaves, inspección de estado, verificación de libre deuda de servicios e impuestos y liquidación del depósito en garantía con reintegro transparente.
+              </p>
+            </div>
+
+            {/* Card 3: Ajustes ICL / IPC */}
             <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 hover:border-[#80CBC4]/50 transition-all space-y-3">
               <div className="w-10 h-10 rounded-xl bg-[#004d40] border border-[#80CBC4]/40 flex items-center justify-center text-[#80CBC4]">
                 <TrendingUp className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-white">Ajustes ICL / IPC / UVA</h3>
+              <h3 className="text-base font-bold text-white">Ajustes ICL / IPC / UVA en 1 Clic</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Lectura directa de las tablas del Banco Central (BCRA) e INDEC. El sistema calcula en 1 clic el aumento exacto según la frecuencia pactada en el contrato.
+                Lectura directa de las tablas oficiales del BCRA e INDEC. El sistema calcula en segundos el canon actualizado según la frecuencia pactada (trimestral, semestral o anual).
               </p>
             </div>
 
-            {/* Card 2 */}
+            {/* Card 4: Recibos X Oficiales */}
             <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 hover:border-[#80CBC4]/50 transition-all space-y-3">
               <div className="w-10 h-10 rounded-xl bg-[#004d40] border border-[#80CBC4]/40 flex items-center justify-center text-[#80CBC4]">
                 <Receipt className="w-5 h-5" />
               </div>
               <h3 className="text-base font-bold text-white">Recibos X Oficiales (RG 4004-E)</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Cobranza por cuenta y orden de terceros. Emisión instantánea de Recibos X en PDF de alta calidad con sello, firma del martillero y desglose de expensas y punitorios.
+                Cobranza por cuenta y orden de terceros. Emisión instantánea de Recibos X numerados con desglose de alquiler, expensas, punitorios y envío con un clic por WhatsApp.
               </p>
             </div>
 
-            {/* Card 3 */}
+            {/* Card 5: Vidriera WebP Inteligente */}
             <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 hover:border-[#80CBC4]/50 transition-all space-y-3">
               <div className="w-10 h-10 rounded-xl bg-[#004d40] border border-[#80CBC4]/40 flex items-center justify-center text-[#80CBC4]">
-                <MessageCircle className="w-5 h-5" />
+                <Globe className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-white">Envío Directo por WhatsApp</h3>
+              <h3 className="text-base font-bold text-white">Vidriera WebP de Ultra Velocidad</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Enviá comprobantes, avisos de liquidación bancaria y recordatorios de pago a inquilinos y propietarios directamente por WhatsApp en un solo clic.
+                Publicá hasta 15 fotos por propiedad optimizadas automáticamente en el navegador a WebP 1280x800. Web rápida, sin consumir de más tu almacenamiento y con tu dominio NIC.ar.
+              </p>
+            </div>
+
+            {/* Card 6: Multi-Operador & Manual Integrado */}
+            <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 hover:border-[#80CBC4]/50 transition-all space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-[#004d40] border border-[#80CBC4]/40 flex items-center justify-center text-[#80CBC4]">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-bold text-white">5 Operadores & Manual Didáctico</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Hasta 5 colaboradores con accesos y claves independientes por licencia. Incluye manual de instrucciones didáctico integrado en la app para capacitar a tu equipo en minutos.
               </p>
             </div>
           </div>
@@ -367,6 +412,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-6">
             <Link href="/login" className="hover:text-slate-300">Ingreso Clientes</Link>
             <Link href="/registro" className="hover:text-slate-300">Registro</Link>
+            <Link href="/manual" className="hover:text-[#80CBC4] text-slate-300">Manual de Instrucciones</Link>
             <Link href="/configuracion/vidriera" className="hover:text-slate-300">Dominios NIC.ar</Link>
           </div>
 

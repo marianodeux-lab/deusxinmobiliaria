@@ -29,6 +29,14 @@ import {
   AlertCircle,
   ShieldCheck,
   X,
+  Edit3,
+  Save,
+  Trash2,
+  UploadCloud,
+  Star,
+  Image as ImageIcon,
+  Loader2,
+  Sparkles,
 } from "lucide-react";
 import { formatCurrency, cn } from "@/lib/utils";
 import {
@@ -36,7 +44,10 @@ import {
   PropiedadesKpis,
   togglePublicarVidrieraAction,
   toggleDestacadaWebAction,
+  actualizarPropiedadAction,
+  subirFotoPropiedadAction,
 } from "@/modules/propiedades/actions";
+import { optimizePropertyImage } from "@/lib/image-optimizer";
 import { buildWhatsAppLink } from "@/lib/whatsapp/whatsappHelper";
 
 interface PropiedadesHubProps {
@@ -627,6 +638,10 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
         <FichaTecnicaModal
           propiedad={selectedPropiedadDrawer}
           onClose={() => setSelectedPropiedadDrawer(null)}
+          onPropiedadUpdated={(updated) => {
+            setItems((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+            setSelectedPropiedadDrawer(updated);
+          }}
         />
       )}
     </div>
@@ -634,171 +649,831 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
 }
 
 // ==============================================================================
-// MODAL DRAWER DE FICHA TÉCNICA DETALLADA
+// MODAL DRAWER DE FICHA TÉCNICA DETALLADA & EDICIÓN
 // ==============================================================================
 
 interface FichaTecnicaModalProps {
   propiedad: PropiedadItem;
   onClose: () => void;
+  onPropiedadUpdated?: (updated: PropiedadItem) => void;
 }
 
-function FichaTecnicaModal({ propiedad, onClose }: FichaTecnicaModalProps) {
+function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecnicaModalProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState<"ficha" | "vidriera" | "ocupacion">("ficha");
+  const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadFeedback, setUploadFeedback] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Estado del formulario editable
+  const [formData, setFormData] = useState({
+    codigo_interno: propiedad.codigo_interno || "",
+    unidad_funcional: propiedad.unidad_funcional || "",
+    partida_inmobiliaria: propiedad.partida_inmobiliaria || "",
+    nomenclatura_catastral: propiedad.nomenclatura_catastral || "",
+    ambientes: propiedad.ambientes || 1,
+    dormitorios: propiedad.dormitorios || 0,
+    banios: propiedad.banios || 1,
+    cocheras: propiedad.cocheras || 0,
+    superficie_total: propiedad.superficie_total ?? "",
+    expensas_estimadas: propiedad.expensas_estimadas ?? "",
+    notas: propiedad.notas || "",
+
+    // Vidriera Online
+    publicar_en_vidriera: propiedad.publicar_en_vidriera ?? true,
+    destacada_web: propiedad.destacada_web ?? false,
+    operacion_web: (propiedad.operacion_web || "alquiler") as "alquiler" | "venta" | "temporal",
+    moneda_web: (propiedad.moneda_web || "ARS") as "ARS" | "USD",
+    precio_web: propiedad.precio_web ?? "",
+    titulo_web: propiedad.titulo_web || "",
+    descripcion_web: propiedad.descripcion_web || "",
+    fotos_web: Array.isArray(propiedad.fotos_web) ? [...propiedad.fotos_web] : [],
+  });
+
   const estaAlquilado = propiedad.contrato_activo && propiedad.contrato_activo.estado === "vigente";
 
+  // Manejo de carga y optimización automática de imágenes (Hasta 15)
+  const handleUploadFotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const cupoDisponible = 15 - formData.fotos_web.length;
+    if (cupoDisponible <= 0) {
+      alert("Ya alcanzaste el límite máximo de 15 imágenes por propiedad.");
+      return;
+    }
+
+    const filesToUpload = Array.from(files).slice(0, cupoDisponible);
+    setIsUploading(true);
+    setUploadFeedback(`Formateando y optimizando ${filesToUpload.length} imagen(es) a WebP (1280x800)...`);
+
+    try {
+      const nuevasUrls: string[] = [];
+
+      for (let i = 0; i < filesToUpload.length; i++) {
+        const file = filesToUpload[i];
+        setUploadFeedback(`Optimizando imagen ${i + 1} de ${filesToUpload.length} (${file.name})...`);
+
+        // 1. Optimización y formateo en el cliente (Canvas nativo a WebP 1280x800)
+        const opt = await optimizePropertyImage(file, {
+          maxWidth: 1280,
+          maxHeight: 800,
+          quality: 0.82,
+        });
+
+        // 2. Subida a Supabase Storage mediante Server Action
+        setUploadFeedback(`Subiendo imagen ${i + 1} (${opt.sizeKb} KB) a Supabase Storage...`);
+        const form = new FormData();
+        form.append("file", opt.file);
+        form.append("propiedad_id", propiedad.id);
+
+        const res = await subirFotoPropiedadAction(form);
+        if (res.success && res.url) {
+          nuevasUrls.push(res.url);
+        } else {
+          console.error("Error al subir imagen:", res.error);
+        }
+      }
+
+      if (nuevasUrls.length > 0) {
+        setFormData((prev) => ({
+          ...prev,
+          fotos_web: [...prev.fotos_web, ...nuevasUrls].slice(0, 15),
+        }));
+        setUploadFeedback(`¡${nuevasUrls.length} imagen(es) optimizadas y subidas con éxito!`);
+        setTimeout(() => setUploadFeedback(null), 3500);
+      }
+    } catch (err: any) {
+      console.error("Error en optimización/subida de fotos:", err);
+      setErrorMessage(err.message || "Error al procesar las imágenes.");
+    } finally {
+      setIsUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleEliminarFoto = (idx: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      fotos_web: prev.fotos_web.filter((_, i) => i !== idx),
+    }));
+  };
+
+  const handleEstablecerPortada = (idx: number) => {
+    if (idx === 0) return;
+    setFormData((prev) => {
+      const fotos = [...prev.fotos_web];
+      const [seleccionada] = fotos.splice(idx, 1);
+      return {
+        ...prev,
+        fotos_web: [seleccionada, ...fotos],
+      };
+    });
+  };
+
+  // Guardar cambios
+  const handleGuardarCambios = async () => {
+    setIsSaving(true);
+    setErrorMessage(null);
+
+    const payload = {
+      codigo_interno: formData.codigo_interno || undefined,
+      unidad_funcional: formData.unidad_funcional || undefined,
+      partida_inmobiliaria: formData.partida_inmobiliaria || undefined,
+      nomenclatura_catastral: formData.nomenclatura_catastral || undefined,
+      ambientes: Number(formData.ambientes) || 1,
+      dormitorios: Number(formData.dormitorios) || 0,
+      banios: Number(formData.banios) || 1,
+      cocheras: Number(formData.cocheras) || 0,
+      superficie_total: formData.superficie_total !== "" ? Number(formData.superficie_total) : null,
+      expensas_estimadas: formData.expensas_estimadas !== "" ? Number(formData.expensas_estimadas) : null,
+      notas: formData.notas || null,
+
+      // Web
+      publicar_en_vidriera: formData.publicar_en_vidriera,
+      destacada_web: formData.destacada_web,
+      operacion_web: formData.operacion_web,
+      moneda_web: formData.moneda_web,
+      precio_web: formData.precio_web !== "" ? Number(formData.precio_web) : null,
+      titulo_web: formData.titulo_web || null,
+      descripcion_web: formData.descripcion_web || null,
+      fotos_web: formData.fotos_web,
+    };
+
+    const res = await actualizarPropiedadAction(propiedad.id, payload);
+
+    if (res.success) {
+      setSaveSuccess(true);
+      setIsEditing(false);
+
+      const propiedadActualizada: PropiedadItem = {
+        ...propiedad,
+        codigo_interno: formData.codigo_interno || undefined,
+        unidad_funcional: formData.unidad_funcional || undefined,
+        partida_inmobiliaria: formData.partida_inmobiliaria || undefined,
+        nomenclatura_catastral: formData.nomenclatura_catastral || undefined,
+        ambientes: Number(formData.ambientes) || 1,
+        dormitorios: Number(formData.dormitorios) || 0,
+        banios: Number(formData.banios) || 1,
+        cocheras: Number(formData.cocheras) || 0,
+        superficie_total: formData.superficie_total !== "" ? Number(formData.superficie_total) : undefined,
+        expensas_estimadas: formData.expensas_estimadas !== "" ? Number(formData.expensas_estimadas) : undefined,
+        notas: formData.notas || undefined,
+        publicar_en_vidriera: formData.publicar_en_vidriera,
+        destacada_web: formData.destacada_web,
+        operacion_web: formData.operacion_web,
+        moneda_web: formData.moneda_web,
+        precio_web: formData.precio_web !== "" ? Number(formData.precio_web) : undefined,
+        titulo_web: formData.titulo_web || undefined,
+        descripcion_web: formData.descripcion_web || undefined,
+        fotos_web: formData.fotos_web,
+      };
+
+      if (onPropiedadUpdated) {
+        onPropiedadUpdated(propiedadActualizada);
+      }
+
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } else {
+      setErrorMessage(res.error || "Ocurrió un error al actualizar los datos.");
+    }
+
+    setIsSaving(false);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 animate-in fade-in zoom-in-95 duration-150 relative max-h-[90vh] overflow-y-auto">
-        {/* Encabezado */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-3xl w-full p-5 sm:p-6 animate-in fade-in zoom-in-95 duration-150 relative max-h-[92vh] flex flex-col">
+        {/* ENCABEZADO SUPERIOR */}
+        <div className="flex items-start justify-between border-b border-slate-100 pb-3 gap-3">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide bg-[#E0F2F1] text-[#004d40] rounded">
                 {propiedad.tipo_inmueble}
               </span>
-              <h3 className="font-bold text-slate-900 text-base">
+              <h3 className="font-extrabold text-slate-900 text-base">
                 {propiedad.direccion_calle} {propiedad.direccion_numero}
                 {propiedad.piso_dpto && <span className="text-slate-500 font-normal ml-1">({propiedad.piso_dpto})</span>}
               </h3>
+              {formData.publicar_en_vidriera && (
+                <span className="px-2 py-0.5 text-[9px] font-bold rounded-full bg-teal-50 text-teal-800 border border-teal-200 flex items-center gap-1">
+                  <Globe className="w-2.5 h-2.5" />
+                  <span>Publicada en Vidriera</span>
+                </span>
+              )}
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
               {propiedad.localidad}, {propiedad.provincia} {propiedad.codigo_postal ? `(CP ${propiedad.codigo_postal})` : ""}
             </p>
           </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            {!isEditing ? (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="px-3 py-1.5 text-xs font-bold text-teal-900 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <Edit3 className="w-3.5 h-3.5 text-teal-700" />
+                <span>Editar Propiedad</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-3 py-1.5 text-xs font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all"
+              >
+                Cancelar Edición
+              </button>
+            )}
+
+            <button
+              onClick={onClose}
+              className="w-7 h-7 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center font-bold text-sm cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        {/* NAVEGACIÓN DE SUB-PESTAÑAS EN LA FICHA */}
+        <div className="flex items-center gap-2 border-b border-slate-100 pt-3 text-xs font-bold shrink-0">
           <button
-            onClick={onClose}
-            className="w-7 h-7 rounded-md text-slate-500 hover:bg-slate-100 flex items-center justify-center"
+            onClick={() => setActiveTab("ficha")}
+            className={cn(
+              "pb-2.5 px-3 border-b-2 transition-all flex items-center gap-1.5",
+              activeTab === "ficha"
+                ? "border-[#00796b] text-[#004d40]"
+                : "border-transparent text-slate-500 hover:text-slate-800"
+            )}
           >
-            ✕
+            <Building className="w-3.5 h-3.5" />
+            <span>Ficha & Catastro</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("vidriera")}
+            className={cn(
+              "pb-2.5 px-3 border-b-2 transition-all flex items-center gap-1.5",
+              activeTab === "vidriera"
+                ? "border-[#00796b] text-[#004d40]"
+                : "border-transparent text-slate-500 hover:text-slate-800"
+            )}
+          >
+            <ImageIcon className="w-3.5 h-3.5" />
+            <span>Vidriera & Fotos</span>
+            <span className="px-1.5 py-0.2 text-[10px] rounded-full bg-slate-100 text-slate-700">
+              {formData.fotos_web.length}/15
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("ocupacion")}
+            className={cn(
+              "pb-2.5 px-3 border-b-2 transition-all flex items-center gap-1.5",
+              activeTab === "ocupacion"
+                ? "border-[#00796b] text-[#004d40]"
+                : "border-transparent text-slate-500 hover:text-slate-800"
+            )}
+          >
+            <FolderKanban className="w-3.5 h-3.5" />
+            <span>Ocupación & Contrato</span>
           </button>
         </div>
 
-        <div className="py-4 space-y-4 text-xs">
-          {/* Ficha Catastral & Identificación */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <div>
-              <span className="text-[10px] text-slate-400 block font-semibold">Código Interno:</span>
-              <span className="font-mono font-bold text-slate-800">{propiedad.codigo_interno || "S/C"}</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 block font-semibold">Unidad Funcional:</span>
-              <span className="font-mono text-slate-800">{propiedad.unidad_funcional || "--"}</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 block font-semibold">Partida Inmobiliaria:</span>
-              <span className="font-mono text-slate-800">{propiedad.partida_inmobiliaria || "No declarada"}</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 block font-semibold">Catastro:</span>
-              <span className="font-mono text-slate-800">{propiedad.nomenclatura_catastral || "--"}</span>
-            </div>
+        {/* MENSAJES DE ESTADO */}
+        {saveSuccess && (
+          <div className="mt-3 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>¡Ficha de la propiedad actualizada con éxito en la base de datos!</span>
           </div>
+        )}
 
-          {/* Características de la Propiedad */}
-          <div>
-            <h4 className="font-bold text-slate-900 mb-2 text-xs uppercase tracking-wider text-slate-500">
-              Características & Ambientes
-            </h4>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
-                <span className="text-sm font-extrabold text-slate-900 block">{propiedad.ambientes}</span>
-                <span className="text-[10px] text-slate-500">Ambientes</span>
-              </div>
-              <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
-                <span className="text-sm font-extrabold text-slate-900 block">{propiedad.dormitorios}</span>
-                <span className="text-[10px] text-slate-500">Dormitorios</span>
-              </div>
-              <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
-                <span className="text-sm font-extrabold text-slate-900 block">{propiedad.banios}</span>
-                <span className="text-[10px] text-slate-500">Baños</span>
-              </div>
-              <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
-                <span className="text-sm font-extrabold text-slate-900 block">
-                  {propiedad.superficie_total ? `${propiedad.superficie_total} m²` : "--"}
-                </span>
-                <span className="text-[10px] text-slate-500">Superficie Total</span>
-              </div>
-            </div>
+        {errorMessage && (
+          <div className="mt-3 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <span>{errorMessage}</span>
           </div>
+        )}
 
-          {/* Estado de Contrato de Locación */}
-          <div>
-            <h4 className="font-bold text-slate-900 mb-2 text-xs uppercase tracking-wider text-slate-500">
-              Estado de Ocupación / Contrato
-            </h4>
-            {estaAlquilado ? (
-              <div className="p-3 bg-[#141519] rounded-xl border border-[#10B981]/35 space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 font-bold text-[#34D399]">
-                    <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
-                    <span>Contrato de Alquiler Vigente (Carpeta #{propiedad.contrato_activo?.carpeta_numero})</span>
-                  </div>
-                  <span className="font-mono font-extrabold text-white text-sm">
-                    {formatCurrency(propiedad.contrato_activo?.valor_alquiler_actual || 0, propiedad.contrato_activo?.moneda_base || "ARS")} / mes
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-300 pt-1 border-t border-[#262832]">
-                  <div>
-                    <span className="text-slate-400 block">Inquilino (Locatario):</span>
-                    <span className="font-bold text-white">{propiedad.contrato_activo?.inquilino_nombre}</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block">Vencimiento del Contrato:</span>
-                    <span className="font-bold font-mono text-slate-200">{propiedad.contrato_activo?.fecha_fin}</span>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="p-3 bg-[#141519] rounded-xl border border-[#2DD4BF]/30 text-[#2DD4BF] flex items-center justify-between">
-                <div className="flex items-center gap-1.5 font-bold">
-                  <Home className="w-4 h-4 text-[#2DD4BF]" />
-                  <span>Inmueble Disponible / Vacante para Comercializar</span>
-                </div>
-                <Link
-                  href="/contratos"
-                  className="px-3 py-1 bg-gradient-to-r from-[#004D40] to-[#10B981] hover:brightness-110 text-white rounded-lg font-bold text-xs shadow-2xs"
-                >
-                  Crear Contrato
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Propietarios / Titulares */}
-          <div>
-            <h4 className="font-bold text-slate-900 mb-2 text-xs uppercase tracking-wider text-slate-500">
-              Propietarios / Titulares
-            </h4>
-            <div className="space-y-1.5">
-              {propiedad.propietarios.length === 0 ? (
-                <p className="text-slate-400 italic">No hay propietarios vinculados directamente.</p>
-              ) : (
-                propiedad.propietarios.map((pr, idx) => (
-                  <div key={idx} className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+        {/* CUERPO PRINCIPAL CON SCROLL */}
+        <div className="py-4 space-y-4 text-xs overflow-y-auto flex-1 pr-1">
+          {/* ============================================================== */}
+          {/* PESTAÑA 1: FICHA TÉCNICA & CATASTRO */}
+          {/* ============================================================== */}
+          {activeTab === "ficha" && (
+            <div className="space-y-4">
+              {!isEditing ? (
+                <>
+                  {/* Modo Lectura: Catastro */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
                     <div>
-                      <span className="font-bold text-slate-900 block">{pr.nombre}</span>
-                      <span className="text-[10px] text-slate-500">{pr.documento}</span>
+                      <span className="text-[10px] text-slate-400 block font-semibold">Código Interno:</span>
+                      <span className="font-mono font-bold text-slate-800">{formData.codigo_interno || "S/C"}</span>
                     </div>
-                    {pr.cbu_alias && (
-                      <span className="font-mono text-[10px] bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded border border-emerald-200">
-                        CBU: {pr.cbu_alias}
-                      </span>
-                    )}
+                    <div>
+                      <span className="text-[10px] text-slate-400 block font-semibold">Unidad Funcional:</span>
+                      <span className="font-mono text-slate-800">{formData.unidad_funcional || "--"}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 block font-semibold">Partida Inmobiliaria:</span>
+                      <span className="font-mono text-slate-800">{formData.partida_inmobiliaria || "No declarada"}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 block font-semibold">Catastro:</span>
+                      <span className="font-mono text-slate-800">{formData.nomenclatura_catastral || "--"}</span>
+                    </div>
                   </div>
-                ))
+
+                  {/* Modo Lectura: Características */}
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-2 text-xs uppercase tracking-wider text-slate-500">
+                      Características & Ambientes
+                    </h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                      <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
+                        <span className="text-sm font-extrabold text-slate-900 block">{formData.ambientes}</span>
+                        <span className="text-[10px] text-slate-500">Ambientes</span>
+                      </div>
+                      <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
+                        <span className="text-sm font-extrabold text-slate-900 block">{formData.dormitorios}</span>
+                        <span className="text-[10px] text-slate-500">Dormitorios</span>
+                      </div>
+                      <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
+                        <span className="text-sm font-extrabold text-slate-900 block">{formData.banios}</span>
+                        <span className="text-[10px] text-slate-500">Baños</span>
+                      </div>
+                      <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
+                        <span className="text-sm font-extrabold text-slate-900 block">{formData.cocheras}</span>
+                        <span className="text-[10px] text-slate-500">Cocheras</span>
+                      </div>
+                      <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
+                        <span className="text-sm font-extrabold text-slate-900 block">
+                          {formData.superficie_total ? `${formData.superficie_total} m²` : "--"}
+                        </span>
+                        <span className="text-[10px] text-slate-500">Superficie Total</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expensas */}
+                  {formData.expensas_estimadas && (
+                    <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                      <span className="text-slate-600 font-semibold">Expensas Estimadas:</span>
+                      <span className="font-mono font-bold text-slate-900">
+                        {formatCurrency(Number(formData.expensas_estimadas), "ARS")}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Notas */}
+                  {formData.notas && (
+                    <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                      <span className="text-[10px] font-semibold text-slate-500 block">Notas & Observaciones Internas:</span>
+                      <p className="text-slate-700 text-xs mt-0.5 leading-relaxed">{formData.notas}</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                /* Modo Edición: Ficha & Catastro */
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Código Interno</label>
+                      <input
+                        type="text"
+                        value={formData.codigo_interno}
+                        onChange={(e) => setFormData({ ...formData, codigo_interno: e.target.value })}
+                        placeholder="Ej: DEP-102"
+                        className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono focus:border-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Unidad Funcional</label>
+                      <input
+                        type="text"
+                        value={formData.unidad_funcional}
+                        onChange={(e) => setFormData({ ...formData, unidad_funcional: e.target.value })}
+                        placeholder="Ej: UF 04"
+                        className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono focus:border-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Partida Inmobiliaria</label>
+                      <input
+                        type="text"
+                        value={formData.partida_inmobiliaria}
+                        onChange={(e) => setFormData({ ...formData, partida_inmobiliaria: e.target.value })}
+                        placeholder="Ej: 078-129402"
+                        className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono focus:border-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Catastro</label>
+                      <input
+                        type="text"
+                        value={formData.nomenclatura_catastral}
+                        onChange={(e) => setFormData({ ...formData, nomenclatura_catastral: e.target.value })}
+                        placeholder="Ej: Circ. II Sec. B"
+                        className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono focus:border-teal-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <h5 className="font-bold text-slate-800 text-[11px] mb-2 uppercase tracking-wide">
+                      Dimensiones y Ambientes
+                    </h5>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-600 block mb-1">Ambientes</label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={formData.ambientes}
+                          onChange={(e) => setFormData({ ...formData, ambientes: parseInt(e.target.value) || 1 })}
+                          className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono text-center"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-600 block mb-1">Dormitorios</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={formData.dormitorios}
+                          onChange={(e) => setFormData({ ...formData, dormitorios: parseInt(e.target.value) || 0 })}
+                          className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono text-center"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-600 block mb-1">Baños</label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={formData.banios}
+                          onChange={(e) => setFormData({ ...formData, banios: parseInt(e.target.value) || 1 })}
+                          className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono text-center"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-600 block mb-1">Cocheras</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={formData.cocheras}
+                          onChange={(e) => setFormData({ ...formData, cocheras: parseInt(e.target.value) || 0 })}
+                          className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono text-center"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-600 block mb-1">Superficie Total (m²)</label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={formData.superficie_total}
+                          onChange={(e) => setFormData({ ...formData, superficie_total: e.target.value })}
+                          placeholder="Ej: 65"
+                          className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono text-center"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Expensas Estimadas ($ ARS)</label>
+                      <input
+                        type="number"
+                        value={formData.expensas_estimadas}
+                        onChange={(e) => setFormData({ ...formData, expensas_estimadas: e.target.value })}
+                        placeholder="Ej: 35000"
+                        className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Notas Internas de la Inmobiliaria</label>
+                      <textarea
+                        rows={2}
+                        value={formData.notas}
+                        onChange={(e) => setFormData({ ...formData, notas: e.target.value })}
+                        placeholder="Observaciones privadas sobre llaves, portero, estado..."
+                        className="w-full text-xs p-2 border border-slate-200 rounded-lg"
+                      />
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
-          </div>
+          )}
 
-          {/* Notas Adicionales */}
-          {propiedad.notas && (
-            <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-[10px] font-semibold text-slate-500 block">Notas & Observaciones:</span>
-              <p className="text-slate-700 text-xs mt-0.5">{propiedad.notas}</p>
+          {/* ============================================================== */}
+          {/* PESTAÑA 2: VIDRIERA ONLINE & FOTOS (HASTA 15 IMÁGENES) */}
+          {/* ============================================================== */}
+          {activeTab === "vidriera" && (
+            <div className="space-y-4">
+              {/* Controles de Publicación Web */}
+              <div className="p-3 bg-teal-50/50 rounded-xl border border-teal-100 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.publicar_en_vidriera}
+                      onChange={(e) => setFormData({ ...formData, publicar_en_vidriera: e.target.checked })}
+                      className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
+                    />
+                    <span className="text-xs font-bold text-teal-950">
+                      Publicar en Vidriera Online Pública
+                    </span>
+                  </label>
+
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.destacada_web}
+                      onChange={(e) => setFormData({ ...formData, destacada_web: e.target.checked })}
+                      className="w-4 h-4 text-amber-500 rounded focus:ring-amber-400"
+                    />
+                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1">
+                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+                      <span>Destacar en Portada</span>
+                    </span>
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-teal-100">
+                  <div>
+                    <label className="text-[10px] font-bold text-teal-900 block mb-1">Operación Comercial</label>
+                    <select
+                      value={formData.operacion_web}
+                      onChange={(e) => setFormData({ ...formData, operacion_web: e.target.value as any })}
+                      className="w-full text-xs p-2 bg-white border border-teal-200 rounded-lg font-semibold"
+                    >
+                      <option value="alquiler">Alquiler Permanente</option>
+                      <option value="venta">Venta Directa</option>
+                      <option value="temporal">Alquiler Temporario</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold text-teal-900 block mb-1">Moneda de Publicación</label>
+                    <select
+                      value={formData.moneda_web}
+                      onChange={(e) => setFormData({ ...formData, moneda_web: e.target.value as any })}
+                      className="w-full text-xs p-2 bg-white border border-teal-200 rounded-lg font-mono font-bold"
+                    >
+                      <option value="ARS">ARS ($ Pesos Argentinos)</option>
+                      <option value="USD">USD (Dólares Estadounidenses)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold text-teal-900 block mb-1">Precio Web Sugerido</label>
+                    <input
+                      type="number"
+                      value={formData.precio_web}
+                      onChange={(e) => setFormData({ ...formData, precio_web: e.target.value })}
+                      placeholder="Ej: 450000"
+                      className="w-full text-xs p-2 bg-white border border-teal-200 rounded-lg font-mono font-bold"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Título de Publicación Web */}
+              <div>
+                <label className="text-[11px] font-bold text-slate-800 block mb-1">
+                  Título Comercial de la Publicación
+                </label>
+                <input
+                  type="text"
+                  value={formData.titulo_web}
+                  onChange={(e) => setFormData({ ...formData, titulo_web: e.target.value })}
+                  placeholder="Ej: Departamento 3 Ambientes con Balcón y Vista Abierta"
+                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl focus:border-teal-500 font-medium"
+                />
+              </div>
+
+              {/* DETALLES Y DESCRIPCIÓN DE LA PUBLICACIÓN */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-[11px] font-bold text-slate-800">
+                    Detalles & Descripción de la Publicación Web
+                  </label>
+                  <span className="text-[10px] text-slate-400">
+                    {formData.descripcion_web.length} caracteres
+                  </span>
+                </div>
+                <textarea
+                  rows={4}
+                  value={formData.descripcion_web}
+                  onChange={(e) => setFormData({ ...formData, descripcion_web: e.target.value })}
+                  placeholder="Detallá los aspectos destacados de la propiedad: luminosidad, estado de la cocina, amenities del edificio, condiciones del contrato, transporte cercano, requisitos para ingresar..."
+                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl leading-relaxed focus:border-teal-500"
+                />
+                <span className="text-[10px] text-slate-400 block mt-0.5">
+                  Este texto se mostrará a los interesados en el portal web público y en las fichas compartibles por WhatsApp.
+                </span>
+              </div>
+
+              {/* GALERÍA DE IMÁGENES: HASTA 15 FOTOS CON FORMATEO AUTOMÁTICO */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h5 className="font-extrabold text-slate-900 text-xs flex items-center gap-1.5">
+                      <ImageIcon className="w-4 h-4 text-teal-700" />
+                      <span>Galería de Fotos de la Propiedad</span>
+                    </h5>
+                    <p className="text-[11px] text-slate-500">
+                      Capacidad: <strong>{formData.fotos_web.length} de 15 fotos</strong> utilizadas
+                    </p>
+                  </div>
+
+                  {formData.fotos_web.length < 15 && (
+                    <label className={cn(
+                      "px-3 py-1.5 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-xs",
+                      isUploading
+                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                        : "bg-[#004d40] hover:bg-[#00332c] text-white active:scale-95"
+                    )}>
+                      {isUploading ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Procesando...</span>
+                        </>
+                      ) : (
+                        <>
+                          <UploadCloud className="w-3.5 h-3.5" />
+                          <span>Adjuntar Fotos ({15 - formData.fotos_web.length} disponibles)</span>
+                        </>
+                      )}
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        disabled={isUploading}
+                        onChange={handleUploadFotos}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+
+                {/* Banner de optimización automática */}
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-[11px] text-slate-600 flex items-start gap-2">
+                  <Sparkles className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+                  <div className="leading-tight">
+                    <span className="font-bold text-slate-800">Formateo inteligente de imágenes: </span>
+                    Cualquier foto que adjuntes (incluso fotos pesadas de celulares en 4K) se adapta automáticamente a resolución estándar de Vidriera (1280x800) y formato WebP ultraliviano (~150 KB). Cero consumo innecesario de almacenamiento.
+                  </div>
+                </div>
+
+                {uploadFeedback && (
+                  <div className="p-2 rounded-lg bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-semibold flex items-center gap-2">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-teal-600" />
+                    <span>{uploadFeedback}</span>
+                  </div>
+                )}
+
+                {/* Grilla de Miniaturas */}
+                {formData.fotos_web.length === 0 ? (
+                  <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center text-slate-400 space-y-1">
+                    <ImageIcon className="w-8 h-8 mx-auto text-slate-300 stroke-1" />
+                    <p className="text-xs font-semibold text-slate-600">Aún no hay fotos cargadas</p>
+                    <p className="text-[11px]">Podés adjuntar hasta 15 fotos para exhibir en la vidriera online.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+                    {formData.fotos_web.map((url, idx) => (
+                      <div
+                        key={idx}
+                        className={cn(
+                          "group relative rounded-xl overflow-hidden border bg-slate-100 aspect-4/3 flex flex-col justify-between shadow-xs transition-all",
+                          idx === 0 ? "border-teal-500 ring-2 ring-teal-500/20" : "border-slate-200"
+                        )}
+                      >
+                        <img
+                          src={url}
+                          alt={`Foto ${idx + 1}`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+
+                        {/* Badge de Portada */}
+                        <div className="absolute top-1.5 left-1.5 flex gap-1">
+                          {idx === 0 ? (
+                            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-teal-800 text-white shadow-xs">
+                              Portada
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleEstablecerPortada(idx)}
+                              title="Hacer foto de portada"
+                              className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-white/90 hover:bg-white text-slate-700 shadow-xs backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              Hacer Portada
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Botón de Eliminar */}
+                        <button
+                          type="button"
+                          onClick={() => handleEliminarFoto(idx)}
+                          title="Eliminar foto"
+                          className="absolute top-1.5 right-1.5 p-1 rounded-md bg-rose-600/90 hover:bg-rose-600 text-white shadow-xs opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+
+                        <div className="absolute bottom-1 right-1.5 px-1 rounded text-[9px] font-mono bg-black/60 text-white">
+                          #{idx + 1}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ============================================================== */}
+          {/* PESTAÑA 3: OCUPACIÓN & PROPIETARIOS */}
+          {/* ============================================================== */}
+          {activeTab === "ocupacion" && (
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-bold text-slate-900 mb-2 text-xs uppercase tracking-wider text-slate-500">
+                  Estado de Ocupación / Contrato
+                </h4>
+                {estaAlquilado ? (
+                  <div className="p-3 bg-[#141519] rounded-xl border border-[#10B981]/35 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 font-bold text-[#34D399]">
+                        <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
+                        <span>Contrato de Alquiler Vigente (Carpeta #{propiedad.contrato_activo?.carpeta_numero})</span>
+                      </div>
+                      <span className="font-mono font-extrabold text-white text-sm">
+                        {formatCurrency(propiedad.contrato_activo?.valor_alquiler_actual || 0, propiedad.contrato_activo?.moneda_base || "ARS")} / mes
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-300 pt-1 border-t border-[#262832]">
+                      <div>
+                        <span className="text-slate-400 block">Inquilino (Locatario):</span>
+                        <span className="font-bold text-white">{propiedad.contrato_activo?.inquilino_nombre}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block">Vencimiento del Contrato:</span>
+                        <span className="font-bold font-mono text-slate-200">{propiedad.contrato_activo?.fecha_fin}</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-3 bg-[#141519] rounded-xl border border-[#2DD4BF]/30 text-[#2DD4BF] flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 font-bold">
+                      <Home className="w-4 h-4 text-[#2DD4BF]" />
+                      <span>Inmueble Disponible / Vacante para Comercializar</span>
+                    </div>
+                    <Link
+                      href="/contratos"
+                      className="px-3 py-1 bg-gradient-to-r from-[#004D40] to-[#10B981] hover:brightness-110 text-white rounded-lg font-bold text-xs shadow-2xs"
+                    >
+                      Crear Contrato
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Propietarios / Titulares */}
+              <div>
+                <h4 className="font-bold text-slate-900 mb-2 text-xs uppercase tracking-wider text-slate-500">
+                  Propietarios / Titulares
+                </h4>
+                <div className="space-y-1.5">
+                  {propiedad.propietarios.length === 0 ? (
+                    <p className="text-slate-400 italic">No hay propietarios vinculados directamente.</p>
+                  ) : (
+                    propiedad.propietarios.map((pr, idx) => (
+                      <div key={idx} className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                        <div>
+                          <span className="font-bold text-slate-900 block">{pr.nombre}</span>
+                          <span className="text-[10px] text-slate-500">{pr.documento}</span>
+                        </div>
+                        {pr.cbu_alias && (
+                          <span className="font-mono text-[10px] bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded border border-emerald-200">
+                            CBU: {pr.cbu_alias}
+                          </span>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </div>
 
-        <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+        {/* PIE / ACCIONES DE GUARDADO */}
+        <div className="pt-3 border-t border-slate-100 flex items-center justify-between shrink-0">
           <Link
             href="/configuracion/vidriera"
             className="text-xs font-semibold text-teal-800 hover:underline flex items-center gap-1"
@@ -807,14 +1482,37 @@ function FichaTecnicaModal({ propiedad, onClose }: FichaTecnicaModalProps) {
             <span>Ver en Vidriera Online</span>
           </Link>
 
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
-          >
-            Cerrar Ficha
-          </button>
+          <div className="flex items-center gap-2">
+            {isEditing && (
+              <button
+                onClick={handleGuardarCambios}
+                disabled={isSaving}
+                className="px-4 py-2 text-xs font-bold text-white bg-[#004d40] hover:bg-[#00332c] rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Guardando...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Guardar Cambios</span>
+                  </>
+                )}
+              </button>
+            )}
+
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
+            >
+              Cerrar Ficha
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+

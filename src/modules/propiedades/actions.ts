@@ -508,3 +508,144 @@ export async function toggleDestacadaWebAction(propiedad_id: string, destacada: 
     return { success: false, error: err.message };
   }
 }
+
+export interface ActualizarPropiedadInput {
+  codigo_interno?: string;
+  unidad_funcional?: string;
+  partida_inmobiliaria?: string;
+  nomenclatura_catastral?: string;
+  ambientes?: number;
+  dormitorios?: number;
+  banios?: number;
+  cocheras?: number;
+  superficie_total?: number | null;
+  expensas_estimadas?: number | null;
+  notas?: string | null;
+
+  // Web & Vidriera
+  publicar_en_vidriera?: boolean;
+  destacada_web?: boolean;
+  operacion_web?: "alquiler" | "venta" | "temporal";
+  moneda_web?: "ARS" | "USD";
+  precio_web?: number | null;
+  mostrar_precio_web?: boolean;
+  titulo_web?: string | null;
+  descripcion_web?: string | null;
+  fotos_web?: string[];
+}
+
+/**
+ * Server Action: Sube una foto optimizada de propiedad a Supabase Storage
+ */
+export async function subirFotoPropiedadAction(formData: FormData): Promise<{
+  success: boolean;
+  url?: string;
+  error?: string;
+}> {
+  try {
+    const { tenantId } = await requireAuthenticatedTenant();
+    const admin = createAdminClient();
+
+    const file = formData.get("file") as File;
+    const propiedadId = (formData.get("propiedad_id") as string) || "general";
+
+    if (!file) {
+      return { success: false, error: "No se proporcionó ningún archivo." };
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const filePath = `${tenantId}/${propiedadId}/${Date.now()}_${safeName}`;
+
+    const { error: uploadError } = await admin.storage
+      .from("propiedades")
+      .upload(filePath, buffer, {
+        contentType: file.type || "image/webp",
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error("Error al subir a Supabase Storage:", uploadError);
+      return { success: false, error: uploadError.message };
+    }
+
+    const { data } = admin.storage.from("propiedades").getPublicUrl(filePath);
+
+    return {
+      success: true,
+      url: data.publicUrl,
+    };
+  } catch (err: any) {
+    console.error("Excepción en subirFotoPropiedadAction:", err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Server Action: Actualiza los datos técnicos, características y vidriera de una propiedad
+ */
+export async function actualizarPropiedadAction(
+  propiedadId: string,
+  datos: ActualizarPropiedadInput
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { tenantId } = await requireAuthenticatedTenant();
+    const admin = createAdminClient();
+
+    // Limitar estrictamente las fotos a un máximo de 15 por propiedad
+    const fotosFinales = Array.isArray(datos.fotos_web)
+      ? datos.fotos_web.slice(0, 15)
+      : undefined;
+
+    const payload: Record<string, any> = {
+      actualizado_al: new Date().toISOString(),
+    };
+
+    if (datos.codigo_interno !== undefined) payload.codigo_interno = datos.codigo_interno || null;
+    if (datos.unidad_funcional !== undefined) payload.unidad_funcional = datos.unidad_funcional || null;
+    if (datos.partida_inmobiliaria !== undefined) payload.partida_inmobiliaria = datos.partida_inmobiliaria || null;
+    if (datos.nomenclatura_catastral !== undefined) payload.nomenclatura_catastral = datos.nomenclatura_catastral || null;
+    if (datos.ambientes !== undefined) payload.ambientes = Number(datos.ambientes) || 1;
+    if (datos.dormitorios !== undefined) payload.dormitorios = Number(datos.dormitorios) || 0;
+    if (datos.banios !== undefined) payload.banios = Number(datos.banios) || 1;
+    if (datos.cocheras !== undefined) payload.cocheras = Number(datos.cocheras) || 0;
+    if (datos.superficie_total !== undefined) payload.superficie_total = datos.superficie_total !== null ? Number(datos.superficie_total) : null;
+    if (datos.expensas_estimadas !== undefined) payload.expensas_estimadas = datos.expensas_estimadas !== null ? Number(datos.expensas_estimadas) : null;
+    if (datos.notas !== undefined) payload.notas = datos.notas || null;
+
+    // Web & Vidriera
+    if (datos.publicar_en_vidriera !== undefined) payload.publicar_en_vidriera = datos.publicar_en_vidriera;
+    if (datos.destacada_web !== undefined) payload.destacada_web = datos.destacada_web;
+    if (datos.operacion_web !== undefined) payload.operacion_web = datos.operacion_web;
+    if (datos.moneda_web !== undefined) payload.moneda_web = datos.moneda_web;
+    if (datos.precio_web !== undefined) payload.precio_web = datos.precio_web !== null ? Number(datos.precio_web) : null;
+    if (datos.mostrar_precio_web !== undefined) payload.mostrar_precio_web = datos.mostrar_precio_web;
+    if (datos.titulo_web !== undefined) payload.titulo_web = datos.titulo_web || null;
+    if (datos.descripcion_web !== undefined) payload.descripcion_web = datos.descripcion_web || null;
+    if (fotosFinales !== undefined) payload.fotos_web = fotosFinales;
+
+    const { error: updateError } = await admin
+      .from("propiedades")
+      .update(payload)
+      .eq("id", propiedadId)
+      .eq("tenant_id", tenantId);
+
+    if (updateError) {
+      console.error("Error al actualizar propiedad:", updateError);
+      return { success: false, error: updateError.message };
+    }
+
+    revalidatePath("/propiedades");
+    revalidatePath("/configuracion/vidriera");
+    revalidatePath("/portal/[tenant_slug]");
+    revalidatePath("/");
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Excepción en actualizarPropiedadAction:", err);
+    return { success: false, error: err.message };
+  }
+}
+

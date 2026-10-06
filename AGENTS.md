@@ -29,3 +29,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
    - Máximo 5 operadores por licencia activa controlados a nivel de tabla `tenant_usuarios`.
    - Almacenamiento de archivos (fotos de vidriera, contratos firmados) en Supabase Storage (Object Storage / CDN), formateados en el cliente a WebP para no saturar cuotas.
 
+4. **Control de Versiones y Cierre de Sesiones (Git)**:
+   - Al finalizar cada sesión, si hay modificaciones que subir o integrar, es OBLIGATORIO proveer al usuario los comandos y códigos Git correspondientes (y/o ejecutarlos) para asegurar que el trabajo quede versionado y empujado a la rama correspondiente (`dev` y `main`).
+
+

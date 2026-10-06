@@ -20,6 +20,8 @@ import {
   MessageCircle,
   TrendingUp,
   FolderKanban,
+  Scale,
+  Key,
 } from "lucide-react";
 import { formatCurrency, formatDate, calculateContractProgress, cn } from "@/lib/utils";
 import { generarReciboPdf } from "@/lib/pdf/reciboGenerator";
@@ -31,6 +33,8 @@ import {
   crearMensajeAvisoVencimiento,
   crearMensajeLiquidacionPropietario,
 } from "@/lib/whatsapp/whatsappHelper";
+import { CierreAlquilerModal } from "./CierreAlquilerModal";
+import { EditorContratoLegalModal } from "./EditorContratoLegalModal";
 
 export interface ContratoItem {
   id: string;
@@ -72,6 +76,7 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
   const [filterStatus, setFilterStatus] = useState<"todos" | "vigentes" | "por_vencer" | "mora" | "terminados">("vigentes");
   const [selectedContratoForCobro, setSelectedContratoForCobro] = useState<ContratoItem | null>(null);
   const [selectedContratoForCierre, setSelectedContratoForCierre] = useState<ContratoItem | null>(null);
+  const [selectedContratoForEditorLegal, setSelectedContratoForEditorLegal] = useState<ContratoItem | null>(null);
   const [menuAbiertoId, setMenuAbiertoId] = useState<string | null>(null);
 
   const [contratosList, setContratosList] = useState<ContratoItem[]>(initialContratos || []);
@@ -501,12 +506,22 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
                                 <button
                                   onClick={() => {
                                     setMenuAbiertoId(null);
+                                    setSelectedContratoForEditorLegal(contrato);
+                                  }}
+                                  className="w-full text-left px-3.5 py-2 hover:bg-[#262832] hover:text-[#10B981] flex items-center gap-2 transition-colors"
+                                >
+                                  <Scale className="w-3.5 h-3.5 text-[#10B981]" />
+                                  <span>Editar Contrato Legal (Colmart)</span>
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setMenuAbiertoId(null);
                                     handleDescargarContratoPdf(contrato);
                                   }}
                                   className="w-full text-left px-3.5 py-2 hover:bg-[#262832] hover:text-white flex items-center gap-2 transition-colors"
                                 >
                                   <FileText className="w-3.5 h-3.5 text-slate-400" />
-                                  <span>Descargar Contrato PDF</span>
+                                  <span>Descargar Resumen PDF</span>
                                 </button>
                                 <a
                                   href="/indices"
@@ -522,6 +537,17 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
                                   <Wallet className="w-3.5 h-3.5 text-emerald-400" />
                                   <span>Liquidar a Propietario</span>
                                 </a>
+                                <div className="border-t border-[#2E303B] my-1" />
+                                <button
+                                  onClick={() => {
+                                    setMenuAbiertoId(null);
+                                    setSelectedContratoForCierre(contrato);
+                                  }}
+                                  className="w-full text-left px-3.5 py-2 hover:bg-rose-950/40 text-rose-300 hover:text-rose-200 flex items-center gap-2 transition-colors"
+                                >
+                                  <Key className="w-3.5 h-3.5 text-amber-400" />
+                                  <span>Cierre de Alquiler & Llaves</span>
+                                </button>
                               </div>
                             </>
                           )}
@@ -558,6 +584,34 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
               )
             );
           }}
+        />
+      )}
+
+      {/* Modal de Cierre de Alquiler, Acta de Restitución y Devolución de Depósito */}
+      {selectedContratoForCierre && (
+        <CierreAlquilerModal
+          contrato={selectedContratoForCierre}
+          onClose={() => setSelectedContratoForCierre(null)}
+          onSuccess={(contratoId) => {
+            setContratosList((prev) =>
+              prev.map((c) =>
+                c.id === contratoId
+                  ? {
+                      ...c,
+                      fecha_fin: new Date(Date.now() - 86400000).toISOString().split("T")[0],
+                    }
+                  : c
+              )
+            );
+          }}
+        />
+      )}
+
+      {/* Modal de Edición de Cláusulas y Emisión de Contrato Legal Colmart / DNU 70 */}
+      {selectedContratoForEditorLegal && (
+        <EditorContratoLegalModal
+          contrato={selectedContratoForEditorLegal}
+          onClose={() => setSelectedContratoForEditorLegal(null)}
         />
       )}
     </div>

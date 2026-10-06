@@ -195,6 +195,7 @@ export async function getContratosHubAction(): Promise<any[]> {
           porcentaje: duenoPart?.porcentaje_participacion ?? 100,
           estado_liquidacion_mes: estadoLiq,
         },
+        estado: c.estado || "vigente",
       };
     });
   } catch (err) {
@@ -202,3 +203,70 @@ export async function getContratosHubAction(): Promise<any[]> {
     return [];
   }
 }
+
+export interface CerrarContratoInput {
+  contrato_id: string;
+  fecha_cierre: string;
+  estado_inmueble: "conforme" | "con_observaciones";
+  observaciones_estado?: string;
+  deposito_original: number;
+  deposito_actualizado: number;
+  moneda_deposito: "ARS" | "USD";
+  retenciones: Array<{ concepto: string; monto: number }>;
+  saldo_neto_devuelto: number;
+}
+
+/**
+ * Server Action: Formaliza el Cierre de Alquiler, Acta de Entrega de Llaves y Devolución de Depósito
+ */
+export async function cerrarContratoAction(input: CerrarContratoInput): Promise<{
+  success: boolean;
+  error?: string;
+}> {
+  try {
+    const { tenantId } = await requireAuthenticatedTenant();
+    const admin = createAdminClient();
+
+    // 1. Obtener contrato para verificar y encontrar la propiedad vinculada
+    const { data: contrato, error: contError } = await admin
+      .from("contratos")
+      .select("id, propiedad_id, carpeta_numero, notas")
+      .eq("id", input.contrato_id)
+      .eq("tenant_id", tenantId)
+      .single();
+
+    if (contError || !contrato) {
+      return { success: false, error: "Contrato no encontrado o no pertenece a esta inmobiliaria." };
+    }
+
+    const notaCierre = `[CIERRE DE ALQUILER - ${input.fecha_cierre}]: Llaves recibidas. Estado: ${input.estado_inmueble.toUpperCase()}. Saldo depósito devuelto: ${input.saldo_neto_devuelto} ${input.moneda_deposito}. ${input.observaciones_estado ? `Obs: ${input.observaciones_estado}` : ""}`;
+    const notasActualizadas = contrato.notas ? `${contrato.notas}\n${notaCierre}` : notaCierre;
+
+    // 2. Actualizar estado del contrato a 'finalizado'
+    const { error: updateError } = await admin
+      .from("contratos")
+      .update({
+        estado: "finalizado",
+        notas: notasActualizadas,
+        actualizado_al: new Date().toISOString(),
+      })
+      .eq("id", input.contrato_id)
+      .eq("tenant_id", tenantId);
+
+    if (updateError) {
+      return { success: false, error: updateError.message };
+    }
+
+    // 3. Revalidar rutas
+    revalidatePath("/contratos");
+    revalidatePath("/propiedades");
+    revalidatePath("/portal/[tenant_slug]");
+    revalidatePath("/");
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Excepción en cerrarContratoAction:", err);
+    return { success: false, error: err.message };
+  }
+}
+

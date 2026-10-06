@@ -22,6 +22,7 @@ import {
   Globe,
   Handshake,
   ShieldCheck,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -65,6 +66,7 @@ const NAVIGATION: NavSection[] = [
       { label: "Índices (ICL / IPC / UVA)", href: "/indices", icon: LineChart },
       { label: "Facturación & Caja AFIP", href: "/caja", icon: FileText },
       { label: "Reportes & Rendiciones", href: "/reportes", icon: FileSpreadsheet },
+      { label: "Manual de Instrucciones", href: "/manual", icon: BookOpen, badge: "Guía", badgeVariant: "teal" },
       { label: "Configuración Tenant", href: "/configuracion", icon: Settings },
       { label: "SuperAdmin Cockpit", href: "/superadmin", icon: ShieldCheck, badge: "Master", badgeVariant: "warning" },
     ],
