@@ -69,8 +69,9 @@ export interface ContratoItem {
 
 export function ContratosHub({ initialContratos }: { initialContratos?: ContratoItem[] }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"todos" | "vigentes" | "por_vencer" | "mora">("todos");
+  const [filterStatus, setFilterStatus] = useState<"todos" | "vigentes" | "por_vencer" | "mora" | "terminados">("vigentes");
   const [selectedContratoForCobro, setSelectedContratoForCobro] = useState<ContratoItem | null>(null);
+  const [selectedContratoForCierre, setSelectedContratoForCierre] = useState<ContratoItem | null>(null);
   const [menuAbiertoId, setMenuAbiertoId] = useState<string | null>(null);
 
   const [contratosList, setContratosList] = useState<ContratoItem[]>(initialContratos || []);
@@ -80,6 +81,15 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
       setContratosList(initialContratos);
     }
   }, [initialContratos]);
+
+  // Contadores reactivos
+  const totalVigentes = useMemo(() => {
+    return contratosList.filter((c) => calculateContractProgress(c.fecha_inicio, c.fecha_fin).daysRemaining > 0).length;
+  }, [contratosList]);
+
+  const totalTerminados = useMemo(() => {
+    return contratosList.filter((c) => calculateContractProgress(c.fecha_inicio, c.fecha_fin).daysRemaining <= 0).length;
+  }, [contratosList]);
 
   // Filtrado reactivo de alta velocidad
   const filteredContratos = useMemo(() => {
@@ -96,6 +106,10 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
       if (!matchText) return false;
 
       // Filtro por estado
+      if (filterStatus === "terminados") {
+        const { daysRemaining } = calculateContractProgress(c.fecha_inicio, c.fecha_fin);
+        return daysRemaining <= 0;
+      }
       if (filterStatus === "mora") return c.inquilino.estado_pago_mes === "mora";
       if (filterStatus === "por_vencer") {
         const { daysRemaining } = calculateContractProgress(c.fecha_inicio, c.fecha_fin);
@@ -178,7 +192,7 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
                 : "bg-[#16171C] text-slate-400 border-[#2A2C35] hover:bg-[#252831] hover:text-white"
             )}
           >
-            Vigentes
+            Vigentes ({totalVigentes})
           </button>
 
           <button
@@ -205,6 +219,19 @@ export function ContratosHub({ initialContratos }: { initialContratos?: Contrato
           >
             <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
             En Mora
+          </button>
+
+          <button
+            onClick={() => setFilterStatus("terminados")}
+            className={cn(
+              "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap flex items-center gap-1.5 border",
+              filterStatus === "terminados"
+                ? "bg-slate-700 text-white border-slate-500 shadow-xs"
+                : "bg-[#16171C] text-slate-400 border-[#2A2C35] hover:bg-[#252831] hover:text-white"
+            )}
+          >
+            <CheckCircle2 className="w-3.5 h-3.5 text-slate-400" />
+            <span>Terminados ({totalTerminados})</span>
           </button>
         </div>
       </div>
