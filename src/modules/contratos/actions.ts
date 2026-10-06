@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAuthenticatedTenant } from "@/lib/supabase/auth-tenant";
 import { revalidatePath } from "next/cache";
 
 export interface ContratoInput {
@@ -93,29 +94,11 @@ export async function crearContratoAction(input: ContratoInput) {
  */
 export async function getContratosHubAction(): Promise<any[]> {
   try {
-    const supabase = await createClient();
-    let queryClient: any = supabase;
-
-    // 1. Obtener tenant_id activo
-    const { data: { user } } = await supabase.auth.getUser();
-    let tenantId: string | null = null;
-
-    if (user) {
-      const { data: tu } = await supabase
-        .from("tenant_usuarios")
-        .select("tenant_id")
-        .eq("usuario_id", user.id)
-        .eq("activo", true)
-        .single();
-      if (tu?.tenant_id) tenantId = tu.tenant_id;
-    }
-
-    if (!tenantId) {
-      return [];
-    }
+    const { tenantId } = await requireAuthenticatedTenant();
+    const admin = createAdminClient();
 
     // 2. Consultar contratos del tenant con joins
-    const { data: contratos, error } = await queryClient
+    const { data: contratos, error } = await admin
       .from("contratos")
       .select(`
         id,
