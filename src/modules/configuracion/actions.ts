@@ -225,3 +225,195 @@ export async function saveConfiguracionAction(
     return { success: false, error: err.message };
   }
 }
+
+/**
+ * Server Action: Cambiar contraseña de la cuenta del usuario autenticado
+ */
+export async function cambiarPasswordAction(passwordActual: string, passwordNueva: string) {
+  try {
+    const supabase = await createClient();
+    const { data: { user }, error: userErr } = await supabase.auth.getUser();
+
+    if (userErr || !user || !user.email) {
+      return { success: false, error: "Sesión no válida o expirada. Por favor vuelva a iniciar sesión." };
+    }
+
+    if (!passwordNueva || passwordNueva.length < 6) {
+      return { success: false, error: "La nueva contraseña debe tener al menos 6 caracteres." };
+    }
+
+    // 1. Validar la contraseña actual autenticando temporalmente
+    if (passwordActual) {
+      const { error: signInErr } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: passwordActual,
+      });
+
+      if (signInErr) {
+        return { success: false, error: "La contraseña actual ingresada es incorrecta." };
+      }
+    }
+
+    // 2. Actualizar a la nueva contraseña
+    const { error: updateErr } = await supabase.auth.updateUser({
+      password: passwordNueva,
+    });
+
+    if (updateErr) {
+      return { success: false, error: updateErr.message };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Error al cambiar contraseña:", err);
+    return { success: false, error: err.message || "Error al actualizar la contraseña." };
+  }
+}
+
+export interface UsuarioLicenciaItem {
+  id: string;
+  email: string;
+  rol: string;
+  activo: boolean;
+  creado_al: string;
+  esActual: boolean;
+}
+
+/**
+ * Server Action: Obtiene los operadores y responsables registrados bajo la licencia actual
+ */
+export async function getTenantUsuariosInfoAction(): Promise<{
+  success: boolean;
+  planSaas: string;
+  limiteUsuarios: number;
+  usuarios: UsuarioLicenciaItem[];
+  error?: string;
+}> {
+  try {
+    const { tenantId, user } = await requireAuthenticatedTenant();
+    const admin = createAdminClient();
+
+    const { data: tenant } = await admin
+      .from("tenants")
+      .select("plan_saas, limite_usuarios, estado_licencia")
+      .eq("id", tenantId)
+      .single();
+
+    const { data: tuList } = await admin
+      .from("tenant_usuarios")
+      .select("usuario_id, rol, activo, creado_al")
+      .eq("tenant_id", tenantId);
+
+    const { data: { users: authUsers } } = await admin.auth.admin.listUsers();
+    const userEmailMap = new Map((authUsers || []).map((u) => [u.id, u.email || ""]));
+
+    const usuarios: UsuarioLicenciaItem[] = (tuList || []).map((tu) => ({
+      id: tu.usuario_id,
+      email: userEmailMap.get(tu.usuario_id) || "Usuario registrado",
+      rol: tu.rol,
+      activo: tu.activo ?? true,
+      creado_al: tu.creado_al || "",
+      esActual: tu.usuario_id === user.id,
+    }));
+
+    return {
+      success: true,
+      planSaas: tenant?.plan_saas || "pro",
+      limiteUsuarios: tenant?.limite_usuarios || 5,
+      usuarios,
+    };
+  } catch (err: any) {
+    console.error("Error al obtener usuarios de la licencia:", err);
+    return {
+      success: false,
+      planSaas: "pro",
+      limiteUsuarios: 5,
+      usuarios: [],
+      error: err.message,
+    };
+  }
+}
+
+/**
+ * Server Action: Invita o crea un nuevo operador respetando el límite de 5 licencias
+ */
+export async function invitarOperadorAction(
+  email: string,
+  passwordTemporal: string,
+  rol: "operador" | "admin" = "operador"
+) {
+  try {
+    const { tenantId, rol: userRol } = await requireAuthenticatedTenant();
+    if (userRol !== "owner" && userRol !== "admin") {
+      return { success: false, error: "Solo los administradores o titulares pueden agregar responsables." };
+    }
+
+    if (!email || !email.includes("@")) {
+      return { success: false, error: "Ingrese un correo electrónico válido." };
+    }
+
+    if (!passwordTemporal || passwordTemporal.length < 6) {
+      return { success: false, error: "La contraseña temporal debe tener al menos 6 caracteres." };
+    }
+
+    const admin = createAdminClient();
+
+    // 1. Verificar cupo de la licencia
+    const { data: tenant } = await admin
+      .from("tenants")
+      .select("limite_usuarios")
+      .eq("id", tenantId)
+      .single();
+
+    const maxUsuarios = tenant?.limite_usuarios || 5;
+
+    const { count } = await admin
+      .from("tenant_usuarios")
+      .select("*", { count: "exact", head: true })
+      .eq("tenant_id", tenantId)
+      .eq("activo", true);
+
+    if ((count || 0) >= maxUsuarios) {
+      return {
+        success: false,
+        error: `Has alcanzado el límite máximo de ${maxUsuarios} operadores para tu licencia. Contactá a soporte para ampliar tu plan.`,
+      };
+    }
+
+    // 2. Verificar si el usuario ya existe en auth
+    const { data: { users: existingUsers } } = await admin.auth.admin.listUsers();
+    let targetUserId = existingUsers?.find((u) => u.email?.toLowerCase() === email.toLowerCase())?.id;
+
+    if (!targetUserId) {
+      const { data: newUser, error: authError } = await admin.auth.admin.createUser({
+        email,
+        password: passwordTemporal,
+        email_confirm: true,
+      });
+
+      if (authError || !newUser?.user) {
+        return { success: false, error: authError?.message || "Error al registrar el usuario en autenticación." };
+      }
+      targetUserId = newUser.user.id;
+    }
+
+    // 3. Vincular usuario a la inmobiliaria (tenant_usuarios)
+    const { error: tuError } = await admin.from("tenant_usuarios").upsert({
+      tenant_id: tenantId,
+      usuario_id: targetUserId,
+      rol,
+      activo: true,
+    }, { onConflict: "tenant_id,usuario_id" });
+
+    if (tuError) {
+      return { success: false, error: tuError.message };
+    }
+
+    revalidatePath("/configuracion");
+    return { success: true };
+  } catch (err: any) {
+    console.error("Error al invitar operador:", err);
+    return { success: false, error: err.message };
+  }
+}
+

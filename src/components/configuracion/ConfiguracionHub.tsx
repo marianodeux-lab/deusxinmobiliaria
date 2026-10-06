@@ -17,7 +17,8 @@ import {
   FileCheck2,
   ShieldCheck,
   ExternalLink,
-  Info
+  Info,
+  KeyRound,
 } from "lucide-react";
 import {
   TenantConfiguracionCompleta,
@@ -27,6 +28,7 @@ import {
 } from "@/modules/configuracion/actions";
 import { cn } from "@/lib/utils";
 import { ImportadorSpotModal } from "./ImportadorSpotModal";
+import { SeguridadTab } from "./SeguridadTab";
 
 interface ConfiguracionHubProps {
   initialConfig: TenantConfiguracionCompleta;
@@ -35,7 +37,7 @@ interface ConfiguracionHubProps {
 export function ConfiguracionHub({ initialConfig }: ConfiguracionHubProps) {
   const [config, setConfig] = useState<TenantConfiguracionCompleta>(initialConfig);
   const [showImportadorSpot, setShowImportadorSpot] = useState(false);
-  const [activeTab, setActiveTab] = useState<"responsables" | "servicios" | "memos" | "operativos">("responsables");
+  const [activeTab, setActiveTab] = useState<"responsables" | "servicios" | "memos" | "operativos" | "seguridad">("responsables");
   const [activeResponsableIndex, setActiveResponsableIndex] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -240,6 +242,19 @@ export function ConfiguracionHub({ initialConfig }: ConfiguracionHubProps) {
         >
           <Sliders className="w-4 h-4" />
           <span>Parámetros de Mora & Cobro</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab("seguridad")}
+          className={cn(
+            "pb-3 px-3 flex items-center gap-2 border-b-2 transition-all",
+            activeTab === "seguridad"
+              ? "border-[#00796b] text-[#004d40]"
+              : "border-transparent text-slate-500 hover:text-slate-800"
+          )}
+        >
+          <KeyRound className="w-4 h-4" />
+          <span>Seguridad & Contraseña</span>
         </button>
       </div>
 
@@ -785,6 +800,9 @@ export function ConfiguracionHub({ initialConfig }: ConfiguracionHubProps) {
           </div>
         </div>
       )}
+
+      {/* PESTAÑA 5: SEGURIDAD, CAMBIO DE CONTRASEÑA Y OPERADORES DE LICENCIA */}
+      {activeTab === "seguridad" && <SeguridadTab />}
 
       {/* Modal Asistente de Importación Spot y Limpieza de Tenant */}
       <ImportadorSpotModal
