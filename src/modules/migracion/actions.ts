@@ -142,7 +142,7 @@ export async function analizarArchivoMigracionAction(
 }
 
 /**
- * Previsualiza el contenido del archivo exportado
+ * Previsualiza el contenido del archivo exportado de Spot / AR Comercial Gestión
  */
 export async function previsualizarArchivoSpotAction(fileContent: string): Promise<{
   success: boolean;
@@ -150,34 +150,83 @@ export async function previsualizarArchivoSpotAction(fileContent: string): Promi
   error?: string;
 }> {
   try {
-    const lines = fileContent.split("\n");
+    const lines = fileContent.split(/\r?\n/);
+    const zdatosLines = getSectionFromLines(lines, "Tabla: web_zdatoscontrato", "Tabla: web_zliquidarpropietario");
+    const relPropLines = getSectionFromLines(lines, "Tabla: web_relacionpropietarios", "Tabla: web_recibos");
     const propLines = getSectionFromLines(lines, "Tabla: web_propietarios", "Tabla: web_propiedades");
-    const inqLines = getSectionFromLines(lines, "Tabla: web_inquilinos", "Tabla: web_garantes");
     const propRows = getSectionFromLines(lines, "Tabla: web_propiedades", "Tabla: web_movimientos");
-    const contRows = getSectionFromLines(lines, "Tabla: web_inquilinos_inmuebles", "Tabla: web_propietarios_inmuebles");
+    const movLines = getSectionFromLines(lines, "Tabla: web_movimientos", "Tabla: web_log_actividades");
+    const inqLines = getSectionFromLines(lines, "Tabla: web_inquilinos", "Tabla: web_garantes");
 
-    const propietariosCount = Math.max(0, propLines.length - 2);
-    const inquilinosCount = Math.max(0, inqLines.length - 2);
-    const propiedadesCount = Math.max(0, propRows.length - 2);
-    const contratosCount = Math.max(0, contRows.length - 2);
-
+    // Propietarios válidos
+    let propietariosCount = 0;
     let samplePropietario = "";
-    if (propLines.length > 2) {
-      const cols = propLines[2].split("\t");
-      samplePropietario = `${cols[3] || ""} ${cols[4] || ""}`.trim();
+    for (let i = 2; i < propLines.length; i++) {
+      const cols = propLines[i].split("\t");
+      const ap = cols[3]?.trim();
+      const nom = cols[4]?.trim();
+      if (ap || nom) {
+        propietariosCount++;
+        if (!samplePropietario) {
+          samplePropietario = `${ap || ""} ${nom || ""}`.trim();
+        }
+      }
     }
 
+    // Inquilinos válidos
+    let inquilinosCount = 0;
     let sampleInquilino = "";
-    if (inqLines.length > 2) {
-      const cols = inqLines[2].split("\t");
-      sampleInquilino = `${cols[4] || ""} ${cols[5] || ""}`.trim();
+    for (let i = 2; i < inqLines.length; i++) {
+      const cols = inqLines[i].split("\t");
+      const ap = cols[4]?.trim();
+      const nom = cols[5]?.trim();
+      if (ap || nom) {
+        inquilinosCount++;
+        if (!sampleInquilino) {
+          sampleInquilino = `${ap || ""} ${nom || ""}`.trim();
+        }
+      }
     }
 
+    // Propiedades válidas
+    let propiedadesCount = 0;
     let samplePropiedad = "";
-    if (propRows.length > 2) {
-      const cols = propRows[2].split("\t");
-      samplePropiedad = `${cols[6] || ""} (${cols[7] || ""})`.trim();
+    for (let i = 2; i < propRows.length; i++) {
+      const cols = propRows[i].split("\t");
+      const dir = cols[6]?.trim();
+      if (dir) {
+        propiedadesCount++;
+        if (!samplePropiedad) {
+          samplePropiedad = `${dir} (${cols[7]?.trim() || "Ciudad"})`;
+        }
+      }
     }
+
+    // Contratos únicos identificados cruzando web_zdatoscontrato, web_movimientos y web_relacionpropietarios
+    const uniqueContratos = new Set<string>();
+    for (let i = 2; i < movLines.length; i++) {
+      const cols = movLines[i].split("\t");
+      if (cols.length > 32) {
+        const cid = cols[17]?.trim();
+        const pid = cols[32]?.trim();
+        if (cid && cid !== "0" && pid && pid !== "0") {
+          uniqueContratos.add(cid);
+        }
+      }
+    }
+
+    for (let i = 2; i < zdatosLines.length; i++) {
+      const cols = zdatosLines[i].split("\t");
+      if (cols.length > 10) {
+        const cid = cols[9]?.trim();
+        const pid = cols[10]?.trim();
+        if (cid && cid !== "0" && pid && pid !== "0") {
+          uniqueContratos.add(cid);
+        }
+      }
+    }
+
+    const contratosCount = uniqueContratos.size;
 
     return {
       success: true,
@@ -204,20 +253,27 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
     const { tenantId } = await requireAuthenticatedTenant();
     const adminSupabase = createAdminClient();
 
-    const lines = fileContent.split("\n");
+    const lines = fileContent.split(/\r?\n/);
     let propCount = 0;
     let inqCount = 0;
     let inmuebleCount = 0;
     let contratoCount = 0;
 
-    // 2. Propietarios
+    // 1. Extraer secciones del archivo
     const propLines = getSectionFromLines(lines, "Tabla: web_propietarios", "Tabla: web_propiedades");
+    const inqLines = getSectionFromLines(lines, "Tabla: web_inquilinos", "Tabla: web_garantes");
+    const propRows = getSectionFromLines(lines, "Tabla: web_propiedades", "Tabla: web_movimientos");
+    const relPropRows = getSectionFromLines(lines, "Tabla: web_relacionpropietarios", "Tabla: web_recibos");
+    const zdatosRows = getSectionFromLines(lines, "Tabla: web_zdatoscontrato", "Tabla: web_zliquidarpropietario");
+    const movRows = getSectionFromLines(lines, "Tabla: web_movimientos", "Tabla: web_log_actividades");
+
+    // 2. Importar Propietarios -> tabla personas
     const propietariosMap = new Map<string, string>(); // spotId -> uuid
 
     for (let i = 2; i < propLines.length; i++) {
       const cols = propLines[i].split("\t");
       if (cols.length < 5) continue;
-      const spotId = cols[0];
+      const spotId = cols[0]?.trim();
       const apellido = cols[3]?.trim();
       const nombre = cols[4]?.trim();
       if (!apellido && !nombre) continue;
@@ -240,7 +296,7 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
       if (pExist) {
         propietariosMap.set(spotId, pExist.id);
       } else {
-        const { data: pNew } = await adminSupabase.from("personas").insert({
+        const { data: pNew, error: pErr } = await adminSupabase.from("personas").insert({
           tenant_id: tenantId,
           tipo_persona: "fisica",
           nombre_completo: nombreCompleto,
@@ -252,6 +308,8 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
           cbu_alias: cbu,
         }).select("id").single();
 
+        if (pErr) throw pErr;
+
         if (pNew) {
           propietariosMap.set(spotId, pNew.id);
           propCount++;
@@ -259,9 +317,8 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
       }
     }
 
-    // 3. Inquilinos
-    const inqLines = getSectionFromLines(lines, "Tabla: web_inquilinos", "Tabla: web_garantes");
-    const inquilinosMap = new Map<string, string>();
+    // 3. Importar Inquilinos -> tabla personas
+    const inquilinosMap = new Map<string, string>(); // spotId -> uuid
 
     for (let i = 2; i < inqLines.length; i++) {
       const cols = inqLines[i].split("\t");
@@ -275,6 +332,7 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
       const dni = cols[12]?.replace(/[^0-9]/g, "") || `INQ-${spotId}`;
       const tel = cols[19]?.trim() || cols[10]?.trim() || null;
       const email = cols[28]?.trim() || null;
+      const direccion = cols[8]?.trim() || null;
 
       const { data: inqExist } = await adminSupabase
         .from("personas")
@@ -286,7 +344,7 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
       if (inqExist) {
         inquilinosMap.set(spotId, inqExist.id);
       } else {
-        const { data: inqNew } = await adminSupabase.from("personas").insert({
+        const { data: inqNew, error: inqErr } = await adminSupabase.from("personas").insert({
           tenant_id: tenantId,
           tipo_persona: "fisica",
           nombre_completo: nombreCompleto,
@@ -294,7 +352,10 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
           documento_numero: dni,
           email,
           telefono: tel,
+          direccion,
         }).select("id").single();
+
+        if (inqErr) throw inqErr;
 
         if (inqNew) {
           inquilinosMap.set(spotId, inqNew.id);
@@ -303,46 +364,69 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
       }
     }
 
-    // 4. Propiedades
-    const propRows = getSectionFromLines(lines, "Tabla: web_propiedades", "Tabla: web_movimientos");
-    const propiedadesMap = new Map<string, string>();
+    // 4. Mapear relación Propiedad -> Propietario y Honorarios
+    const relPropMap = new Map<string, { spotOwnerId: string; honorarios: number }>();
+    for (let i = 2; i < relPropRows.length; i++) {
+      const cols = relPropRows[i].split("\t");
+      if (cols.length < 5) continue;
+      const pid = cols[4]?.trim();
+      const oid = cols[2]?.trim();
+      const honorarios = parseFloat(cols[6]) || 4.13;
+      if (pid && oid && oid !== "0") {
+        relPropMap.set(pid, { spotOwnerId: oid, honorarios });
+      }
+    }
+
+    // 5. Importar Propiedades -> tabla propiedades (únicamente columnas existentes del esquema)
+    const propiedadesMap = new Map<string, string>(); // spotPropId -> uuid
 
     for (let i = 2; i < propRows.length; i++) {
       const cols = propRows[i].split("\t");
       if (cols.length < 10) continue;
       const spotPropId = cols[0]?.trim();
-      const direccion = cols[6]?.trim();
-      const localidad = cols[7]?.trim() || "9 de Julio";
-      const ambientes = parseInt(cols[11]?.replace(/[^0-9]/g, "") || "2") || 2;
-      const supTotal = parseInt(cols[42]?.replace(/[^0-9]/g, "") || "60") || 60;
+      const direccionCompleta = cols[6]?.trim();
+      const carpeta = cols[5]?.trim() || "";
+      const localidad = cols[7]?.trim() || "Ciudad";
+      const provincia = cols[26]?.trim() || "Buenos Aires";
+      const cp = cols[27]?.trim() || null;
+      const tipoProp = cols[25]?.trim() || "departamento";
 
-      if (!direccion) continue;
+      if (!direccionCompleta) continue;
+
+      const matchDir = direccionCompleta.match(/^(.*?)\s+(\d+.*)$/);
+      const calle = matchDir ? matchDir[1].trim() : direccionCompleta;
+      const numero = matchDir ? matchDir[2].trim() : "S/N";
+
+      const tipoInmueble = tipoProp.toLowerCase().includes("casa") || tipoProp.toLowerCase().includes("vivienda")
+        ? "casa"
+        : tipoProp.toLowerCase().includes("local")
+        ? "local"
+        : "departamento";
 
       const { data: propExist } = await adminSupabase
         .from("propiedades")
         .select("id")
         .eq("tenant_id", tenantId)
-        .eq("direccion_calle", direccion)
+        .eq("direccion_calle", calle)
+        .eq("direccion_numero", numero)
         .maybeSingle();
 
       if (propExist) {
         propiedadesMap.set(spotPropId, propExist.id);
       } else {
-        const { data: propNew } = await adminSupabase.from("propiedades").insert({
+        const { data: propNew, error: propErr } = await adminSupabase.from("propiedades").insert({
           tenant_id: tenantId,
-          tipo_propiedad: "departamento",
-          direccion_calle: direccion,
-          direccion_numero: "S/N",
+          direccion_calle: calle,
+          direccion_numero: numero,
           localidad,
-          provincia: "Buenos Aires",
-          ambientes,
-          superficie_cubierta: supTotal,
-          superficie_total: supTotal,
-          estado_operativo: "alquilada",
-          tipo_operacion: "alquiler",
-          moneda_publicacion: "ARS",
-          precio_publicacion: 150000,
+          provincia,
+          tipo_inmueble: tipoInmueble,
+          destino: "vivienda",
+          codigo_postal: cp,
+          notas: carpeta ? `Carpeta Spot: ${carpeta}` : null,
         }).select("id").single();
+
+        if (propErr) throw propErr;
 
         if (propNew) {
           propiedadesMap.set(spotPropId, propNew.id);
@@ -351,60 +435,250 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
       }
     }
 
-    // 5. Contratos
-    const contRows = getSectionFromLines(lines, "Tabla: web_inquilinos_inmuebles", "Tabla: web_propietarios_inmuebles");
+    // 6. Analizar metadatos de cuotas y fechas en web_zdatoscontrato
+    const contractMeta = new Map<
+      string,
+      {
+        alquiler: number;
+        vences: string[];
+        duracionMeses: number;
+        diaVenc: number;
+        spotPropId?: string;
+        spotOwnerId?: string;
+      }
+    >();
+    for (let i = 2; i < zdatosRows.length; i++) {
+      const c = zdatosRows[i].split("\t");
+      if (c.length < 10) continue;
+      const cid = c[9]?.trim();
+      if (!cid || cid === "0") continue;
+      const detalle = c[3]?.trim() || "";
+      const debe = parseFloat(c[4]) || 0;
+      const vence = c[6]?.trim();
+      const pid = c[10]?.trim();
+      const oid = c[30]?.trim();
 
-    for (let i = 2; i < contRows.length; i++) {
-      const cols = contRows[i].split("\t");
-      if (cols.length < 20) continue;
+      if (!contractMeta.has(cid)) {
+        contractMeta.set(cid, { alquiler: 0, vences: [], duracionMeses: 24, diaVenc: 10 });
+      }
+      const meta = contractMeta.get(cid)!;
+      if (pid && pid !== "0" && !meta.spotPropId) meta.spotPropId = pid;
+      if (oid && oid !== "0" && !meta.spotOwnerId) meta.spotOwnerId = oid;
 
-      const spotInqId = cols[1]?.trim();
-      const spotPropId = cols[2]?.trim();
-      const propUuid = propiedadesMap.get(spotPropId);
-      const inqUuid = inquilinosMap.get(spotInqId);
+      if (vence && vence !== "0000-00-00" && vence.includes("-")) {
+        meta.vences.push(vence);
+        const parts = vence.split("-");
+        const day = parseInt(parts[2], 10);
+        if (day > 0 && day <= 28) meta.diaVenc = day;
+      }
+      if (detalle.toLowerCase().includes("alquiler") && debe > 1000) {
+        if (!meta.alquiler || detalle.includes("cuota 1")) {
+          meta.alquiler = debe;
+        }
+        const matchDur = detalle.match(/cuota \d+ de (\d+)/i);
+        if (matchDur) {
+          meta.duracionMeses = parseInt(matchDur[1], 10) || 24;
+        }
+      }
+    }
+
+    // 7. Extraer contratos consolidados desde web_movimientos cruzando con web_zdatoscontrato, web_relacionpropietarios y web_propiedades
+    interface ParsedContrato {
+      cid: string;
+      spotPropId: string;
+      spotInqId: string;
+      spotOwnerId: string;
+      alquiler: number;
+      inicio: string;
+      fin: string;
+      diaVenc: number;
+      carpeta: string;
+    }
+
+    const contractsMap = new Map<string, ParsedContrato>();
+
+    for (let i = 2; i < movRows.length; i++) {
+      const c = movRows[i].split("\t");
+      if (c.length < 36) continue;
+      const cid = c[17]?.trim();
+      const pid = c[32]?.trim();
+      const inqid = c[35]?.trim();
+      let ownerId = c[29]?.trim();
+      if (!cid || cid === "0" || !pid || pid === "0") continue;
+
+      if (!ownerId || ownerId === "0") {
+        ownerId = relPropMap.get(pid)?.spotOwnerId || contractMeta.get(cid)?.spotOwnerId || "";
+      }
+
+      if (!contractsMap.has(cid)) {
+        const zm = contractMeta.get(cid) || { alquiler: 150000, vences: ["2025-01-01", "2027-01-01"], duracionMeses: 24, diaVenc: 10 };
+        zm.vences.sort();
+        const fInicio = zm.vences[0] || "2025-01-01";
+        const fFin = zm.vences[zm.vences.length - 1] || "2027-01-01";
+
+        contractsMap.set(cid, {
+          cid,
+          spotPropId: pid,
+          spotInqId: inqid && inqid !== "0" ? inqid : "",
+          spotOwnerId: ownerId && ownerId !== "0" ? ownerId : "",
+          alquiler: zm.alquiler || 150000,
+          inicio: fInicio,
+          fin: fFin,
+          diaVenc: zm.diaVenc || 10,
+          carpeta: "",
+        });
+      } else {
+        const entry = contractsMap.get(cid)!;
+        if (!entry.spotInqId && inqid && inqid !== "0") entry.spotInqId = inqid;
+        if ((!entry.spotOwnerId || entry.spotOwnerId === "0") && ownerId && ownerId !== "0") entry.spotOwnerId = ownerId;
+      }
+    }
+
+    // Complementar con contratos de web_zdatoscontrato si tuvieran propiedad asignada
+    for (const [cid, zm] of contractMeta.entries()) {
+      if (!contractsMap.has(cid) && zm.spotPropId && zm.spotPropId !== "0") {
+        const ownerId = zm.spotOwnerId || relPropMap.get(zm.spotPropId)?.spotOwnerId || "";
+        zm.vences.sort();
+        contractsMap.set(cid, {
+          cid,
+          spotPropId: zm.spotPropId,
+          spotInqId: "",
+          spotOwnerId: ownerId && ownerId !== "0" ? ownerId : "",
+          alquiler: zm.alquiler || 150000,
+          inicio: zm.vences[0] || "2025-01-01",
+          fin: zm.vences[zm.vences.length - 1] || "2027-01-01",
+          diaVenc: zm.diaVenc || 10,
+          carpeta: "",
+        });
+      }
+    }
+
+    // Asignar carpeta y fallback de propietario desde web_propiedades
+    for (let i = 2; i < propRows.length; i++) {
+      const cols = propRows[i].split("\t");
+      const spotPropId = cols[0]?.trim();
+      const carp = cols[5]?.trim();
+      if (spotPropId) {
+        for (const cData of contractsMap.values()) {
+          if (cData.spotPropId === spotPropId) {
+            if (carp && !cData.carpeta) cData.carpeta = carp;
+            if (!cData.spotOwnerId || cData.spotOwnerId === "0") {
+              const o = relPropMap.get(spotPropId)?.spotOwnerId;
+              if (o && o !== "0") cData.spotOwnerId = o;
+            }
+          }
+        }
+      }
+    }
+
+    // 8. Insertar Contratos, Participantes y Período Inicial en Supabase
+    const usedCarpetas = new Set<string>();
+
+    for (const [cid, cData] of contractsMap.entries()) {
+      const propUuid = propiedadesMap.get(cData.spotPropId);
       if (!propUuid) continue;
 
-      const carpeta = cols[3]?.trim() || `SPOT-${i}`;
-      const alquilerStr = cols[15]?.replace(/[^0-9]/g, "") || "100000";
-      const valorAlquiler = parseInt(alquilerStr) || 100000;
-      const fechaInicio = cols[11]?.trim() || "2024-01-01";
-      const fechaFin = cols[12]?.trim() || "2026-12-31";
+      const inqUuid = inquilinosMap.get(cData.spotInqId);
+      const ownerUuid = propietariosMap.get(cData.spotOwnerId);
+
+      let carpetaNum = cData.carpeta ? `CARP-${cData.carpeta}` : `CARP-${cData.cid.slice(-4)}`;
+      if (usedCarpetas.has(carpetaNum)) {
+        carpetaNum = `CARP-${cData.carpeta || cData.cid.slice(-4)}-${cData.cid.slice(-4)}`;
+      }
+      usedCarpetas.add(carpetaNum);
 
       const { data: cExist } = await adminSupabase
         .from("contratos")
         .select("id")
         .eq("tenant_id", tenantId)
-        .eq("carpeta_numero", carpeta)
+        .eq("carpeta_numero", carpetaNum)
         .maybeSingle();
 
       if (!cExist) {
-        const { data: cNew } = await adminSupabase.from("contratos").insert({
-          tenant_id: tenantId,
-          propiedad_id: propUuid,
-          carpeta_numero: carpeta,
-          tipo_contrato: "vivienda",
-          tipo_ajuste: "ICL",
-          frecuencia_ajuste_meses: 6,
-          valor_alquiler_inicial: valorAlquiler,
-          valor_alquiler_actual: valorAlquiler,
-          moneda: "ARS",
-          fecha_inicio: fechaInicio,
-          fecha_fin: fechaFin,
-          estado: "vigente",
-        }).select("id").single();
+        const { data: cNew, error: cErr } = await adminSupabase
+          .from("contratos")
+          .insert({
+            tenant_id: tenantId,
+            propiedad_id: propUuid,
+            carpeta_numero: carpetaNum,
+            fecha_inicio: cData.inicio,
+            fecha_fin: cData.fin,
+            dia_vencimiento_pago: cData.diaVenc,
+            moneda_base: "ARS",
+            tipo_ajuste: "ICL",
+            frecuencia_ajuste_meses: 6,
+            valor_alquiler_inicial: cData.alquiler,
+            valor_alquiler_actual: cData.alquiler,
+            estado: "vigente",
+          })
+          .select("id")
+          .single();
 
-        if (cNew && inqUuid) {
-          await adminSupabase.from("contrato_participantes").insert({
-            contrato_id: cNew.id,
-            persona_id: inqUuid,
-            rol: "inquilino_principal",
-          });
+        if (cErr) throw cErr;
+
+        if (cNew) {
+          // Inquilino
+          if (inqUuid) {
+            const { error: inqPartErr } = await adminSupabase
+              .from("contrato_participantes")
+              .insert({
+                contrato_id: cNew.id,
+                persona_id: inqUuid,
+                rol: "inquilino",
+                porcentaje_participacion: 100,
+                es_firmante: true,
+                recibe_liquidacion: false,
+              });
+            if (inqPartErr) throw inqPartErr;
+          }
+
+          // Propietario
+          if (ownerUuid) {
+            const { error: ownerPartErr } = await adminSupabase
+              .from("contrato_participantes")
+              .insert({
+                contrato_id: cNew.id,
+                persona_id: ownerUuid,
+                rol: "propietario",
+                porcentaje_participacion: 100,
+                es_firmante: true,
+                recibe_liquidacion: true,
+              });
+            if (ownerPartErr) throw ownerPartErr;
+          }
+
+          // Período activo mensual
+          const now = new Date();
+          const curMes = now.getMonth() + 1;
+          const curAnio = now.getFullYear();
+          const vencDia = Math.min(Math.max(cData.diaVenc, 1), 28);
+          const vencStr = `${curAnio}-${String(curMes).padStart(2, "0")}-${String(vencDia).padStart(2, "0")}`;
+
+          const { error: perErr } = await adminSupabase
+            .from("periodos_contrato")
+            .insert({
+              tenant_id: tenantId,
+              contrato_id: cNew.id,
+              periodo_mes: curMes,
+              periodo_anio: curAnio,
+              monto_alquiler: cData.alquiler,
+              fecha_vencimiento: vencStr,
+              estado_cobranza: "pendiente",
+              estado_liquidacion: "pendiente",
+            });
+          if (perErr) throw perErr;
+
           contratoCount++;
         }
       }
     }
 
     revalidatePath("/", "layout");
+    revalidatePath("/contratos");
+    revalidatePath("/propiedades");
+    revalidatePath("/personas");
+    revalidatePath("/cobranzas");
+    revalidatePath("/liquidaciones");
 
     return {
       success: true,
@@ -414,6 +688,7 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
       contratosImportados: contratoCount,
     };
   } catch (err: any) {
+    console.error("Error en importarDatosSpotAction:", err);
     return {
       success: false,
       propietariosImportados: 0,
@@ -434,14 +709,12 @@ export async function limpiarDatosTenantAction(): Promise<{ success: boolean; er
     const { tenantId } = await requireAuthenticatedTenant();
     const adminSupabase = createAdminClient();
 
-    // 1. Borrar reservas temporarias
-    await adminSupabase.from("reservas_temporarias").delete().eq("tenant_id", tenantId);
-
-    // 2. Borrar comprobantes / cobranzas
+    // 1. Borrar comprobantes / cobranzas, liquidaciones y periodos del tenant
     await adminSupabase.from("cobranzas").delete().eq("tenant_id", tenantId);
     await adminSupabase.from("liquidaciones").delete().eq("tenant_id", tenantId);
+    await adminSupabase.from("periodos_contrato").delete().eq("tenant_id", tenantId);
 
-    // 3. Borrar participantes y contratos
+    // 2. Borrar participantes y contratos
     const { data: contratos } = await adminSupabase.from("contratos").select("id").eq("tenant_id", tenantId);
     if (contratos && contratos.length > 0) {
       const ids = contratos.map((c) => c.id);
@@ -449,16 +722,21 @@ export async function limpiarDatosTenantAction(): Promise<{ success: boolean; er
       await adminSupabase.from("contratos").delete().eq("tenant_id", tenantId);
     }
 
-    // 4. Borrar propiedades
+    // 3. Borrar propiedades
     await adminSupabase.from("propiedades").delete().eq("tenant_id", tenantId);
 
-    // 5. Borrar personas (inquilinos, propietarios)
+    // 4. Borrar personas (inquilinos, propietarios)
     await adminSupabase.from("personas").delete().eq("tenant_id", tenantId);
 
     revalidatePath("/", "layout");
+    revalidatePath("/contratos");
+    revalidatePath("/propiedades");
+    revalidatePath("/personas");
+    revalidatePath("/cobranzas");
 
     return { success: true };
   } catch (err: any) {
+    console.error("Error en limpiarDatosTenantAction:", err);
     return { success: false, error: err.message || "Error al limpiar datos del tenant." };
   }
 }

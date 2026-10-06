@@ -20,9 +20,7 @@ CREATE POLICY "mls_busquedas_activas_insert_own"
     FOR INSERT
     TO authenticated
     WITH CHECK (
-        tenant_id IN (
-            SELECT tenant_id FROM public.usuarios WHERE auth_user_id = auth.uid()
-        )
+        tenant_id IN (SELECT get_auth_tenant_ids())
     );
 
 -- Política de actualización/eliminación: sólo el creador de su tenant
@@ -32,9 +30,7 @@ CREATE POLICY "mls_busquedas_activas_update_own"
     FOR UPDATE
     TO authenticated
     USING (
-        tenant_id IN (
-            SELECT tenant_id FROM public.usuarios WHERE auth_user_id = auth.uid()
-        )
+        tenant_id IN (SELECT get_auth_tenant_ids())
     );
 
 DROP POLICY IF EXISTS "mls_busquedas_activas_delete_own" ON public.mls_busquedas_activas;
@@ -43,9 +39,7 @@ CREATE POLICY "mls_busquedas_activas_delete_own"
     FOR DELETE
     TO authenticated
     USING (
-        tenant_id IN (
-            SELECT tenant_id FROM public.usuarios WHERE auth_user_id = auth.uid()
-        )
+        tenant_id IN (SELECT get_auth_tenant_ids())
     );
 
 -- 2. Habilitar RLS en indices_economicos (datos de referencia del mercado)
@@ -61,13 +55,12 @@ CREATE POLICY "indices_economicos_read_all"
 -- 3. Blindaje de RLS en tenants: los usuarios sólo pueden consultar su propia organización
 ALTER TABLE public.tenants ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "tenants_select" ON public.tenants;
 DROP POLICY IF EXISTS "tenants_isolation_policy" ON public.tenants;
 CREATE POLICY "tenants_isolation_policy"
     ON public.tenants
     FOR SELECT
     TO authenticated
     USING (
-        id IN (
-            SELECT tenant_id FROM public.usuarios WHERE auth_user_id = auth.uid()
-        )
+        id IN (SELECT get_auth_tenant_ids())
     );
