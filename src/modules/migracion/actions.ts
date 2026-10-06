@@ -299,13 +299,13 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
         const { data: pNew, error: pErr } = await adminSupabase.from("personas").insert({
           tenant_id: tenantId,
           tipo_persona: "fisica",
-          nombre_completo: nombreCompleto,
+          nombre_completo: nombreCompleto.slice(0, 200),
           documento_tipo: cuit.length > 9 ? "CUIT" : "DNI",
-          documento_numero: docNumero,
-          email,
-          telefono,
-          direccion,
-          cbu_alias: cbu,
+          documento_numero: docNumero.slice(0, 50),
+          email: email ? email.slice(0, 150) : null,
+          telefono: telefono ? telefono.slice(0, 50) : null,
+          direccion: direccion ? direccion.slice(0, 250) : null,
+          cbu_alias: cbu ? cbu.slice(0, 100) : null,
         }).select("id").single();
 
         if (pErr) throw pErr;
@@ -347,12 +347,12 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
         const { data: inqNew, error: inqErr } = await adminSupabase.from("personas").insert({
           tenant_id: tenantId,
           tipo_persona: "fisica",
-          nombre_completo: nombreCompleto,
+          nombre_completo: nombreCompleto.slice(0, 200),
           documento_tipo: "DNI",
-          documento_numero: dni,
-          email,
-          telefono: tel,
-          direccion,
+          documento_numero: dni.slice(0, 50),
+          email: email ? email.slice(0, 150) : null,
+          telefono: tel ? tel.slice(0, 50) : null,
+          direccion: direccion ? direccion.slice(0, 250) : null,
         }).select("id").single();
 
         if (inqErr) throw inqErr;
@@ -393,9 +393,19 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
 
       if (!direccionCompleta) continue;
 
-      const matchDir = direccionCompleta.match(/^(.*?)\s+(\d+.*)$/);
-      const calle = matchDir ? matchDir[1].trim() : direccionCompleta;
-      const numero = matchDir ? matchDir[2].trim() : "S/N";
+      let calle = direccionCompleta;
+      let numero = "S/N";
+
+      const matchNum = direccionCompleta.match(/^(.+?)\s+(\d+)(.*)$/);
+      if (matchNum) {
+        const callePart = matchNum[1].trim();
+        const extraPart = matchNum[3].trim().replace(/^,\s*/, "");
+        calle = extraPart ? `${callePart} (${extraPart})` : callePart;
+        numero = matchNum[2].trim();
+      }
+
+      calle = calle.slice(0, 150);
+      numero = numero.slice(0, 20);
 
       const tipoInmueble = tipoProp.toLowerCase().includes("casa") || tipoProp.toLowerCase().includes("vivienda")
         ? "casa"
@@ -418,11 +428,11 @@ export async function importarDatosSpotAction(fileContent: string): Promise<Impo
           tenant_id: tenantId,
           direccion_calle: calle,
           direccion_numero: numero,
-          localidad,
-          provincia,
-          tipo_inmueble: tipoInmueble,
+          localidad: localidad.slice(0, 100),
+          provincia: provincia.slice(0, 100),
+          tipo_inmueble: tipoInmueble.slice(0, 50),
           destino: "vivienda",
-          codigo_postal: cp,
+          codigo_postal: cp ? cp.slice(0, 20) : null,
           notas: carpeta ? `Carpeta Spot: ${carpeta}` : null,
         }).select("id").single();
 
