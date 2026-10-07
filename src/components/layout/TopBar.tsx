@@ -129,10 +129,14 @@ export function TopBar() {
         {/* Botón Hamburguesa Móvil (Visible solo en pantallas < md) */}
         <div className="flex items-center gap-2 md:hidden shrink-0">
           <button
-            onClick={toggleMobileNav}
-            className="p-2 rounded-xl text-slate-300 hover:text-white bg-[#0A0B0E] hover:bg-[#16171C] border border-[#17181F] transition-colors"
-            title="Abrir Menú de Navegación"
-            aria-label="Abrir Menú"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleMobileNav();
+            }}
+            className="p-2 rounded-xl text-slate-300 hover:text-white bg-[#0A0B0E] hover:bg-[#16171C] border border-[#17181F] transition-colors cursor-pointer active:scale-95"
+            title="Abrir Menú de Navegación (Menú Hamburguesa)"
+            aria-label="Abrir Menú de Navegación"
           >
             <Menu className="w-5 h-5 text-[#10B981]" />
           </button>

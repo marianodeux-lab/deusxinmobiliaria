@@ -88,10 +88,11 @@ export function Sidebar() {
     isSuperAdminUserAction().then(setIsSuperAdmin).catch(() => setIsSuperAdmin(false));
   }, []);
 
-  // Cerrar menú móvil al cambiar de ruta
+  // Cerrar menú móvil únicamente cuando cambia la ruta de navegación (pathname)
   useEffect(() => {
     closeMobileNav();
-  }, [pathname, closeMobileNav]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const renderNavContent = (isMobileDrawer: boolean) => (
     <>
@@ -262,15 +263,21 @@ export function Sidebar() {
 
       {/* 2. SIDEBAR MOBILE DRAWER (Deslizable y colapsable en celulares) */}
       {isMobileNavOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-50 md:hidden flex">
           {/* Backdrop con desenfoque suave */}
           <div
             className="fixed inset-0 bg-black/80 backdrop-blur-xs animate-in fade-in duration-200"
-            onClick={closeMobileNav}
+            onClick={(e) => {
+              e.stopPropagation();
+              closeMobileNav();
+            }}
           />
 
           {/* Panel Lateral Drawer Deslizable */}
-          <div className="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-[#030304] text-slate-300 flex flex-col shadow-2xl border-r border-[#17181F] animate-in slide-in-from-left duration-200 z-50">
+          <div
+            className="relative w-72 max-w-[85vw] bg-[#030304] text-slate-300 flex flex-col h-full shadow-2xl border-r border-[#17181F] animate-in slide-in-from-left duration-200 z-50"
+            onClick={(e) => e.stopPropagation()}
+          >
             {renderNavContent(true)}
           </div>
         </div>
