@@ -14,9 +14,13 @@ import {
   Globe,
   Sparkles,
   LogOut,
+  Menu,
+  Download,
 } from "lucide-react";
 import { OnboardingTourModal } from "./OnboardingTourModal";
 import { createClient } from "@/lib/supabase/client";
+import { useMobileNav } from "@/context/MobileNavContext";
+import { usePwa } from "@/context/PwaContext";
 
 interface MacroIndicatorProps {
   label: string;
@@ -60,7 +64,7 @@ const variantStyles: Record<
     date: "text-sky-200/60",
   },
   green: {
-    container: "bg-[#020E09] border-emerald-500/35 hover:border-emerald-400/60 shadow-[0_0_10px_-2px_rgba(16,185,129,0.15)]",
+    container: "bg-[#020E09] border-emerald-500/35 hover:border-emerald-400/60 shadow-[0_0_10px_-2px_rgba(160,185,129,0.15)]",
     label: "text-[#34D399]",
     value: "text-[#A7F3D0]",
     date: "text-emerald-200/60",
@@ -87,6 +91,8 @@ export function TopBar() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string>("Inmobiliaria");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { toggleMobileNav } = useMobileNav();
+  const { installApp, isInstalled } = usePwa();
 
   useEffect(() => {
     try {
@@ -119,28 +125,44 @@ export function TopBar() {
 
   return (
     <>
-      <header className="h-16 border-b border-[#0F1014] bg-[#030304]/98 backdrop-blur-md sticky top-0 z-30 px-4 flex items-center justify-between text-slate-200">
+      <header className="h-16 border-b border-[#0F1014] bg-[#030304]/98 backdrop-blur-md sticky top-0 z-30 px-3 sm:px-4 flex items-center justify-between text-slate-200 gap-2">
+        {/* Botón Hamburguesa Móvil (Visible solo en pantallas < md) */}
+        <div className="flex items-center gap-2 md:hidden shrink-0">
+          <button
+            onClick={toggleMobileNav}
+            className="p-2 rounded-xl text-slate-300 hover:text-white bg-[#0A0B0E] hover:bg-[#16171C] border border-[#17181F] transition-colors"
+            title="Abrir Menú de Navegación"
+            aria-label="Abrir Menú"
+          >
+            <Menu className="w-5 h-5 text-[#10B981]" />
+          </button>
+
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/Recursos/DeusX.png" alt="DeusX" className="h-6 w-auto object-contain" />
+          </Link>
+        </div>
+
         {/* Indicadores Económicos Oficiales (Ticker en cabecera) */}
-      <div className="flex items-center gap-1.5 overflow-x-auto py-1 no-scrollbar flex-1 min-w-0 mr-2">
-        <Link
-          href="/indices"
-          className="flex flex-col justify-center mr-1 text-slate-400 hover:text-[#10B981] transition-colors shrink-0 select-none group"
-          title="Ver módulo de Índices Económicos & Motores de Indexación"
-        >
-          <div className="flex items-center gap-1 text-xs font-bold text-slate-200 group-hover:text-[#10B981] transition-colors">
-            <TrendingUp className="w-3.5 h-3.5 text-[#10B981]" />
-            <span>Índices:</span>
-          </div>
-          <span className="text-[9px] text-white font-mono tracking-tight leading-none mt-0.5">
-            Act: 04/10/26 15:30 hs
-          </span>
-        </Link>
-        <MacroIndicator label="ICL" value="14.82" date="Octubre" variant="gold" />
-        <MacroIndicator label="IPC" value="3.9%" date="Mensual" variant="orange" />
-        <MacroIndicator label="UVA" value="$ 1.485,20" date="Hoy" variant="purple" />
-        <MacroIndicator label="USD Blue" value="$ 1.385" date="Venta" variant="blue" />
-        <MacroIndicator label="USD Oficial" value="$ 1.080" date="BNA" variant="green" />
-      </div>
+        <div className="flex items-center gap-1.5 overflow-x-auto py-1 no-scrollbar flex-1 min-w-0 mr-1">
+          <Link
+            href="/indices"
+            className="hidden sm:flex flex-col justify-center mr-1 text-slate-400 hover:text-[#10B981] transition-colors shrink-0 select-none group"
+            title="Ver módulo de Índices Económicos & Motores de Indexación"
+          >
+            <div className="flex items-center gap-1 text-xs font-bold text-slate-200 group-hover:text-[#10B981] transition-colors">
+              <TrendingUp className="w-3.5 h-3.5 text-[#10B981]" />
+              <span>Índices:</span>
+            </div>
+            <span className="text-[9px] text-white font-mono tracking-tight leading-none mt-0.5">
+              Act: BCRA
+            </span>
+          </Link>
+          <MacroIndicator label="ICL" value="14.82" date="Octubre" variant="gold" />
+          <MacroIndicator label="IPC" value="3.9%" date="Mensual" variant="orange" />
+          <MacroIndicator label="UVA" value="$ 1.485,20" date="Hoy" variant="purple" />
+          <MacroIndicator label="USD Blue" value="$ 1.385" date="Venta" variant="blue" />
+          <MacroIndicator label="USD Oficial" value="$ 1.080" date="BNA" variant="green" />
+        </div>
 
       {/* Alertas Operativas y Perfil del Usuario */}
       <div className="flex items-center gap-2.5 shrink-0">
@@ -187,11 +209,23 @@ export function TopBar() {
             </div>
           </Link>
 
+          {/* Botón Instalar App PWA */}
+          {!isInstalled && (
+            <button
+              onClick={installApp}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold text-[#34D399] bg-[#004D40]/30 hover:bg-[#004D40]/60 border border-[#10B981]/40 transition-all cursor-pointer"
+              title="Instalar DeusX como App (Windows / Android / iOS)"
+            >
+              <Download className="w-3.5 h-3.5 text-[#10B981]" />
+              <span className="hidden sm:inline">Instalar App</span>
+            </button>
+          )}
+
           {/* Botón Cerrar Sesión */}
           <button
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-950/20 border border-transparent hover:border-rose-900/40 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-950/20 border border-transparent hover:border-rose-900/40 transition-colors cursor-pointer"
             title="Cerrar sesión en este dispositivo"
           >
             <LogOut className="w-4 h-4" />

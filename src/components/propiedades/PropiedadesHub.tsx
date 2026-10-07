@@ -37,6 +37,7 @@ import {
   Image as ImageIcon,
   Loader2,
   Sparkles,
+  Camera,
 } from "lucide-react";
 import { formatCurrency, cn } from "@/lib/utils";
 import {
@@ -65,6 +66,12 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   const [selectedPropiedadDrawer, setSelectedPropiedadDrawer] = useState<PropiedadItem | null>(null);
+  const [selectedTabDrawer, setSelectedTabDrawer] = useState<"ficha" | "vidriera" | "ocupacion">("ficha");
+
+  const openFicha = (p: PropiedadItem, tab: "ficha" | "vidriera" | "ocupacion" = "ficha") => {
+    setSelectedPropiedadDrawer(p);
+    setSelectedTabDrawer(tab);
+  };
 
   // Filtrado de propiedades
   const filteredItems = useMemo(() => {
@@ -377,27 +384,64 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
                   key={p.id}
                   className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden flex flex-col hover:border-slate-300 hover:shadow-md transition-all duration-200"
                 >
-                  {/* Encabezado de la Tarjeta */}
-                  <div className="p-4 border-b border-slate-100 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide bg-slate-100 text-slate-700">
+                  {/* Banner de Fotos / Miniatura de la Propiedad */}
+                  <div className="relative h-40 bg-[#0C0D10] overflow-hidden group">
+                    {p.fotos_web && p.fotos_web.length > 0 ? (
+                      <>
+                        <img
+                          src={p.fotos_web[0]}
+                          alt={`${p.direccion_calle} ${p.direccion_numero}`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+                        <button
+                          onClick={() => openFicha(p, "vidriera")}
+                          className="absolute bottom-2 right-2 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-black/80 hover:bg-black text-[#34D399] border border-[#10B981]/40 flex items-center gap-1.5 backdrop-blur-xs transition-colors cursor-pointer"
+                          title="Gestionar fotos de la propiedad"
+                        >
+                          <Camera className="w-3.5 h-3.5 text-[#10B981]" />
+                          <span>{p.fotos_web.length}/15 fotos</span>
+                        </button>
+                      </>
+                    ) : (
+                      <div
+                        onClick={() => openFicha(p, "vidriera")}
+                        className="w-full h-full flex flex-col items-center justify-center text-slate-400 hover:text-white bg-[#141519] hover:bg-[#1A1C23] transition-colors cursor-pointer border-b border-[#262832] group-hover:border-[#10B981]/50"
+                        title="Hacé clic para subir fotos de la propiedad"
+                      >
+                        <Camera className="w-7 h-7 text-slate-500 group-hover:text-[#10B981] group-hover:scale-110 transition-all mb-1" />
+                        <span className="text-xs font-bold text-slate-300 group-hover:text-[#34D399]">
+                          + Subir Fotos (0/15)
+                        </span>
+                        <span className="text-[10px] text-slate-500">WebP 1280x800 automático</span>
+                      </div>
+                    )}
+
+                    {/* Badge de Tipo de Inmueble */}
+                    <div className="absolute top-2 left-2">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide bg-black/75 text-white backdrop-blur-xs border border-white/10">
                         {p.tipo_inmueble}
                       </span>
+                    </div>
 
-                      {/* Badge de Estado de Ocupación */}
+                    {/* Badge de Estado de Ocupación */}
+                    <div className="absolute top-2 right-2">
                       {estaAlquilado ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#00382E]/90 text-[#34D399] border border-[#10B981]/40 backdrop-blur-xs">
+                          <CheckCircle2 className="w-3 h-3 text-[#10B981]" />
                           Alquilado (#{p.contrato_activo?.carpeta_numero})
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
-                          <Home className="w-3 h-3 text-blue-600" />
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#0B2538]/90 text-[#38BDF8] border border-[#38BDF8]/40 backdrop-blur-xs">
+                          <Home className="w-3 h-3 text-[#38BDF8]" />
                           Disponible
                         </span>
                       )}
                     </div>
+                  </div>
 
+                  {/* Encabezado de la Tarjeta */}
+                  <div className="p-4 border-b border-slate-100 space-y-1">
                     <div>
                       <h3 className="font-extrabold text-slate-900 text-sm leading-snug">
                         {p.direccion_calle} {p.direccion_numero}
@@ -504,14 +548,25 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
                       <span>{p.publicar_en_vidriera ? "En Vidriera" : "Oculto Web"}</span>
                     </button>
 
-                    {/* Ver Ficha Técnica */}
-                    <button
-                      onClick={() => setSelectedPropiedadDrawer(p)}
-                      className="inline-flex items-center gap-1 px-3 py-1 font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg shadow-2xs transition-colors"
-                    >
-                      <Eye className="w-3.5 h-3.5 text-slate-500" />
-                      <span>Ver Ficha</span>
-                    </button>
+                    {/* Acciones de Ficha y Fotos */}
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => openFicha(p, "vidriera")}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 font-bold text-[11px] text-[#004d40] bg-[#E0F2F1] hover:bg-[#B2DFDB] border border-[#80CBC4] rounded-lg shadow-2xs transition-colors cursor-pointer"
+                        title="Subir y gestionar fotos de la propiedad (hasta 15 imágenes)"
+                      >
+                        <Camera className="w-3.5 h-3.5 text-[#004d40]" />
+                        <span>Fotos ({p.fotos_web?.length || 0})</span>
+                      </button>
+
+                      <button
+                        onClick={() => openFicha(p, "ficha")}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 font-bold text-[11px] text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-slate-500" />
+                        <span>Ficha</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -615,13 +670,23 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
                         </td>
 
                         <td className="py-3 px-4 text-right">
-                          <button
-                            onClick={() => setSelectedPropiedadDrawer(p)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 font-semibold text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
-                          >
-                            <Eye className="w-3 h-3" />
-                            <span>Ficha</span>
-                          </button>
+                          <div className="inline-flex items-center gap-1.5 justify-end">
+                            <button
+                              onClick={() => openFicha(p, "vidriera")}
+                              className="inline-flex items-center gap-1 px-2 py-1 font-bold text-xs text-[#004d40] bg-[#E0F2F1] hover:bg-[#B2DFDB] border border-[#80CBC4] rounded-lg transition-colors cursor-pointer"
+                              title="Subir y gestionar fotos"
+                            >
+                              <Camera className="w-3 h-3 text-[#004d40]" />
+                              <span>{p.fotos_web?.length || 0}/15</span>
+                            </button>
+                            <button
+                              onClick={() => openFicha(p, "ficha")}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 font-semibold text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
+                            >
+                              <Eye className="w-3 h-3" />
+                              <span>Ficha</span>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -637,6 +702,7 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
       {selectedPropiedadDrawer && (
         <FichaTecnicaModal
           propiedad={selectedPropiedadDrawer}
+          initialTab={selectedTabDrawer}
           onClose={() => setSelectedPropiedadDrawer(null)}
           onPropiedadUpdated={(updated) => {
             setItems((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
@@ -654,13 +720,14 @@ export function PropiedadesHub({ initialItems, initialKpis }: PropiedadesHubProp
 
 interface FichaTecnicaModalProps {
   propiedad: PropiedadItem;
+  initialTab?: "ficha" | "vidriera" | "ocupacion";
   onClose: () => void;
   onPropiedadUpdated?: (updated: PropiedadItem) => void;
 }
 
-function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecnicaModalProps) {
+function FichaTecnicaModal({ propiedad, initialTab = "ficha", onClose, onPropiedadUpdated }: FichaTecnicaModalProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<"ficha" | "vidriera" | "ocupacion">("ficha");
+  const [activeTab, setActiveTab] = useState<"ficha" | "vidriera" | "ocupacion">(initialTab);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFeedback, setUploadFeedback] = useState<string | null>(null);
@@ -844,27 +911,27 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-3xl w-full p-5 sm:p-6 animate-in fade-in zoom-in-95 duration-150 relative max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+      <div className="bg-[#121316] text-slate-100 rounded-2xl border border-[#262832] shadow-2xl max-w-3xl w-full p-5 sm:p-6 animate-in fade-in zoom-in-95 duration-150 relative max-h-[92vh] flex flex-col">
         {/* ENCABEZADO SUPERIOR */}
-        <div className="flex items-start justify-between border-b border-slate-100 pb-3 gap-3">
+        <div className="flex items-start justify-between border-b border-[#262832] pb-3 gap-3">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide bg-[#E0F2F1] text-[#004d40] rounded">
+              <span className="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide bg-[#00382E] text-[#34D399] border border-[#10B981]/40 rounded">
                 {propiedad.tipo_inmueble}
               </span>
-              <h3 className="font-extrabold text-slate-900 text-base">
+              <h3 className="font-extrabold text-white text-base">
                 {propiedad.direccion_calle} {propiedad.direccion_numero}
-                {propiedad.piso_dpto && <span className="text-slate-500 font-normal ml-1">({propiedad.piso_dpto})</span>}
+                {propiedad.piso_dpto && <span className="text-slate-400 font-normal ml-1">({propiedad.piso_dpto})</span>}
               </h3>
               {formData.publicar_en_vidriera && (
-                <span className="px-2 py-0.5 text-[9px] font-bold rounded-full bg-teal-50 text-teal-800 border border-teal-200 flex items-center gap-1">
+                <span className="px-2 py-0.5 text-[9px] font-bold rounded-full bg-[#00382E] text-[#34D399] border border-[#10B981]/40 flex items-center gap-1">
                   <Globe className="w-2.5 h-2.5" />
                   <span>Publicada en Vidriera</span>
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-400 mt-0.5">
               {propiedad.localidad}, {propiedad.provincia} {propiedad.codigo_postal ? `(CP ${propiedad.codigo_postal})` : ""}
             </p>
           </div>
@@ -873,15 +940,15 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
-                className="px-3 py-1.5 text-xs font-bold text-teal-900 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1.5 text-xs font-bold text-[#34D399] bg-[#004D40]/40 hover:bg-[#004D40]/70 border border-[#10B981]/40 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
               >
-                <Edit3 className="w-3.5 h-3.5 text-teal-700" />
+                <Edit3 className="w-3.5 h-3.5 text-[#10B981]" />
                 <span>Editar Propiedad</span>
               </button>
             ) : (
               <button
                 onClick={() => setIsEditing(false)}
-                className="px-3 py-1.5 text-xs font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all"
+                className="px-3 py-1.5 text-xs font-bold text-slate-300 hover:text-white bg-[#1C1D24] hover:bg-[#252732] border border-[#2E303B] rounded-xl transition-all"
               >
                 Cancelar Edición
               </button>
@@ -889,7 +956,7 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
 
             <button
               onClick={onClose}
-              className="w-7 h-7 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center font-bold text-sm cursor-pointer"
+              className="w-7 h-7 rounded-md text-slate-400 hover:text-white hover:bg-[#1C1D24] flex items-center justify-center font-bold text-sm cursor-pointer"
             >
               ✕
             </button>
@@ -897,14 +964,14 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
         </div>
 
         {/* NAVEGACIÓN DE SUB-PESTAÑAS EN LA FICHA */}
-        <div className="flex items-center gap-2 border-b border-slate-100 pt-3 text-xs font-bold shrink-0">
+        <div className="flex items-center gap-2 border-b border-[#262832] pt-3 text-xs font-bold shrink-0">
           <button
             onClick={() => setActiveTab("ficha")}
             className={cn(
               "pb-2.5 px-3 border-b-2 transition-all flex items-center gap-1.5",
               activeTab === "ficha"
-                ? "border-[#00796b] text-[#004d40]"
-                : "border-transparent text-slate-500 hover:text-slate-800"
+                ? "border-[#10B981] text-[#34D399]"
+                : "border-transparent text-slate-400 hover:text-white"
             )}
           >
             <Building className="w-3.5 h-3.5" />
@@ -916,13 +983,13 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
             className={cn(
               "pb-2.5 px-3 border-b-2 transition-all flex items-center gap-1.5",
               activeTab === "vidriera"
-                ? "border-[#00796b] text-[#004d40]"
-                : "border-transparent text-slate-500 hover:text-slate-800"
+                ? "border-[#10B981] text-[#34D399]"
+                : "border-transparent text-slate-400 hover:text-white"
             )}
           >
-            <ImageIcon className="w-3.5 h-3.5" />
+            <Camera className="w-3.5 h-3.5" />
             <span>Vidriera & Fotos</span>
-            <span className="px-1.5 py-0.2 text-[10px] rounded-full bg-slate-100 text-slate-700">
+            <span className="px-1.5 py-0.2 text-[10px] rounded-full bg-[#00382E] text-[#34D399] border border-[#10B981]/40">
               {formData.fotos_web.length}/15
             </span>
           </button>
@@ -932,8 +999,8 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
             className={cn(
               "pb-2.5 px-3 border-b-2 transition-all flex items-center gap-1.5",
               activeTab === "ocupacion"
-                ? "border-[#00796b] text-[#004d40]"
-                : "border-transparent text-slate-500 hover:text-slate-800"
+                ? "border-[#10B981] text-[#34D399]"
+                : "border-transparent text-slate-400 hover:text-white"
             )}
           >
             <FolderKanban className="w-3.5 h-3.5" />
@@ -966,61 +1033,61 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
               {!isEditing ? (
                 <>
                   {/* Modo Lectura: Catastro */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 bg-[#181920] rounded-xl border border-[#262832]">
                     <div>
                       <span className="text-[10px] text-slate-400 block font-semibold">Código Interno:</span>
-                      <span className="font-mono font-bold text-slate-800">{formData.codigo_interno || "S/C"}</span>
+                      <span className="font-mono font-bold text-white">{formData.codigo_interno || "S/C"}</span>
                     </div>
                     <div>
                       <span className="text-[10px] text-slate-400 block font-semibold">Unidad Funcional:</span>
-                      <span className="font-mono text-slate-800">{formData.unidad_funcional || "--"}</span>
+                      <span className="font-mono text-white">{formData.unidad_funcional || "--"}</span>
                     </div>
                     <div>
                       <span className="text-[10px] text-slate-400 block font-semibold">Partida Inmobiliaria:</span>
-                      <span className="font-mono text-slate-800">{formData.partida_inmobiliaria || "No declarada"}</span>
+                      <span className="font-mono text-white">{formData.partida_inmobiliaria || "No declarada"}</span>
                     </div>
                     <div>
                       <span className="text-[10px] text-slate-400 block font-semibold">Catastro:</span>
-                      <span className="font-mono text-slate-800">{formData.nomenclatura_catastral || "--"}</span>
+                      <span className="font-mono text-white">{formData.nomenclatura_catastral || "--"}</span>
                     </div>
                   </div>
 
                   {/* Modo Lectura: Características */}
                   <div>
-                    <h4 className="font-bold text-slate-900 mb-2 text-xs uppercase tracking-wider text-slate-500">
+                    <h4 className="font-bold text-white mb-2 text-xs uppercase tracking-wider">
                       Características & Ambientes
                     </h4>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                      <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
-                        <span className="text-sm font-extrabold text-slate-900 block">{formData.ambientes}</span>
-                        <span className="text-[10px] text-slate-500">Ambientes</span>
+                      <div className="p-2.5 bg-[#181920] border border-[#262832] rounded-xl text-center">
+                        <span className="text-sm font-extrabold text-white block">{formData.ambientes}</span>
+                        <span className="text-[10px] text-slate-400">Ambientes</span>
                       </div>
-                      <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
-                        <span className="text-sm font-extrabold text-slate-900 block">{formData.dormitorios}</span>
-                        <span className="text-[10px] text-slate-500">Dormitorios</span>
+                      <div className="p-2.5 bg-[#181920] border border-[#262832] rounded-xl text-center">
+                        <span className="text-sm font-extrabold text-white block">{formData.dormitorios}</span>
+                        <span className="text-[10px] text-slate-400">Dormitorios</span>
                       </div>
-                      <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
-                        <span className="text-sm font-extrabold text-slate-900 block">{formData.banios}</span>
-                        <span className="text-[10px] text-slate-500">Baños</span>
+                      <div className="p-2.5 bg-[#181920] border border-[#262832] rounded-xl text-center">
+                        <span className="text-sm font-extrabold text-white block">{formData.banios}</span>
+                        <span className="text-[10px] text-slate-400">Baños</span>
                       </div>
-                      <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
-                        <span className="text-sm font-extrabold text-slate-900 block">{formData.cocheras}</span>
-                        <span className="text-[10px] text-slate-500">Cocheras</span>
+                      <div className="p-2.5 bg-[#181920] border border-[#262832] rounded-xl text-center">
+                        <span className="text-sm font-extrabold text-white block">{formData.cocheras}</span>
+                        <span className="text-[10px] text-slate-400">Cocheras</span>
                       </div>
-                      <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
-                        <span className="text-sm font-extrabold text-slate-900 block">
+                      <div className="p-2.5 bg-[#181920] border border-[#262832] rounded-xl text-center">
+                        <span className="text-sm font-extrabold text-white block">
                           {formData.superficie_total ? `${formData.superficie_total} m²` : "--"}
                         </span>
-                        <span className="text-[10px] text-slate-500">Superficie Total</span>
+                        <span className="text-[10px] text-slate-400">Superficie Total</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Expensas */}
                   {formData.expensas_estimadas && (
-                    <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
-                      <span className="text-slate-600 font-semibold">Expensas Estimadas:</span>
-                      <span className="font-mono font-bold text-slate-900">
+                    <div className="p-2.5 bg-[#181920] rounded-xl border border-[#262832] flex items-center justify-between">
+                      <span className="text-slate-400 font-semibold">Expensas Estimadas:</span>
+                      <span className="font-mono font-bold text-white">
                         {formatCurrency(Number(formData.expensas_estimadas), "ARS")}
                       </span>
                     </div>
@@ -1028,9 +1095,9 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
 
                   {/* Notas */}
                   {formData.notas && (
-                    <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200">
-                      <span className="text-[10px] font-semibold text-slate-500 block">Notas & Observaciones Internas:</span>
-                      <p className="text-slate-700 text-xs mt-0.5 leading-relaxed">{formData.notas}</p>
+                    <div className="p-2.5 bg-[#181920] rounded-xl border border-[#262832]">
+                      <span className="text-[10px] font-semibold text-slate-400 block">Notas & Observaciones Internas:</span>
+                      <p className="text-slate-300 text-xs mt-0.5 leading-relaxed">{formData.notas}</p>
                     </div>
                   )}
                 </>
@@ -1039,101 +1106,101 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                     <div>
-                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Código Interno</label>
+                      <label className="text-[10px] font-bold text-slate-300 block mb-1">Código Interno</label>
                       <input
                         type="text"
                         value={formData.codigo_interno}
                         onChange={(e) => setFormData({ ...formData, codigo_interno: e.target.value })}
                         placeholder="Ej: DEP-102"
-                        className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono focus:border-teal-500"
+                        className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono focus:border-[#10B981]"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Unidad Funcional</label>
+                      <label className="text-[10px] font-bold text-slate-300 block mb-1">Unidad Funcional</label>
                       <input
                         type="text"
                         value={formData.unidad_funcional}
                         onChange={(e) => setFormData({ ...formData, unidad_funcional: e.target.value })}
                         placeholder="Ej: UF 04"
-                        className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono focus:border-teal-500"
+                        className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono focus:border-[#10B981]"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Partida Inmobiliaria</label>
+                      <label className="text-[10px] font-bold text-slate-300 block mb-1">Partida Inmobiliaria</label>
                       <input
                         type="text"
                         value={formData.partida_inmobiliaria}
                         onChange={(e) => setFormData({ ...formData, partida_inmobiliaria: e.target.value })}
                         placeholder="Ej: 078-129402"
-                        className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono focus:border-teal-500"
+                        className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono focus:border-[#10B981]"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Catastro</label>
+                      <label className="text-[10px] font-bold text-slate-300 block mb-1">Catastro</label>
                       <input
                         type="text"
                         value={formData.nomenclatura_catastral}
                         onChange={(e) => setFormData({ ...formData, nomenclatura_catastral: e.target.value })}
                         placeholder="Ej: Circ. II Sec. B"
-                        className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono focus:border-teal-500"
+                        className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono focus:border-[#10B981]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <h5 className="font-bold text-slate-800 text-[11px] mb-2 uppercase tracking-wide">
+                    <h5 className="font-bold text-white text-[11px] mb-2 uppercase tracking-wide">
                       Dimensiones y Ambientes
                     </h5>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                       <div>
-                        <label className="text-[10px] font-bold text-slate-600 block mb-1">Ambientes</label>
+                        <label className="text-[10px] font-bold text-slate-300 block mb-1">Ambientes</label>
                         <input
                           type="number"
                           min="1"
                           value={formData.ambientes}
                           onChange={(e) => setFormData({ ...formData, ambientes: parseInt(e.target.value) || 1 })}
-                          className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono text-center"
+                          className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono text-center focus:border-[#10B981]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-bold text-slate-600 block mb-1">Dormitorios</label>
+                        <label className="text-[10px] font-bold text-slate-300 block mb-1">Dormitorios</label>
                         <input
                           type="number"
                           min="0"
                           value={formData.dormitorios}
                           onChange={(e) => setFormData({ ...formData, dormitorios: parseInt(e.target.value) || 0 })}
-                          className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono text-center"
+                          className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono text-center focus:border-[#10B981]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-bold text-slate-600 block mb-1">Baños</label>
+                        <label className="text-[10px] font-bold text-slate-300 block mb-1">Baños</label>
                         <input
                           type="number"
                           min="1"
                           value={formData.banios}
                           onChange={(e) => setFormData({ ...formData, banios: parseInt(e.target.value) || 1 })}
-                          className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono text-center"
+                          className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono text-center focus:border-[#10B981]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-bold text-slate-600 block mb-1">Cocheras</label>
+                        <label className="text-[10px] font-bold text-slate-300 block mb-1">Cocheras</label>
                         <input
                           type="number"
                           min="0"
                           value={formData.cocheras}
                           onChange={(e) => setFormData({ ...formData, cocheras: parseInt(e.target.value) || 0 })}
-                          className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono text-center"
+                          className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono text-center focus:border-[#10B981]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-bold text-slate-600 block mb-1">Superficie Total (m²)</label>
+                        <label className="text-[10px] font-bold text-slate-300 block mb-1">Superficie Total (m²)</label>
                         <input
                           type="number"
                           step="0.1"
                           value={formData.superficie_total}
                           onChange={(e) => setFormData({ ...formData, superficie_total: e.target.value })}
                           placeholder="Ej: 65"
-                          className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono text-center"
+                          className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono text-center focus:border-[#10B981]"
                         />
                       </div>
                     </div>
@@ -1141,23 +1208,23 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Expensas Estimadas ($ ARS)</label>
+                      <label className="text-[10px] font-bold text-slate-300 block mb-1">Expensas Estimadas ($ ARS)</label>
                       <input
                         type="number"
                         value={formData.expensas_estimadas}
                         onChange={(e) => setFormData({ ...formData, expensas_estimadas: e.target.value })}
                         placeholder="Ej: 35000"
-                        className="w-full text-xs p-2 border border-slate-200 rounded-lg font-mono"
+                        className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono focus:border-[#10B981]"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-slate-600 block mb-1">Notas Internas de la Inmobiliaria</label>
+                      <label className="text-[10px] font-bold text-slate-300 block mb-1">Notas Internas de la Inmobiliaria</label>
                       <textarea
                         rows={2}
                         value={formData.notas}
                         onChange={(e) => setFormData({ ...formData, notas: e.target.value })}
                         placeholder="Observaciones privadas sobre llaves, portero, estado..."
-                        className="w-full text-xs p-2 border border-slate-200 rounded-lg"
+                        className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg focus:border-[#10B981]"
                       />
                     </div>
                   </div>
@@ -1172,16 +1239,16 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
           {activeTab === "vidriera" && (
             <div className="space-y-4">
               {/* Controles de Publicación Web */}
-              <div className="p-3 bg-teal-50/50 rounded-xl border border-teal-100 space-y-3">
+              <div className="p-3.5 bg-[#181920] rounded-xl border border-[#262832] space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formData.publicar_en_vidriera}
                       onChange={(e) => setFormData({ ...formData, publicar_en_vidriera: e.target.checked })}
-                      className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
+                      className="w-4 h-4 text-[#10B981] rounded focus:ring-[#10B981]"
                     />
-                    <span className="text-xs font-bold text-teal-950">
+                    <span className="text-xs font-bold text-white">
                       Publicar en Vidriera Online Pública
                     </span>
                   </label>
@@ -1193,20 +1260,20 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                       onChange={(e) => setFormData({ ...formData, destacada_web: e.target.checked })}
                       className="w-4 h-4 text-amber-500 rounded focus:ring-amber-400"
                     />
-                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1">
+                    <span className="text-xs font-bold text-slate-200 flex items-center gap-1">
                       <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
                       <span>Destacar en Portada</span>
                     </span>
                   </label>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-teal-100">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-[#262832]">
                   <div>
-                    <label className="text-[10px] font-bold text-teal-900 block mb-1">Operación Comercial</label>
+                    <label className="text-[10px] font-bold text-slate-400 block mb-1">Operación Comercial</label>
                     <select
                       value={formData.operacion_web}
                       onChange={(e) => setFormData({ ...formData, operacion_web: e.target.value as any })}
-                      className="w-full text-xs p-2 bg-white border border-teal-200 rounded-lg font-semibold"
+                      className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-semibold focus:border-[#10B981]"
                     >
                       <option value="alquiler">Alquiler Permanente</option>
                       <option value="venta">Venta Directa</option>
@@ -1215,11 +1282,11 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-bold text-teal-900 block mb-1">Moneda de Publicación</label>
+                    <label className="text-[10px] font-bold text-slate-400 block mb-1">Moneda de Publicación</label>
                     <select
                       value={formData.moneda_web}
                       onChange={(e) => setFormData({ ...formData, moneda_web: e.target.value as any })}
-                      className="w-full text-xs p-2 bg-white border border-teal-200 rounded-lg font-mono font-bold"
+                      className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono font-bold focus:border-[#10B981]"
                     >
                       <option value="ARS">ARS ($ Pesos Argentinos)</option>
                       <option value="USD">USD (Dólares Estadounidenses)</option>
@@ -1227,13 +1294,13 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-bold text-teal-900 block mb-1">Precio Web Sugerido</label>
+                    <label className="text-[10px] font-bold text-slate-400 block mb-1">Precio Web Sugerido</label>
                     <input
                       type="number"
                       value={formData.precio_web}
                       onChange={(e) => setFormData({ ...formData, precio_web: e.target.value })}
                       placeholder="Ej: 450000"
-                      className="w-full text-xs p-2 bg-white border border-teal-200 rounded-lg font-mono font-bold"
+                      className="w-full text-xs p-2 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-lg font-mono font-bold focus:border-[#10B981]"
                     />
                   </div>
                 </div>
@@ -1241,7 +1308,7 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
 
               {/* Título de Publicación Web */}
               <div>
-                <label className="text-[11px] font-bold text-slate-800 block mb-1">
+                <label className="text-[11px] font-bold text-slate-200 block mb-1">
                   Título Comercial de la Publicación
                 </label>
                 <input
@@ -1249,17 +1316,17 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                   value={formData.titulo_web}
                   onChange={(e) => setFormData({ ...formData, titulo_web: e.target.value })}
                   placeholder="Ej: Departamento 3 Ambientes con Balcón y Vista Abierta"
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl focus:border-teal-500 font-medium"
+                  className="w-full text-xs p-2.5 bg-[#0C0D10] border border-[#2A2C38] text-white rounded-xl focus:border-[#10B981] font-medium"
                 />
               </div>
 
               {/* DETALLES Y DESCRIPCIÓN DE LA PUBLICACIÓN */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-[11px] font-bold text-slate-800">
+                  <label className="text-[11px] font-bold text-slate-200">
                     Detalles & Descripción de la Publicación Web
                   </label>
-                  <span className="text-[10px] text-slate-400">
+                  <span className="text-[10px] text-slate-400 font-mono">
                     {formData.descripcion_web.length} caracteres
                   </span>
                 </div>
@@ -1268,7 +1335,7 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                   value={formData.descripcion_web}
                   onChange={(e) => setFormData({ ...formData, descripcion_web: e.target.value })}
                   placeholder="Detallá los aspectos destacados de la propiedad: luminosidad, estado de la cocina, amenities del edificio, condiciones del contrato, transporte cercano, requisitos para ingresar..."
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl leading-relaxed focus:border-teal-500"
+                  className="w-full text-xs p-2.5 bg-[#0C0D10] border border-[#2A2C38] text-slate-100 rounded-xl leading-relaxed focus:border-[#10B981]"
                 />
                 <span className="text-[10px] text-slate-400 block mt-0.5">
                   Este texto se mostrará a los interesados en el portal web público y en las fichas compartibles por WhatsApp.
@@ -1280,11 +1347,11 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                 <div className="flex items-center justify-between">
                   <div>
                     <h5 className="font-extrabold text-slate-900 text-xs flex items-center gap-1.5">
-                      <ImageIcon className="w-4 h-4 text-teal-700" />
-                      <span>Galería de Fotos de la Propiedad</span>
+                      <ImageIcon className="w-4 h-4 text-[#10B981]" />
+                      <span className="text-white">Galería de Fotos de la Propiedad</span>
                     </h5>
-                    <p className="text-[11px] text-slate-500">
-                      Capacidad: <strong>{formData.fotos_web.length} de 15 fotos</strong> utilizadas
+                    <p className="text-[11px] text-slate-400">
+                      Capacidad: <strong className="text-white">{formData.fotos_web.length} de 15 fotos</strong> utilizadas
                     </p>
                   </div>
 
@@ -1292,13 +1359,13 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                     <label className={cn(
                       "px-3 py-1.5 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-xs",
                       isUploading
-                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                        : "bg-[#004d40] hover:bg-[#00332c] text-white active:scale-95"
+                        ? "bg-[#1C1D24] text-slate-500 cursor-not-allowed border border-[#262832]"
+                        : "bg-[#004D40] hover:bg-[#005B4C] text-[#34D399] border border-[#10B981]/40 active:scale-95"
                     )}>
                       {isUploading ? (
                         <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          <span>Procesando...</span>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-[#10B981]" />
+                          <span>Procesando WebP...</span>
                         </>
                       ) : (
                         <>
@@ -1319,36 +1386,50 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                 </div>
 
                 {/* Banner de optimización automática */}
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-[11px] text-slate-600 flex items-start gap-2">
-                  <Sparkles className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+                <div className="bg-[#181920] border border-[#262832] rounded-xl p-2.5 text-[11px] text-slate-300 flex items-start gap-2">
+                  <Sparkles className="w-4 h-4 text-[#10B981] shrink-0 mt-0.5" />
                   <div className="leading-tight">
-                    <span className="font-bold text-slate-800">Formateo inteligente de imágenes: </span>
-                    Cualquier foto que adjuntes (incluso fotos pesadas de celulares en 4K) se adapta automáticamente a resolución estándar de Vidriera (1280x800) y formato WebP ultraliviano (~150 KB). Cero consumo innecesario de almacenamiento.
+                    <span className="font-bold text-white">Formateo inteligente de imágenes: </span>
+                    Cualquier foto que adjuntes (incluso fotos pesadas en 4K) se adapta automáticamente a resolución estándar de Vidriera (1280x800) y formato WebP ultraliviano (~150 KB). Cero consumo innecesario de almacenamiento.
                   </div>
                 </div>
 
                 {uploadFeedback && (
-                  <div className="p-2 rounded-lg bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-semibold flex items-center gap-2">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-teal-600" />
+                  <div className="p-2 rounded-lg bg-[#00382E]/50 border border-[#10B981]/40 text-[#34D399] text-[11px] font-semibold flex items-center gap-2">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#10B981]" />
                     <span>{uploadFeedback}</span>
                   </div>
                 )}
 
-                {/* Grilla de Miniaturas */}
+                {/* Grilla de Miniaturas / Dropzone */}
                 {formData.fotos_web.length === 0 ? (
-                  <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center text-slate-400 space-y-1">
-                    <ImageIcon className="w-8 h-8 mx-auto text-slate-300 stroke-1" />
-                    <p className="text-xs font-semibold text-slate-600">Aún no hay fotos cargadas</p>
-                    <p className="text-[11px]">Podés adjuntar hasta 15 fotos para exhibir en la vidriera online.</p>
-                  </div>
+                  <label className="border-2 border-dashed border-[#10B981]/50 hover:border-[#10B981] bg-[#141519] hover:bg-[#1A1C23] rounded-2xl p-8 text-center text-slate-300 space-y-2 cursor-pointer block transition-all group">
+                    <div className="w-12 h-12 mx-auto rounded-xl bg-[#004D40] border border-[#10B981]/40 text-[#34D399] flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <UploadCloud className="w-6 h-6" />
+                    </div>
+                    <p className="text-sm font-extrabold text-white group-hover:text-[#34D399] transition-colors">
+                      Hacé clic acá para seleccionar fotos desde tu dispositivo
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      Podés subir hasta 15 fotos. Se formatean automáticamente a WebP 1280x800 (~150 KB).
+                    </p>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      disabled={isUploading}
+                      onChange={handleUploadFotos}
+                      className="hidden"
+                    />
+                  </label>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
                     {formData.fotos_web.map((url, idx) => (
                       <div
                         key={idx}
                         className={cn(
-                          "group relative rounded-xl overflow-hidden border bg-slate-100 aspect-4/3 flex flex-col justify-between shadow-xs transition-all",
-                          idx === 0 ? "border-teal-500 ring-2 ring-teal-500/20" : "border-slate-200"
+                          "group relative rounded-xl overflow-hidden border bg-[#0C0D10] aspect-4/3 flex flex-col justify-between shadow-xs transition-all",
+                          idx === 0 ? "border-[#10B981] ring-2 ring-[#10B981]/30" : "border-[#262832]"
                         )}
                       >
                         <img
@@ -1360,7 +1441,7 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                         {/* Badge de Portada */}
                         <div className="absolute top-1.5 left-1.5 flex gap-1">
                           {idx === 0 ? (
-                            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-teal-800 text-white shadow-xs">
+                            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-[#004D40] text-[#34D399] border border-[#10B981]/40 shadow-xs">
                               Portada
                             </span>
                           ) : (
@@ -1368,7 +1449,7 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                               type="button"
                               onClick={() => handleEstablecerPortada(idx)}
                               title="Hacer foto de portada"
-                              className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-white/90 hover:bg-white text-slate-700 shadow-xs backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-black/80 hover:bg-black text-white shadow-xs backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                             >
                               Hacer Portada
                             </button>
@@ -1385,7 +1466,7 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                           <Trash2 className="w-3 h-3" />
                         </button>
 
-                        <div className="absolute bottom-1 right-1.5 px-1 rounded text-[9px] font-mono bg-black/60 text-white">
+                        <div className="absolute bottom-1 right-1.5 px-1 rounded text-[9px] font-mono bg-black/80 text-white border border-white/10">
                           #{idx + 1}
                         </div>
                       </div>
@@ -1402,7 +1483,7 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
           {activeTab === "ocupacion" && (
             <div className="space-y-4">
               <div>
-                <h4 className="font-bold text-slate-900 mb-2 text-xs uppercase tracking-wider text-slate-500">
+                <h4 className="font-bold text-white mb-2 text-xs uppercase tracking-wider">
                   Estado de Ocupación / Contrato
                 </h4>
                 {estaAlquilado ? (
@@ -1445,7 +1526,7 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
 
               {/* Propietarios / Titulares */}
               <div>
-                <h4 className="font-bold text-slate-900 mb-2 text-xs uppercase tracking-wider text-slate-500">
+                <h4 className="font-bold text-white mb-2 text-xs uppercase tracking-wider">
                   Propietarios / Titulares
                 </h4>
                 <div className="space-y-1.5">
@@ -1453,13 +1534,13 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
                     <p className="text-slate-400 italic">No hay propietarios vinculados directamente.</p>
                   ) : (
                     propiedad.propietarios.map((pr, idx) => (
-                      <div key={idx} className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                      <div key={idx} className="p-2.5 bg-[#181920] rounded-xl border border-[#262832] flex items-center justify-between">
                         <div>
-                          <span className="font-bold text-slate-900 block">{pr.nombre}</span>
-                          <span className="text-[10px] text-slate-500">{pr.documento}</span>
+                          <span className="font-bold text-white block">{pr.nombre}</span>
+                          <span className="text-[10px] text-slate-400">{pr.documento}</span>
                         </div>
                         {pr.cbu_alias && (
-                          <span className="font-mono text-[10px] bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded border border-emerald-200">
+                          <span className="font-mono text-[10px] bg-[#00382E] text-[#34D399] px-2 py-0.5 rounded border border-[#10B981]/40">
                             CBU: {pr.cbu_alias}
                           </span>
                         )}
@@ -1473,21 +1554,21 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
         </div>
 
         {/* PIE / ACCIONES DE GUARDADO */}
-        <div className="pt-3 border-t border-slate-100 flex items-center justify-between shrink-0">
+        <div className="pt-3 border-t border-[#262832] flex items-center justify-between shrink-0">
           <Link
             href="/configuracion/vidriera"
-            className="text-xs font-semibold text-teal-800 hover:underline flex items-center gap-1"
+            className="text-xs font-semibold text-[#34D399] hover:underline flex items-center gap-1"
           >
             <Globe className="w-3.5 h-3.5" />
             <span>Ver en Vidriera Online</span>
           </Link>
 
           <div className="flex items-center gap-2">
-            {isEditing && (
+            {(isEditing || activeTab === "vidriera") && (
               <button
                 onClick={handleGuardarCambios}
                 disabled={isSaving}
-                className="px-4 py-2 text-xs font-bold text-white bg-[#004d40] hover:bg-[#00332c] rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                className="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-[#004D40] to-[#10B981] hover:brightness-110 rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
               >
                 {isSaving ? (
                   <>
@@ -1505,7 +1586,7 @@ function FichaTecnicaModal({ propiedad, onClose, onPropiedadUpdated }: FichaTecn
 
             <button
               onClick={onClose}
-              className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
+              className="px-4 py-2 text-xs font-bold text-slate-300 hover:text-white bg-[#1C1D24] hover:bg-[#252732] border border-[#2E303B] rounded-xl transition-colors cursor-pointer"
             >
               Cerrar Ficha
             </button>

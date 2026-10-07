@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { isSuperAdminUserAction } from "@/modules/auth/actions";
+import { useMobileNav } from "@/context/MobileNavContext";
+import { usePwa } from "@/context/PwaContext";
 import {
   FolderKanban,
   Receipt,
@@ -23,6 +25,9 @@ import {
   Handshake,
   ShieldCheck,
   BookOpen,
+  X,
+  Download,
+  Smartphone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -76,16 +81,23 @@ const NAVIGATION: NavSection[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false);
+  const { isMobileNavOpen, closeMobileNav } = useMobileNav();
+  const { installApp, isInstalled } = usePwa();
 
   useEffect(() => {
     isSuperAdminUserAction().then(setIsSuperAdmin).catch(() => setIsSuperAdmin(false));
   }, []);
 
-  return (
-    <aside className="w-64 bg-[#030304] text-slate-300 flex flex-col shrink-0 h-screen sticky top-0 select-none border-r border-[#0F1014] shadow-2xl">
-      {/* Brand Header con Logo Oficial DeusX (Fondo Ultra Oscuro #000000) */}
-      <div className="h-16 border-b border-[#0F1014] flex items-center px-4 bg-[#000000]">
-        <Link href="/" className="flex items-center gap-2.5 w-full group">
+  // Cerrar menú móvil al cambiar de ruta
+  useEffect(() => {
+    closeMobileNav();
+  }, [pathname, closeMobileNav]);
+
+  const renderNavContent = (isMobileDrawer: boolean) => (
+    <>
+      {/* Brand Header */}
+      <div className="h-16 border-b border-[#0F1014] flex items-center justify-between px-4 bg-[#000000] shrink-0">
+        <Link href="/" onClick={closeMobileNav} className="flex items-center gap-2.5 group">
           <div className="flex items-center">
             <img
               src="/Recursos/DeusX.png"
@@ -102,10 +114,20 @@ export function Sidebar() {
             </span>
           </div>
         </Link>
+
+        {isMobileDrawer && (
+          <button
+            onClick={closeMobileNav}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#16171C] transition-colors"
+            title="Cerrar Menú"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Acceso Rápido / Búsqueda Global */}
-      <div className="p-3 border-b border-[#0F1014]">
+      <div className="p-3 border-b border-[#0F1014] shrink-0">
         <button className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-slate-400 bg-[#08090C] hover:bg-[#0E1015] hover:text-white rounded-lg border border-[#17181F] shadow-xs transition-colors">
           <span className="flex items-center gap-2">
             <Search className="w-3.5 h-3.5 text-[#10B981]" />
@@ -117,10 +139,11 @@ export function Sidebar() {
         </button>
       </div>
 
-      {/* Botones de Alta Rápida: Verde Esmeralda Predominante */}
-      <div className="px-3 pt-3 space-y-1.5">
+      {/* Botones de Alta Rápida */}
+      <div className="px-3 pt-3 space-y-1.5 shrink-0">
         <Link
           href="/propiedades/nueva"
+          onClick={closeMobileNav}
           className="flex items-center justify-center gap-2 w-full py-2 px-3 text-xs font-black text-white bg-gradient-to-r from-[#004D40] via-[#00695C] to-[#10B981] hover:brightness-110 rounded-lg shadow-md transition-all active:scale-[0.98]"
         >
           <Building className="w-4 h-4 text-white" />
@@ -129,6 +152,7 @@ export function Sidebar() {
 
         <Link
           href="/contratos/nuevo"
+          onClick={closeMobileNav}
           className="flex items-center justify-center gap-2 w-full py-1.5 px-3 text-xs font-bold text-[#34D399] bg-[#08090C] hover:bg-[#0E1015] border border-[#10B981]/30 rounded-lg shadow-2xs transition-all active:scale-[0.98]"
         >
           <PlusCircle className="w-3.5 h-3.5 text-[#10B981]" />
@@ -160,6 +184,7 @@ export function Sidebar() {
                     <Link
                       key={item.href}
                       href={item.href}
+                      onClick={closeMobileNav}
                       className={cn(
                         "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all group",
                         isActive
@@ -202,16 +227,54 @@ export function Sidebar() {
         })}
       </nav>
 
+      {/* Botón de Instalación PWA (Windows & Móvil) */}
+      {!isInstalled && (
+        <div className="px-3 pb-2 shrink-0">
+          <button
+            onClick={installApp}
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-[#34D399] bg-[#004D40]/40 hover:bg-[#004D40]/70 border border-[#10B981]/40 rounded-xl shadow-sm transition-all cursor-pointer group"
+          >
+            <Smartphone className="w-3.5 h-3.5 text-[#10B981] group-hover:scale-110 transition-transform" />
+            <span>Instalar App DeusX</span>
+          </button>
+        </div>
+      )}
+
       {/* Footer Info / Estado del Sistema */}
-      <div className="p-3 border-t border-[#0F1014] bg-[#000000]">
+      <div className="p-3 border-t border-[#0F1014] bg-[#000000] shrink-0">
         <div className="flex items-center justify-between text-[11px] text-slate-400">
           <span className="flex items-center gap-1.5 font-medium">
             <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
             <span>Supabase RLS Activo</span>
           </span>
-          <span className="font-mono text-[10px] text-slate-500 font-semibold">v0.1.0</span>
+          <span className="font-mono text-[10px] text-slate-500 font-semibold">v1.2.0</span>
         </div>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* 1. SIDEBAR DESKTOP (Docked permanentemente a partir de pantallas medianas md:) */}
+      <aside className="hidden md:flex w-64 bg-[#030304] text-slate-300 flex-col shrink-0 h-screen sticky top-0 select-none border-r border-[#0F1014] shadow-2xl">
+        {renderNavContent(false)}
+      </aside>
+
+      {/* 2. SIDEBAR MOBILE DRAWER (Deslizable y colapsable en celulares) */}
+      {isMobileNavOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Backdrop con desenfoque suave */}
+          <div
+            className="fixed inset-0 bg-black/80 backdrop-blur-xs animate-in fade-in duration-200"
+            onClick={closeMobileNav}
+          />
+
+          {/* Panel Lateral Drawer Deslizable */}
+          <div className="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-[#030304] text-slate-300 flex flex-col shadow-2xl border-r border-[#17181F] animate-in slide-in-from-left duration-200 z-50">
+            {renderNavContent(true)}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
