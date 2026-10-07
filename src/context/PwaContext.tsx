@@ -170,12 +170,24 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
               </div>
             )}
 
-            <div className="mt-5 pt-3 border-t border-[#2E303B] flex items-center justify-end">
+            <div className="mt-5 pt-3 border-t border-[#2E303B] flex items-center justify-between gap-3">
+              {deferredPrompt && (
+                <button
+                  onClick={async () => {
+                    setShowInstallInstructions(false);
+                    await installApp();
+                  }}
+                  className="px-4 py-2 text-xs font-bold text-slate-900 bg-[#10B981] hover:bg-[#059669] rounded-xl transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Instalar en 1 Clic</span>
+                </button>
+              )}
               <button
                 onClick={() => setShowInstallInstructions(false)}
-                className="px-4 py-2 text-xs font-bold text-slate-900 bg-[#34D399] hover:bg-[#2bb884] rounded-xl transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-bold text-slate-300 hover:text-white bg-[#262832] hover:bg-[#323542] rounded-xl transition-colors cursor-pointer ml-auto"
               >
-                Entendido
+                Cerrar
               </button>
             </div>
           </div>

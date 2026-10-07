@@ -33,6 +33,18 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
+  // 0. Archivos estáticos de PWA y recursos públicos esenciales (nunca interceptar ni redirigir a login)
+  if (
+    pathname === "/manifest.json" ||
+    pathname === "/manifest.webmanifest" ||
+    pathname === "/sw.js" ||
+    pathname === "/favicon.ico" ||
+    pathname.startsWith("/Recursos") ||
+    pathname.startsWith("/_next")
+  ) {
+    return NextResponse.next();
+  }
+
   // Rutas públicas que no requieren inicio de sesión
   const isPublicRoute =
     pathname === "/" ||
@@ -40,7 +52,10 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/login") ||
     pathname.startsWith("/registro") ||
     pathname.startsWith("/portal") ||
-    pathname.startsWith("/api/auth");
+    pathname.startsWith("/api/auth") ||
+    pathname === "/manifest.json" ||
+    pathname === "/manifest.webmanifest" ||
+    pathname === "/sw.js";
 
   // 1. Si no está autenticado y quiere ingresar a una ruta privada -> Redirigir a /login
   if (!user && !isPublicRoute) {
@@ -61,6 +76,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|Recursos|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff|woff2)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|manifest.json|manifest.webmanifest|sw.js|Recursos|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff|woff2|ico|json|webmanifest)$).*)",
   ],
 };
